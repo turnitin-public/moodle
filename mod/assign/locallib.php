@@ -24,6 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_ltix\ltix_helper;
 defined('MOODLE_INTERNAL') || die();
 
 // Assignment submission statuses.
@@ -5872,6 +5873,8 @@ class assign {
                                                       $this->show_intro(),
                                                       $this->get_course_module()->id,
                                                       '', '', $postfix));
+
+        ltix_helper::lti_display_tool($instance, $o, $this);
 
         // Display plugin specific headers.
         $plugins = array_merge($this->get_submission_plugins(), $this->get_feedback_plugins());
