@@ -197,6 +197,42 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
 }
 
 /**
+ * This is not a hook, but a function that is called from course module edit form.
+ * It basically takes a few of the fields from the lti module form and saves them to the database.
+ *
+ */
+function add_attached_lti_module($fromform, $course, $mform) {
+    global $DB;
+
+    $fromform->has_lti = true;
+    $lti_module = $DB->get_record('modules', array('name' => 'lti'), '*', MUST_EXIST);
+    $lti = new stdClass();
+    $lti->is_lti = true;
+    $lti->name = $fromform->name;
+    $lti->course = $fromform->course;
+    $lti->intro = $fromform->intro;
+    $lti->introformat = 1;
+    $lti->typeid = $fromform->typeid;
+    $lti->toolurl = $fromform->toolurl;
+    $lti->securetoolurl = $fromform->securetoolurl;
+    $lti->showtitlelaunch = $fromform->showtitlelaunch;
+    $lti->showdescriptionlaunch = 0;
+    $lti->added = time();
+    $lti->timecreated = time();
+    $lti->timemodified = $lti->timecreated;
+    $lti->servicesalt = uniqid('', true);
+    $lti->module = $lti_module->id;
+    $lti->visible = 0;
+    $lti->section = 0;
+    $lti->modulename = $lti_module->name;
+    $lti_fromform = add_moduleinfo($lti, $course, $mform);
+    $fromform->ltiid = $lti_fromform->id;
+    return $fromform;
+
+}
+
+
+/**
  * Hook for plugins to take action when a module is created or updated.
  *
  * @param stdClass $moduleinfo the module info

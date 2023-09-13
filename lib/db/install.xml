@@ -4955,5 +4955,17 @@
         <KEY NAME="categoryid" TYPE="foreign" FIELDS="categoryid" REFTABLE="course_categories" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
+    <TABLE NAME="module_lti_mapping" COMMENT="Map a module id number to an external tool component">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="coursemoduleid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="ltiid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Unique ID for this module/lti combination."/>
+        <KEY NAME="coursemoduleid" TYPE="foreign" FIELDS="coursemoduleid" REFTABLE="course_modules" REFFIELDS="id" COMMENT="The course module instance"/>
+        <KEY NAME="ltiid" TYPE="foreign" FIELDS="ltiid" REFTABLE="lti" REFFIELDS="id" COMMENT="The lti instance"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

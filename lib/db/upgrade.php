@@ -3501,5 +3501,29 @@ privatefiles,moodle|/user/files.php';
         upgrade_main_savepoint(true, 2023082200.04);
     }
 
+    if ($oldversion < 2023083000.01) {
+
+        // Define table module_lti_mapping to be created.
+        $table = new xmldb_table('module_lti_mapping');
+
+        // Adding fields to table module_lti_mapping.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('coursemoduleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('ltiid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table module_lti_mapping.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('coursemoduleid', XMLDB_KEY_FOREIGN, ['coursemoduleid'], 'course_modules', ['id']);
+        $table->add_key('ltiid', XMLDB_KEY_FOREIGN, ['ltiid'], 'lti', ['id']);
+
+        // Conditionally launch create table for module_lti_mapping.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Assign savepoint reached.
+        upgrade_main_savepoint(true, 2023083000.01);
+    }
+
     return true;
 }
