@@ -204,6 +204,9 @@ if ($mform->is_cancelled()) {
                 $lti_instance->toolurl = $fromform->toolurl;
                 $lti_instance->securetoolurl = $fromform->securetoolurl;
                 $lti_instance->typeid = $fromform->typeid;
+                $lti_instance->showtitlelaunch = $fromform->showtitlelaunch;
+                $lti_instance->showdescriptionlaunch = $fromform->showdescriptionlaunch;
+                $lti_instance->instructorcustomparameters = $fromform->instructorcustomparameters;
                 $DB->update_record('lti', $lti_instance);
             } else {
                 $lti_module = $DB->get_record('modules', array('name' => 'lti'), '*', MUST_EXIST);
