@@ -217,6 +217,15 @@ function add_attached_lti_module($fromform, $course, $mform) {
     $lti->securetoolurl = $fromform->securetoolurl;
     $lti->showtitlelaunch = $fromform->showtitlelaunch;
     $lti->showdescriptionlaunch = 0;
+    $lti->launchcontainer = $fromform->launchcontainer;
+    $lti->resourcekey = $fromform->resourcekey;
+    $lti->password = $fromform->password;
+    $lti->instructorchoicesendname = $fromform->instructorchoicesendname;
+    $lti->instructorchoicesendemailaddr = $fromform->instructorchoicesendemailaddr;
+    $lti->instructorchoiceacceptgrades = $fromform->instructorchoiceacceptgrades;
+    $lti->instructorchoiceallowroster = $fromform->instructorchoiceallowroster;
+    $lti->instructorchoiceallowsetting = $fromform->instructorchoiceallowsetting;
+    $lti->instructorcustomparameters = $fromform->instructorcustomparameters;
     $lti->added = time();
     $lti->timecreated = time();
     $lti->timemodified = $lti->timecreated;
