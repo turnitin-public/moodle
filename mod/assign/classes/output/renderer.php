@@ -24,6 +24,8 @@
 
 namespace mod_assign\output;
 
+use \core_ltix\output\external_content;
+use \core_ltix\ltix_helper;
 use assign_files;
 use html_writer;
 use mod_assign\output\grading_app;
@@ -271,6 +273,17 @@ class renderer extends \plugin_renderer_base {
         ]);
 
         return $this->output->header();
+    }
+
+    /**
+     * Render the external_content.
+     *
+     * @param external_content $external_content
+     * @return string
+     */
+    public function render_external_content(external_content $external_content) {
+        return ltix_helper::lti_render_attachment($this, $external_content);
+        
     }
 
     /**

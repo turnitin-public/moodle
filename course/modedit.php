@@ -114,6 +114,23 @@ if (!empty($add)) {
     require_login($course, false, $cm); // needed to setup proper $COURSE
 
     list($cm, $context, $module, $data, $cw) = get_moduleinfo_data($cm, $course);
+
+    // Check the module_lti_mapping exists.
+    $module_lti = $DB->get_record('module_lti_mapping', array('coursemoduleid'=>$data->id), '*', IGNORE_MISSING);
+    if(!empty($module_lti)) {
+        // Fetch the lti record from module_lti_mapping lti field.
+        $lti = $DB->get_record('lti', array('id'=>$module_lti->ltiid), '*', MUST_EXIST);
+        $data->lti = $lti;
+        $data->typeid = $lti->typeid;
+        $data->toolurl = $lti->toolurl;
+        $data->securetoolurl = $lti->securetoolurl;
+        $data->showtitlelaunch = $lti->showtitlelaunch;
+        $data->showdescriptionlaunch = 1;
+        $data->has_assign_lti_mapping = 1;
+    } else {
+        $data->has_module_lti_mapping = 0;
+    }
+
     $data->return = $return;
     $data->sr = $sectionreturn;
     $data->update = $update;
@@ -180,9 +197,52 @@ if ($mform->is_cancelled()) {
     // do regrading with a progress bar and redirect, if necessary.
     $fromform->frontend = true;
     if (!empty($fromform->update)) {
+        $lti_module_map = $DB->get_record('module_lti_mapping', array('coursemoduleid'=>$fromform->instance), '*', IGNORE_MISSING);
+        if(!empty($lti_module_map)) {
+            $lti_instance = $DB->get_record('lti', array('id'=>$lti_module_map->ltiid), '*', MUST_EXIST);
+            if(!empty($fromform->toolurl)) {
+                $lti_instance->toolurl = $fromform->toolurl;
+                $lti_instance->securetoolurl = $fromform->securetoolurl;
+                $lti_instance->typeid = $fromform->typeid;
+                $lti_instance->showtitlelaunch = $fromform->showtitlelaunch;
+                $lti_instance->showdescriptionlaunch = $fromform->showdescriptionlaunch;
+                $lti_instance->instructorcustomparameters = $fromform->instructorcustomparameters;
+                $DB->update_record('lti', $lti_instance);
+            } else {
+                $lti_module = $DB->get_record('modules', array('name' => 'lti'), '*', MUST_EXIST);
+                $DB->delete_records('module_lti_mapping', array('coursemoduleid'=>$fromform->instance));
+                $DB->delete_records('lti', array('id' => $lti_instance->id));
+                $DB->delete_records('course_modules', array('module' => $lti_module->id, 'instance' => $lti_instance->id));
+            }
+        } else {
+            if(!empty($fromform->toolurl)) {
+                $fromform = add_attached_lti_module($fromform, $course, $mform);
+                try {
+                    $DB->insert_record('module_lti_mapping', array('coursemoduleid' => $fromform->instance, 'ltiid' => $fromform->ltiid));
+                } catch (moodle_exception $e) {
+                    //TODO: handle exception
+                }
+
+            }
+        }
         list($cm, $fromform) = update_moduleinfo($cm, $fromform, $course, $mform);
     } else if (!empty($fromform->add)) {
+        //Check if toolurl is set and add it to lti module map
+        $fromform->has_lti = false;
+        $fromform->ltiid = 0;
         $fromform = add_moduleinfo($fromform, $course, $mform);
+
+        if(!empty($fromform->toolurl)) {
+            $fromform = add_attached_lti_module($fromform, $course, $mform);
+            try {
+                $DB->insert_record('module_lti_mapping', array('coursemoduleid' => $fromform->instance, 'ltiid' => $fromform->ltiid));
+            } catch (moodle_exception $e) {
+                //TODO: handle exception
+            }
+
+        }
+
+
     } else {
         throw new \moodle_exception('invaliddata');
     }

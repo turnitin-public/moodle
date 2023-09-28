@@ -3501,7 +3501,7 @@ privatefiles,moodle|/user/files.php';
         upgrade_main_savepoint(true, 2023082200.04);
     }
 
-    if ($oldversion < 2023082600.02) {
+    if ($oldversion < 2023091300.04) {
         // Get all the ids of users who still have md5 hashed passwords.
         if ($DB->sql_regex_supported()) {
             // If the database supports regex, we can add an exact check for md5.
@@ -3534,7 +3534,7 @@ privatefiles,moodle|/user/files.php';
         upgrade_main_savepoint(true, 2023082600.02);
     }
 
-    if ($oldversion < 2023082600.03) {
+    if ($oldversion < 2023091300.04) {
         // The previous default configuration had a typo, check for its presence and correct if necessary.
         $sensiblesettings = get_config('adminpresets', 'sensiblesettings');
         if (strpos($sensiblesettings, 'smtppass@none') !== false) {
@@ -3546,14 +3546,14 @@ privatefiles,moodle|/user/files.php';
         upgrade_main_savepoint(true, 2023082600.03);
     }
 
-    if ($oldversion < 2023082600.05) {
+    if ($oldversion < 2023091300.04) {
         unset_config('completiondefault');
 
         // Main savepoint reached.
         upgrade_main_savepoint(true, 2023082600.05);
     }
 
-    if ($oldversion < 2023090100.00) {
+    if ($oldversion < 2023091300.04) {
         // Upgrade MIME type for existing PSD files.
         $DB->set_field_select(
             'files',
@@ -3567,7 +3567,7 @@ privatefiles,moodle|/user/files.php';
         upgrade_main_savepoint(true, 2023090100.00);
     }
 
-    if ($oldversion < 2023090200.01) {
+    if ($oldversion < 2023091300.04) {
 
         // Define table moodlenet_share_progress to be created.
         $table = new xmldb_table('moodlenet_share_progress');
@@ -3586,20 +3586,39 @@ privatefiles,moodle|/user/files.php';
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for moodlenet_share_progress.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
+        if ($oldversion < 2023091300.04) {
+
+            // Define table module_lti_mapping to be created.
+            $table = new xmldb_table('module_lti_mapping');
+
+            // Adding fields to table module_lti_mapping.
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('coursemoduleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('ltiid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            // Adding keys to table module_lti_mapping.
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('coursemoduleid', XMLDB_KEY_FOREIGN, ['coursemoduleid'], 'course_modules', ['id']);
+            $table->add_key('ltiid', XMLDB_KEY_FOREIGN, ['ltiid'], 'lti', ['id']);
+
+            // Conditionally launch create table for module_lti_mapping.
+            if (!$dbman->table_exists($table)) {
+                $dbman->create_table($table);
+            }
+
+            // Main savepoint reached.
+            upgrade_main_savepoint(true, 2023090200.01);
         }
 
-        // Main savepoint reached.
-        upgrade_main_savepoint(true, 2023090200.01);
-    }
+        if ($oldversion < 2023091300.04) {
+            // Delete all the searchanywhere prefs in user_preferences table.
+            $DB->delete_records('user_preferences', ['name' => 'userselector_searchanywhere']);
+            // Main savepoint reached.
+            upgrade_main_savepoint(true, 2023091300.03);
+            // Assign savepoint reached.
+            upgrade_main_savepoint(true, 2023083000.01);
+        }
 
-    if ($oldversion < 2023091300.03) {
-        // Delete all the searchanywhere prefs in user_preferences table.
-        $DB->delete_records('user_preferences', ['name' => 'userselector_searchanywhere']);
-        // Main savepoint reached.
-        upgrade_main_savepoint(true, 2023091300.03);
+        return true;
     }
-
-    return true;
 }
