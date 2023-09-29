@@ -33,7 +33,10 @@ global $CFG;
 function attach_lti_elements($mform, $context, $_instance, $current) {
     global $COURSE, $CFG, $DB, $OUTPUT, $PAGE;
 
-    $mform->addElement('header', 'externaltool', get_string('externaltool', 'ltix'));
+    $mform->addElement('header', 'externaltool', get_string('externaltool', 'core_ltix'));
+
+
+
 
     $mform->addElement('checkbox', 'showtitlelaunch', get_string('display_name', 'core_ltix'));
     $mform->setAdvanced('showtitlelaunch');

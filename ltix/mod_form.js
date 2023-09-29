@@ -333,11 +333,11 @@
 
                 var globalGroup = Y.Node.create('<optgroup />')
                                     .set('id', 'global_tool_group')
-                                    .set('label', M.util.get_string('global_tool_types', 'lti'));
+                                    .set('label', M.util.get_string('global_tool_types', 'core_ltix'));
 
                 var courseGroup = Y.Node.create('<optgroup />')
                                     .set('id', 'course_tool_group')
-                                    .set('label', M.util.get_string('course_tool_types', 'lti'));
+                                    .set('label', M.util.get_string('course_tool_types', 'core_ltix'));
 
                 var globalOptions = typeSelector.all('option[globalTool=1]').remove().each(function(node){
                     globalGroup.append(node);

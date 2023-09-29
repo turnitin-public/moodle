@@ -596,3 +596,22 @@ $string['ltix:addinstance'] = 'Add a new external tool';
 $string['ltix:addpreconfiguredinstance'] = 'Add a preconfigured tool';
 // For the new external tools section
 $string['externaltool'] = 'External Tool';
+
+// Deprecated since Moodle 4.3.
+$string['lti:addmanualinstance'] = 'Add a manually-configured tool';
+$string['edittype'] = 'Edit preconfigured tool';
+$string['deletetype'] = 'Delete preconfigured tool';
+$string['cannot_delete'] = 'You may not delete this tool configuration.';
+$string['cannot_edit'] = 'You may not edit this tool configuration.';
+$string['global_tool_types'] = 'Preconfigured tools';
+$string['course_tool_types'] = 'Course tools';
+$string['using_tool_cartridge'] = 'Using tool cartridge';
+$string['using_tool_configuration'] = 'Using tool configuration: ';
+$string['domain_mismatch'] = 'Tool URL\'s domain does not match tool configuration.';
+$string['custom_config'] = 'Using custom tool configuration.';
+$string['tool_config_not_found'] = 'Tool configuration not found for this URL.';
+$string['tooltypeadded'] = 'Preconfigured tool added';
+$string['tooltypedeleted'] = 'Preconfigured tool deleted';
+$string['tooltypenotdeleted'] = 'Could not delete preconfigured tool';
+$string['tooltypeupdated'] = 'Preconfigured tool updated';
+$string['forced_help'] = 'This setting has been forced in a course or site level tool configuration. You may not change it from this interface.';
