@@ -194,7 +194,7 @@
                     automatchToolDisplay.set('innerHTML',  '<img style="vertical-align:text-bottom" src="' + self.settings.green_check_icon_url + '" />' + M.util.get_string('using_tool_configuration', 'ltix') + selectedOption.get('text'));
                 } else {
                     // The entered URL does not match the domain of the tool configuration
-                    automatchToolDisplay.set('innerHTML', '<img style="vertical-align:text-bottom" src="' + self.settings.warning_icon_url + '" />' + M.util.get_string('domain_mismatch', 'lti'));
+                    automatchToolDisplay.set('innerHTML', '<img style="vertical-align:text-bottom" src="' + self.settings.warning_icon_url + '" />' + M.util.get_string('domain_mismatch', 'ltix'));
                 }
             }
 
@@ -204,7 +204,7 @@
             // Indicate the tool is manually configured
             // We still check the Launch URL with the server as course/site tools may override privacy settings
             if(key.get('value') !== '' && secret.get('value') !== ''){
-                automatchToolDisplay.set('innerHTML',  '<img style="vertical-align:text-bottom" src="' + self.settings.green_check_icon_url + '" />' + M.util.get_string('custom_config', 'lti'));
+                automatchToolDisplay.set('innerHTML',  '<img style="vertical-align:text-bottom" src="' + self.settings.green_check_icon_url + '" />' + M.util.get_string('custom_config', 'ltix'));
             }
 
             var continuation = function(toolInfo, inputfield){
@@ -216,12 +216,12 @@
                 } else if(!selectedToolType) {
                     // Inform them custom configuration is in use
                     if(key.get('value') === '' || secret.get('value') === ''){
-                        automatchToolDisplay.set('innerHTML', '<img style="vertical-align:text-bottom" src="' + self.settings.warning_icon_url + '" />' + M.util.get_string('tool_config_not_found', 'lti'));
+                        automatchToolDisplay.set('innerHTML', '<img style="vertical-align:text-bottom" src="' + self.settings.warning_icon_url + '" />' + M.util.get_string('tool_config_not_found', 'ltix'));
                     }
                 }
                 if (toolInfo.cartridge) {
                     automatchToolDisplay.set('innerHTML', '<img style="vertical-align:text-bottom" src="' + self.settings.green_check_icon_url +
-                                             '" />' + M.util.get_string('using_tool_cartridge', 'lti'));
+                                             '" />' + M.util.get_string('using_tool_cartridge', 'ltix'));
                 }
             };
 
@@ -297,11 +297,11 @@
                     if(settingValue == M.mod_lti.LTI_SETTING_NEVER){
                         control.set('disabled', true);
                         control.set('checked', false);
-                        control.set('title', M.util.get_string('forced_help', 'lti'));
+                        control.set('title', M.util.get_string('forced_help', 'ltix'));
                     } else if(settingValue == M.mod_lti.LTI_SETTING_ALWAYS){
                         control.set('disabled', true);
                         control.set('checked', true);
-                        control.set('title', M.util.get_string('forced_help', 'lti'));
+                        control.set('title', M.util.get_string('forced_help', 'ltix'));
                     } else if(settingValue == M.mod_lti.LTI_SETTING_DELEGATE){
                         control.set('disabled', false);
 
@@ -333,11 +333,11 @@
 
                 var globalGroup = Y.Node.create('<optgroup />')
                                     .set('id', 'global_tool_group')
-                                    .set('label', M.util.get_string('global_tool_types', 'lti'));
+                                    .set('label', M.util.get_string('global_tool_types', 'ltix'));
 
                 var courseGroup = Y.Node.create('<optgroup />')
                                     .set('id', 'course_tool_group')
-                                    .set('label', M.util.get_string('course_tool_types', 'lti'));
+                                    .set('label', M.util.get_string('course_tool_types', 'ltix'));
 
                 var globalOptions = typeSelector.all('option[globalTool=1]').remove().each(function(node){
                     globalGroup.append(node);
@@ -375,9 +375,9 @@
                         .append(Y.Node.create('<img src="' + iconUrl + '" />'));
             }
 
-            var addIcon = createIcon('lti_add_tool_type', M.util.get_string('addtype', 'lti'), this.settings.add_icon_url);
-            var editIcon = createIcon('lti_edit_tool_type', M.util.get_string('edittype', 'lti'), this.settings.edit_icon_url);
-            var deleteIcon  = createIcon('lti_delete_tool_type', M.util.get_string('deletetype', 'lti'), this.settings.delete_icon_url);
+            var addIcon = createIcon('lti_add_tool_type', M.util.get_string('addtype', 'ltix'), this.settings.add_icon_url);
+            var editIcon = createIcon('lti_edit_tool_type', M.util.get_string('edittype', 'ltix'), this.settings.edit_icon_url);
+            var deleteIcon  = createIcon('lti_delete_tool_type', M.util.get_string('deletetype', 'ltix'), this.settings.delete_icon_url);
 
             editIcon.on('click', function(e){
                 var toolTypeId = typeSelector.get('value');
@@ -385,7 +385,7 @@
                 if(self.getSelectedToolTypeOption().getAttribute('editable')){
                     window.open(self.settings.instructor_tool_type_edit_url + '&action=edit&typeid=' + toolTypeId, 'edit_tool');
                 } else {
-                    alert(M.util.get_string('cannot_edit', 'lti'));
+                    alert(M.util.get_string('cannot_edit', 'ltix'));
                 }
             });
 
@@ -397,11 +397,11 @@
                 var toolTypeId = typeSelector.get('value');
 
                 if(self.getSelectedToolTypeOption().getAttribute('editable')){
-                    if(confirm(M.util.get_string('delete_confirmation', 'lti'))){
+                    if(confirm(M.util.get_string('delete_confirmation', 'ltix'))){
                         self.deleteTool(toolTypeId);
                     }
                 } else {
-                    alert(M.util.get_string('cannot_delete', 'lti'));
+                    alert(M.util.get_string('cannot_delete', 'ltix'));
                 }
             });
 
@@ -451,7 +451,7 @@
 
             require(["core/notification"], function (notification) {
                 notification.addNotification({
-                    message: M.util.get_string('tooltypeadded', 'lti'),
+                    message: M.util.get_string('tooltypeadded', 'ltix'),
                     type: "success"
                 });
             });
@@ -471,7 +471,7 @@
 
             require(["core/notification"], function (notification) {
                 notification.addNotification({
-                    message: M.util.get_string('tooltypeupdated', 'lti'),
+                    message: M.util.get_string('tooltypeupdated', 'ltix'),
                     type: "success"
                 });
             });
@@ -492,7 +492,7 @@
 
                         require(["core/notification"], function (notification) {
                             notification.addNotification({
-                                message: M.util.get_string('tooltypedeleted', 'lti'),
+                                message: M.util.get_string('tooltypedeleted', 'ltix'),
                                 type: "success"
                             });
                         });
@@ -500,7 +500,7 @@
                     failure: function(){
                         require(["core/notification"], function (notification) {
                             notification.addNotification({
-                                message: M.util.get_string('tooltypenotdeleted', 'lti'),
+                                message: M.util.get_string('tooltypenotdeleted', 'ltix'),
                                 type: "problem"
                             });
                         });
