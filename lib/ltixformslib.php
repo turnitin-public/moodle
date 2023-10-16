@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-use core_ltix\ltix_helper;
+use core_ltix\types_helper;
 global $CFG;
 
 
@@ -38,11 +38,11 @@ function attach_lti_elements($mform, $context, $_instance, $current) {
     // Determine whether this tool instance is using a domain-matched site tool which is not visible at the course level.
     // In such a case, the instance has a typeid (the site tool) and toolurl (the url used to domain match the site tool) set,
     // and the type still exists (is not deleted).
-    $instancetypes = ltix_helper::lti_get_types_for_add_instance();
+    $instancetypes = types_helper::get_types_for_add_instance();
     $matchestoolnotavailabletocourse = false;
 
     $tooltypeid = $current->typeid;
-    $tooltype = ltix_helper::lti_get_type($tooltypeid);
+    $tooltype = types_helper::get_type($tooltypeid);
 
     // Store the id of the tool type should it be linked to a tool proxy, to aid in disabling certain form elements.
     $toolproxytypeid = $tooltype->toolproxyid ? $tooltypeid : '';
@@ -63,7 +63,7 @@ function attach_lti_elements($mform, $context, $_instance, $current) {
 
         $mform->addHelpButton('externaltooltypeid', 'external_tool_type', 'ltix');
 
-        foreach (ltix_helper::lti_get_types_for_add_instance() as $id => $type) {
+        foreach (types_helper::get_types_for_add_instance() as $id => $type) {
             if (!empty($type->toolproxyid)) {
                 $toolproxy[] = $type->id;
                 $attributes = array('globalTool' => 1, 'toolproxy' => 1);
@@ -89,7 +89,7 @@ function attach_lti_elements($mform, $context, $_instance, $current) {
             }
 
             if ($id) {
-                $config = ltix_helper::lti_get_type_config($id);
+                $config = types_helper::get_type_config($id);
                 if (!empty($config['contentitem'])) {
                     $attributes['data-contentitem'] = 1;
                     $attributes['data-id'] = $id;

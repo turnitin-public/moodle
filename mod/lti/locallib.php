@@ -2194,101 +2194,51 @@ function lti_get_ims_role($user, $cmid, $courseid, $islti2) {
 /**
  * Returns configuration details for the tool
  *
+ * @deprecated since Moodle 4.4
  * @param int $typeid   Basic LTI tool typeid
  *
  * @return array        Tool Configuration
  */
 function lti_get_type_config($typeid) {
-    global $DB;
-
-    $query = "SELECT name, value
-                FROM {lti_types_config}
-               WHERE typeid = :typeid1
-           UNION ALL
-              SELECT 'toolurl' AS name, baseurl AS value
-                FROM {lti_types}
-               WHERE id = :typeid2
-           UNION ALL
-              SELECT 'icon' AS name, icon AS value
-                FROM {lti_types}
-               WHERE id = :typeid3
-           UNION ALL
-              SELECT 'secureicon' AS name, secureicon AS value
-                FROM {lti_types}
-               WHERE id = :typeid4";
-
-    $typeconfig = array();
-    $configs = $DB->get_records_sql($query,
-        array('typeid1' => $typeid, 'typeid2' => $typeid, 'typeid3' => $typeid, 'typeid4' => $typeid));
-
-    if (!empty($configs)) {
-        foreach ($configs as $config) {
-            $typeconfig[$config->name] = $config->value;
-        }
-    }
-
-    return $typeconfig;
+    return \core_ltix\types_helper::get_type_config($typeid);
 }
 
+/**
+ * Get tools by url
+ *
+ * @deprecated since Moodle 4.4
+ * @param $url
+ * @param $state
+ * @param $courseid
+ * @return array
+ */
 function lti_get_tools_by_url($url, $state, $courseid = null) {
-    $domain = lti_get_domain_from_url($url);
-
-    return lti_get_tools_by_domain($domain, $state, $courseid);
+    return \core_ltix\tool_helper::get_tools_by_url($url, $state, $courseid);
 }
 
+/**
+ * Get tools by domain
+ *
+ * @deprecated since Moodle 4.4
+ * @param $domain
+ * @param $state
+ * @param $courseid
+ * @return array
+ */
 function lti_get_tools_by_domain($domain, $state = null, $courseid = null) {
-    global $DB, $SITE;
-
-    $statefilter = '';
-    $coursefilter = '';
-
-    if ($state) {
-        $statefilter = 'AND t.state = :state';
-    }
-
-    if ($courseid && $courseid != $SITE->id) {
-        $coursefilter = 'OR t.course = :courseid';
-    }
-
-    $coursecategory = $DB->get_field('course', 'category', ['id' => $courseid]);
-    $query = "SELECT t.*
-                FROM {lti_types} t
-           LEFT JOIN {lti_types_categories} tc on t.id = tc.typeid
-               WHERE t.tooldomain = :tooldomain
-                 AND (t.course = :siteid $coursefilter)
-                 $statefilter
-                 AND (tc.id IS NULL OR tc.categoryid = :categoryid)";
-
-    return $DB->get_records_sql($query, [
-            'courseid' => $courseid,
-            'siteid' => $SITE->id,
-            'tooldomain' => $domain,
-            'state' => $state,
-            'categoryid' => $coursecategory
-        ]);
+    return \core_ltix\tool_helper::get_tools_by_domain($domain, $state, $courseid);
 }
 
 /**
  * Returns all basicLTI tools configured by the administrator
  *
+ * @deprecated since Moodle 4.4
  * @param int $course
  *
  * @return array
  */
 function lti_filter_get_types($course) {
-    global $DB;
-
-    if (!empty($course)) {
-        $where = "WHERE t.course = :course";
-        $params = array('course' => $course);
-    } else {
-        $where = '';
-        $params = array();
-    }
-    $query = "SELECT t.id, t.name, t.baseurl, t.state, t.toolproxyid, t.timecreated, tp.name tpname
-                FROM {lti_types} t LEFT OUTER JOIN {lti_tool_proxies} tp ON t.toolproxyid = tp.id
-                {$where}";
-    return $DB->get_records_sql($query, $params);
+    return \core_ltix\types_helper::filter_get_types($course);
 }
 
 /**
@@ -2328,20 +2278,11 @@ function lti_get_lti_types_by_course($courseid, $coursevisible = null) {
 /**
  * Returns tool types for lti add instance and edit page
  *
+ * @deprecated since Moodle 4.4
  * @return array Array of lti types
  */
 function lti_get_types_for_add_instance() {
-    global $COURSE, $USER;
-
-    // Always return the 'manual' type option, despite manual config being deprecated, so that we have it for legacy instances.
-    $types = [(object) ['name' => get_string('automatic', 'lti'), 'course' => 0, 'toolproxyid' => null]];
-
-    $preconfiguredtypes = \mod_lti\local\types_helper::get_lti_types_by_course($COURSE->id, $USER->id);
-    foreach ($preconfiguredtypes as $type) {
-        $types[$type->id] = $type;
-    }
-
-    return $types;
+    return \core_ltix\types_helper::get_types_for_add_instance();
 }
 
 /**
@@ -2386,95 +2327,52 @@ function lti_get_configured_types($courseid, $sectionreturn = 0) {
     return $types;
 }
 
+/***
+ * Get LTI domain from URL
+ *
+ * @deprecated since Moodle 4.4
+ * @param $url
+ * @return mixed|void
+ */
 function lti_get_domain_from_url($url) {
-    $matches = array();
-
-    if (preg_match(LTI_URL_DOMAIN_REGEX, $url ?? '', $matches)) {
-        return $matches[1];
-    }
+    return \core_ltix\tool_helper::get_domain_from_url($url);
 }
 
+/**
+ * Get tool by url match
+ *
+ * @deprecated since Moodle 4.4
+ * @param $url
+ * @param $courseid
+ * @param $state
+ * @return mixed|null
+ */
 function lti_get_tool_by_url_match($url, $courseid = null, $state = LTI_TOOL_STATE_CONFIGURED) {
-    $possibletools = lti_get_tools_by_url($url, $state, $courseid);
-
-    return lti_get_best_tool_by_url($url, $possibletools, $courseid);
+    return \core_ltix\tool_helper::get_tool_by_url_match($url, $courseid, $state);
 }
 
+/**
+ * Get URL by thumbprint
+ *
+ * @deprecated since Moodle 4.4
+ * @param $url
+ * @return string
+ */
 function lti_get_url_thumbprint($url) {
-    // Parse URL requires a schema otherwise everything goes into 'path'.  Fixed 5.4.7 or later.
-    if (preg_match('/https?:\/\//', $url) !== 1) {
-        $url = 'http://'.$url;
-    }
-    $urlparts = parse_url(strtolower($url));
-    if (!isset($urlparts['path'])) {
-        $urlparts['path'] = '';
-    }
-
-    if (!isset($urlparts['query'])) {
-        $urlparts['query'] = '';
-    }
-
-    if (!isset($urlparts['host'])) {
-        $urlparts['host'] = '';
-    }
-
-    if (substr($urlparts['host'], 0, 4) === 'www.') {
-        $urlparts['host'] = substr($urlparts['host'], 4);
-    }
-
-    $urllower = $urlparts['host'] . '/' . $urlparts['path'];
-
-    if ($urlparts['query'] != '') {
-        $urllower .= '?' . $urlparts['query'];
-    }
-
-    return $urllower;
+    return \core_ltix\tool_helper::get_url_thumbprint($url);
 }
 
+/**
+ * Get best tool by URL
+ *
+ * @deprecated since Moodle 4.4
+ * @param $url
+ * @param $tools
+ * @param $courseid
+ * @return mixed|null
+ */
 function lti_get_best_tool_by_url($url, $tools, $courseid = null) {
-    if (count($tools) === 0) {
-        return null;
-    }
-
-    $urllower = lti_get_url_thumbprint($url);
-
-    foreach ($tools as $tool) {
-        $tool->_matchscore = 0;
-
-        $toolbaseurllower = lti_get_url_thumbprint($tool->baseurl);
-
-        if ($urllower === $toolbaseurllower) {
-            // 100 points for exact thumbprint match.
-            $tool->_matchscore += 100;
-        } else if (substr($urllower, 0, strlen($toolbaseurllower)) === $toolbaseurllower) {
-            // 50 points if tool thumbprint starts with the base URL thumbprint.
-            $tool->_matchscore += 50;
-        }
-
-        // Prefer course tools over site tools.
-        if (!empty($courseid)) {
-            // Minus 10 points for not matching the course id (global tools).
-            if ($tool->course != $courseid) {
-                $tool->_matchscore -= 10;
-            }
-        }
-    }
-
-    $bestmatch = array_reduce($tools, function($value, $tool) {
-        if ($tool->_matchscore > $value->_matchscore) {
-            return $tool;
-        } else {
-            return $value;
-        }
-
-    }, (object)array('_matchscore' => -1));
-
-    // None of the tools are suitable for this URL.
-    if ($bestmatch->_matchscore <= 0) {
-        return null;
-    }
-
-    return $bestmatch;
+    return \core_ltix\tool_helper::get_best_tool_by_url($url, $tools, $courseid);
 }
 
 function lti_get_shared_secrets_by_key($key) {
@@ -2518,28 +2416,22 @@ function lti_get_shared_secrets_by_key($key) {
 /**
  * Delete a Basic LTI configuration
  *
+ * @deprecated since Moodle 4.4
  * @param int $id   Configuration id
  */
 function lti_delete_type($id) {
-    global $DB;
-
-    // We should probably just copy the launch URL to the tool instances in this case... using a single query.
-    /*
-    $instances = $DB->get_records('lti', array('typeid' => $id));
-    foreach ($instances as $instance) {
-        $instance->typeid = 0;
-        $DB->update_record('lti', $instance);
-    }*/
-
-    $DB->delete_records('lti_types', array('id' => $id));
-    $DB->delete_records('lti_types_config', array('typeid' => $id));
-    $DB->delete_records('lti_types_categories', array('typeid' => $id));
+    \core_ltix\types_helper::delete_type($id);
 }
 
+/**
+ * Set type state
+ *
+ * @deprecated since Moodle 4.4
+ * @param $id
+ * @param $state
+ */
 function lti_set_state_for_type($id, $state) {
-    global $DB;
-
-    $DB->update_record('lti_types', (object)array('id' => $id, 'state' => $state));
+    \core_ltix\types_helper::set_state_for_type($id, $state);
 }
 
 /**
@@ -2737,206 +2629,50 @@ function lti_get_type_type_config($id) {
     return $type;
 }
 
+/**
+ * Prepare type config for save
+ *
+ * @deprecated since Moodle 4.4
+ * @param $type
+ * @param $config
+ */
 function lti_prepare_type_for_save($type, $config) {
-    if (isset($config->lti_toolurl)) {
-        $type->baseurl = $config->lti_toolurl;
-        if (isset($config->lti_tooldomain)) {
-            $type->tooldomain = $config->lti_tooldomain;
-        } else {
-            $type->tooldomain = lti_get_domain_from_url($config->lti_toolurl);
-        }
-    }
-    if (isset($config->lti_description)) {
-        $type->description = $config->lti_description;
-    }
-    if (isset($config->lti_typename)) {
-        $type->name = $config->lti_typename;
-    }
-    if (isset($config->lti_ltiversion)) {
-        $type->ltiversion = $config->lti_ltiversion;
-    }
-    if (isset($config->lti_clientid)) {
-        $type->clientid = $config->lti_clientid;
-    }
-    if ((!empty($type->ltiversion) && $type->ltiversion === LTI_VERSION_1P3) && empty($type->clientid)) {
-        $type->clientid = registration_helper::get()->new_clientid();
-    } else if (empty($type->clientid)) {
-        $type->clientid = null;
-    }
-    if (isset($config->lti_coursevisible)) {
-        $type->coursevisible = $config->lti_coursevisible;
-    }
-
-    if (isset($config->lti_icon)) {
-        $type->icon = $config->lti_icon;
-    }
-    if (isset($config->lti_secureicon)) {
-        $type->secureicon = $config->lti_secureicon;
-    }
-
-    $type->forcessl = !empty($config->lti_forcessl) ? $config->lti_forcessl : 0;
-    $config->lti_forcessl = $type->forcessl;
-    if (isset($config->lti_contentitem)) {
-        $type->contentitem = !empty($config->lti_contentitem) ? $config->lti_contentitem : 0;
-        $config->lti_contentitem = $type->contentitem;
-    }
-    if (isset($config->lti_toolurl_ContentItemSelectionRequest)) {
-        if (!empty($config->lti_toolurl_ContentItemSelectionRequest)) {
-            $type->toolurl_ContentItemSelectionRequest = $config->lti_toolurl_ContentItemSelectionRequest;
-        } else {
-            $type->toolurl_ContentItemSelectionRequest = '';
-        }
-        $config->lti_toolurl_ContentItemSelectionRequest = $type->toolurl_ContentItemSelectionRequest;
-    }
-
-    $type->timemodified = time();
-
-    unset ($config->lti_typename);
-    unset ($config->lti_toolurl);
-    unset ($config->lti_description);
-    unset ($config->lti_ltiversion);
-    unset ($config->lti_clientid);
-    unset ($config->lti_icon);
-    unset ($config->lti_secureicon);
+    \core_ltix\types_helper::prepare_type_for_save($type, $config);
 }
 
+/**
+ * Update type
+ *
+ * @deprecated since Moodle 4.4
+ * @param $type
+ * @param $config
+ */
 function lti_update_type($type, $config) {
-    global $DB, $CFG;
-
-    lti_prepare_type_for_save($type, $config);
-
-    if (lti_request_is_using_ssl() && !empty($type->secureicon)) {
-        $clearcache = !isset($config->oldicon) || ($config->oldicon !== $type->secureicon);
-    } else {
-        $clearcache = isset($type->icon) && (!isset($config->oldicon) || ($config->oldicon !== $type->icon));
-    }
-    unset($config->oldicon);
-
-    if ($DB->update_record('lti_types', $type)) {
-        foreach ($config as $key => $value) {
-            if (substr($key, 0, 4) == 'lti_' && !is_null($value)) {
-                $record = new \StdClass();
-                $record->typeid = $type->id;
-                $record->name = substr($key, 4);
-                $record->value = $value;
-                lti_update_config($record);
-            }
-            if (substr($key, 0, 11) == 'ltiservice_' && !is_null($value)) {
-                $record = new \StdClass();
-                $record->typeid = $type->id;
-                $record->name = $key;
-                $record->value = $value;
-                lti_update_config($record);
-            }
-        }
-        if (isset($type->toolproxyid) && $type->ltiversion === LTI_VERSION_1P3) {
-            // We need to remove the tool proxy for this tool to function under 1.3.
-            $toolproxyid = $type->toolproxyid;
-            $DB->delete_records('lti_tool_settings', array('toolproxyid' => $toolproxyid));
-            $DB->delete_records('lti_tool_proxies', array('id' => $toolproxyid));
-            $type->toolproxyid = null;
-            $DB->update_record('lti_types', $type);
-        }
-        $DB->delete_records('lti_types_categories', ['typeid' => $type->id]);
-        if (isset($config->lti_coursecategories) && !empty($config->lti_coursecategories)) {
-            lti_type_add_categories($type->id, $config->lti_coursecategories);
-        }
-        require_once($CFG->libdir.'/modinfolib.php');
-        if ($clearcache) {
-            $sql = "SELECT cm.id, cm.course
-                      FROM {course_modules} cm
-                      JOIN {modules} m ON cm.module = m.id
-                      JOIN {lti} l ON l.course = cm.course
-                     WHERE m.name = :name AND l.typeid = :typeid";
-
-            $rs = $DB->get_recordset_sql($sql, ['name' => 'lti', 'typeid' => $type->id]);
-
-            $courseids = [];
-            foreach ($rs as $record) {
-                $courseids[] = $record->course;
-                \course_modinfo::purge_course_module_cache($record->course, $record->id);
-            }
-            $rs->close();
-            $courseids = array_unique($courseids);
-            foreach ($courseids as $courseid) {
-                rebuild_course_cache($courseid, false, true);
-            }
-        }
-    }
+    \core_ltix\types_helper::update_type($type, $config);
 }
 
 /**
  * Add LTI Type course category.
  *
+ * @deprecated since Moodle 4.4
  * @param int $typeid
  * @param string $lticoursecategories Comma separated list of course categories.
  * @return void
  */
 function lti_type_add_categories(int $typeid, string $lticoursecategories = '') : void {
-    global $DB;
-    $coursecategories = explode(',', $lticoursecategories);
-    foreach ($coursecategories as $coursecategory) {
-        $DB->insert_record('lti_types_categories', ['typeid' => $typeid, 'categoryid' => $coursecategory]);
-    }
+    \core_ltix\types_helper::type_add_categories($typeid, $lticoursecategories);
 }
 
+/**
+ * Add LTI type
+ *
+ * @deprecated since Moodle 4.4
+ * @param $type
+ * @param $config
+ * @return bool|int
+ */
 function lti_add_type($type, $config) {
-    global $USER, $SITE, $DB;
-
-    lti_prepare_type_for_save($type, $config);
-
-    if (!isset($type->state)) {
-        $type->state = LTI_TOOL_STATE_PENDING;
-    }
-
-    if (!isset($type->ltiversion)) {
-        $type->ltiversion = LTI_VERSION_1;
-    }
-
-    if (!isset($type->timecreated)) {
-        $type->timecreated = time();
-    }
-
-    if (!isset($type->createdby)) {
-        $type->createdby = $USER->id;
-    }
-
-    if (!isset($type->course)) {
-        $type->course = $SITE->id;
-    }
-
-    // Create a salt value to be used for signing passed data to extension services
-    // The outcome service uses the service salt on the instance. This can be used
-    // for communication with services not related to a specific LTI instance.
-    $config->lti_servicesalt = uniqid('', true);
-
-    $id = $DB->insert_record('lti_types', $type);
-
-    if ($id) {
-        foreach ($config as $key => $value) {
-            if (!is_null($value)) {
-                if (substr($key, 0, 4) === 'lti_') {
-                    $fieldname = substr($key, 4);
-                } else if (substr($key, 0, 11) !== 'ltiservice_') {
-                    continue;
-                } else {
-                    $fieldname = $key;
-                }
-
-                $record = new \StdClass();
-                $record->typeid = $id;
-                $record->name = $fieldname;
-                $record->value = $value;
-
-                lti_add_config($record);
-            }
-        }
-        if (isset($config->lti_coursecategories) && !empty($config->lti_coursecategories)) {
-            lti_type_add_categories($id, $config->lti_coursecategories);
-        }
-    }
-
-    return $id;
+    return \core_ltix\types_helper::add_type($type, $config);
 }
 
 /**
@@ -3050,86 +2786,35 @@ function lti_get_tool_proxy_config($id) {
 /**
  * Update the database with a tool proxy instance
  *
+ * @deprecated since Moodle 4.4
  * @param object   $config    Tool proxy definition
  *
  * @return int  Record id number
  */
 function lti_add_tool_proxy($config) {
-    global $USER, $DB;
-
-    $toolproxy = new \stdClass();
-    if (isset($config->lti_registrationname)) {
-        $toolproxy->name = trim($config->lti_registrationname);
-    }
-    if (isset($config->lti_registrationurl)) {
-        $toolproxy->regurl = trim($config->lti_registrationurl);
-    }
-    if (isset($config->lti_capabilities)) {
-        $toolproxy->capabilityoffered = implode("\n", $config->lti_capabilities);
-    } else {
-        $toolproxy->capabilityoffered = implode("\n", array_keys(lti_get_capabilities()));
-    }
-    if (isset($config->lti_services)) {
-        $toolproxy->serviceoffered = implode("\n", $config->lti_services);
-    } else {
-        $func = function($s) {
-            return $s->get_id();
-        };
-        $servicenames = array_map($func, lti_get_services());
-        $toolproxy->serviceoffered = implode("\n", $servicenames);
-    }
-    if (isset($config->toolproxyid) && !empty($config->toolproxyid)) {
-        $toolproxy->id = $config->toolproxyid;
-        if (!isset($toolproxy->state) || ($toolproxy->state != LTI_TOOL_PROXY_STATE_ACCEPTED)) {
-            $toolproxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
-            $toolproxy->guid = random_string();
-            $toolproxy->secret = random_string();
-        }
-        $id = lti_update_tool_proxy($toolproxy);
-    } else {
-        $toolproxy->state = LTI_TOOL_PROXY_STATE_CONFIGURED;
-        $toolproxy->timemodified = time();
-        $toolproxy->timecreated = $toolproxy->timemodified;
-        if (!isset($toolproxy->createdby)) {
-            $toolproxy->createdby = $USER->id;
-        }
-        $toolproxy->guid = random_string();
-        $toolproxy->secret = random_string();
-        $id = $DB->insert_record('lti_tool_proxies', $toolproxy);
-    }
-
-    return $id;
+    return \core_ltix\tool_helper::add_tool_proxy($config);
 }
 
 /**
  * Updates a tool proxy in the database
  *
+ * @deprecated since Moodle 4.4
  * @param object  $toolproxy   Tool proxy
  *
  * @return int    Record id number
  */
 function lti_update_tool_proxy($toolproxy) {
-    global $DB;
-
-    $toolproxy->timemodified = time();
-    $id = $DB->update_record('lti_tool_proxies', $toolproxy);
-
-    return $id;
+    return \core_ltix\tool_helper::update_tool_proxy($toolproxy);
 }
 
 /**
  * Delete a Tool Proxy
  *
+ * @deprecated since Moodle 4.4
  * @param int $id   Tool Proxy id
  */
 function lti_delete_tool_proxy($id) {
-    global $DB;
-    $DB->delete_records('lti_tool_settings', array('toolproxyid' => $id));
-    $tools = $DB->get_records('lti_types', array('toolproxyid' => $id));
-    foreach ($tools as $tool) {
-        lti_delete_type($tool->id);
-    }
-    $DB->delete_records('lti_tool_proxies', array('id' => $id));
+    return \core_ltix\tool_helper::delete_tool_proxy($id);
 }
 
 /**
@@ -3202,35 +2887,25 @@ function lti_get_lti_types_and_proxies_count(bool $orphanedonly = false, int $to
 /**
  * Add a tool configuration in the database
  *
+ * @deprecated since Moodle 4.4
  * @param object $config   Tool configuration
  *
  * @return int Record id number
  */
 function lti_add_config($config) {
-    global $DB;
-
-    return $DB->insert_record('lti_types_config', $config);
+    return \core_ltix\types_helper::add_config($config);
 }
 
 /**
  * Updates a tool configuration in the database
  *
+ * @deprecated since Moodle 4.4
  * @param object  $config   Tool configuration
  *
  * @return mixed Record id number
  */
 function lti_update_config($config) {
-    global $DB;
-
-    $old = $DB->get_record('lti_types_config', array('typeid' => $config->typeid, 'name' => $config->name));
-
-    if ($old) {
-        $config->id = $old->id;
-        $return = $DB->update_record('lti_types_config', $config);
-    } else {
-        $return = $DB->insert_record('lti_types_config', $config);
-    }
-    return $return;
+    return \core_ltix\types_helper::update_config($config);
 }
 
 /**
@@ -3663,10 +3338,15 @@ function lti_build_login_request($courseid, $cmid, $instance, $config, $messaget
     return $params;
 }
 
+/**
+ * Get type record by id
+ *
+ * @deprecated since Moodle 4.4
+ * @param $typeid
+ * @return false|mixed|stdClass
+ */
 function lti_get_type($typeid) {
-    global $DB;
-
-    return $DB->get_record('lti_types', array('id' => $typeid));
+    return \core_ltix\types_helper::get_type($typeid);
 }
 
 function lti_get_launch_container($lti, $toolconfig) {
@@ -3698,9 +3378,12 @@ function lti_get_launch_container($lti, $toolconfig) {
     return $launchcontainer;
 }
 
+/**
+ * @deprecated since Moodle 4.4
+ * @return bool
+ */
 function lti_request_is_using_ssl() {
-    global $CFG;
-    return (stripos($CFG->wwwroot, 'https://') === 0);
+    return \core_ltix\types_helper::request_is_using_ssl();
 }
 
 function lti_ensure_url_is_https($url) {
@@ -3907,19 +3590,11 @@ function lti_get_capabilities() {
 /**
  * Initializes an array with the services supported by the LTI module
  *
+ * @deprecated since Moodle 4.4
  * @return array List of services
  */
 function lti_get_services() {
-
-    $services = array();
-    $definedservices = core_component::get_plugin_list('ltiservice');
-    foreach ($definedservices as $name => $location) {
-        $classname = "\\ltiservice_{$name}\\local\\service\\{$name}";
-        $services[] = new $classname();
-    }
-
-    return $services;
-
+    return \core_ltix\tool_helper::get_services();
 }
 
 /**
