@@ -22,18 +22,14 @@ require_once($CFG->dirroot . '/ltix/OAuth.php');
 require_once($CFG->dirroot . '/ltix/TrivialStore.php');
 
 use cache;
-use core_ltix\local\ltiopenid\jwks_helper;
+use core_ltix\ltiopenid\jwks_helper;
 use Exception;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use moodle\ltix as lti;
 use moodle_exception;
 use stdClass;
-use core_ltix\OAuthException;
-use core_ltix\OAuthserver;
-use core_ltix\OAuthRequest;
-use core_ltix\OAuthSignatureMethod_HMAC_SHA1;
-use core_ltix\TrivialOAuthDataStore;
 
 /**
  * Helper class specifically dealing with LTI OAuth.
@@ -62,9 +58,9 @@ class oauth_helper {
         $testtoken = '';
 
         // TODO: Switch to core oauthlib once implemented - MDL-30149.
-        $hmacmethod = new OAuthSignatureMethod_HMAC_SHA1();
-        $testconsumer = new OAuthConsumer($oauthconsumerkey, $oauthconsumersecret, null);
-        $accreq = OAuthRequest::from_consumer_and_token($testconsumer, $testtoken, $method, $endpoint, $parms);
+        $hmacmethod = new lti\OAuthSignatureMethod_HMAC_SHA1();
+        $testconsumer = new lti\OAuthConsumer($oauthconsumerkey, $oauthconsumersecret, null);
+        $accreq = lti\OAuthRequest::from_consumer_and_token($testconsumer, $testtoken, $method, $endpoint, $parms);
         $accreq->sign_request($hmacmethod, $testconsumer, $testtoken);
 
         $newparms = $accreq->get_parameters();
@@ -82,15 +78,15 @@ class oauth_helper {
      * @throws lti\OAuthException
      */
     public static function verify_oauth_signature($typeid, $consumerkey) {
-        $tool = helper::get_type($typeid);
+        $tool = types_helper::get_type($typeid);
         // Validate parameters.
         if (!$tool) {
             throw new moodle_exception('errortooltypenotfound', 'core_ltix');
         }
-        $typeconfig = helper::get_type_config($typeid);
+        $typeconfig = types_helper::get_type_config($typeid);
 
         if (isset($tool->toolproxyid)) {
-            $toolproxy = helper::get_tool_proxy($tool->toolproxyid);
+            $toolproxy = tool_helper::get_tool_proxy($tool->toolproxyid);
             $key = $toolproxy->guid;
             $secret = $toolproxy->secret;
         } else {
@@ -111,16 +107,16 @@ class oauth_helper {
             throw new moodle_exception('errorincorrectconsumerkey', 'core_ltix');
         }
 
-        $store = new TrivialOAuthDataStore();
+        $store = new lti\TrivialOAuthDataStore();
         $store->add_consumer($key, $secret);
-        $server = new OAuthServer($store);
-        $method = new OAuthSignatureMethod_HMAC_SHA1();
+        $server = new lti\OAuthServer($store);
+        $method = new lti\OAuthSignatureMethod_HMAC_SHA1();
         $server->add_signature_method($method);
-        $request = OAuthRequest::from_request();
+        $request = lti\OAuthRequest::from_request();
         try {
             $server->verify_request($request);
-        } catch (OAuthException $e) {
-            throw new OAuthException("OAuth signature failed: " . $e->getMessage());
+        } catch (lti\OAuthException $e) {
+            throw new lti\OAuthException("OAuth signature failed: " . $e->getMessage());
         }
 
         return $tool;
@@ -147,7 +143,7 @@ class oauth_helper {
      */
     public static function get_jwt_claim_mapping() {
         $mapping = [];
-        $services = \core_ltix\helper::get_services();
+        $services = \core_ltix\tool_helper::get_services();
         foreach ($services as $service) {
             $mapping = array_merge($mapping, $service->get_jwt_claim_mappings());
         }
@@ -626,7 +622,7 @@ class oauth_helper {
      * @throws ExpiredException             Provided JWT has since expired, as defined by the 'exp' claim
      */
     public static function verify_jwt_signature($typeid, $consumerkey, $jwtparam) {
-        $tool = helper::get_type($typeid);
+        $tool = types_helper::get_type($typeid);
 
         // Validate parameters.
         if (!$tool) {
@@ -636,7 +632,7 @@ class oauth_helper {
             throw new moodle_exception('JWT security not supported with LTI 2');
         }
 
-        $typeconfig = helper::get_type_config($typeid);
+        $typeconfig = types_helper::get_type_config($typeid);
 
         $key = $tool->clientid ?? '';
 
@@ -685,9 +681,9 @@ class oauth_helper {
             $ok = !is_null($claims) && !empty($claims['iss']);
         }
         if ($ok) {
-            self::verify_jwt_signature($typeid, $claims['iss'], $jwtparam);
+            lti_verify_jwt_signature($typeid, $claims['iss'], $jwtparam);
             $params['oauth_consumer_key'] = $claims['iss'];
-            foreach (self::get_jwt_claim_mapping() as $key => $mapping) {
+            foreach (lti_get_jwt_claim_mapping() as $key => $mapping) {
                 $claim = LTI_JWT_CLAIM_PREFIX;
                 if (!empty($mapping['suffix'])) {
                     $claim .= "-{$mapping['suffix']}";
@@ -744,136 +740,13 @@ class oauth_helper {
             }
         }
         if (isset($params['content_items'])) {
-            $params['content_items'] = helper::convert_content_items($params['content_items']);
+            $params['content_items'] = lti_convert_content_items($params['content_items']);
         }
-        $messagetypemapping = self::get_jwt_message_type_mapping();
+        $messagetypemapping = lti_get_jwt_message_type_mapping();
         if (isset($params['lti_message_type']) && array_key_exists($params['lti_message_type'], $messagetypemapping)) {
             $params['lti_message_type'] = $messagetypemapping[$params['lti_message_type']];
         }
         return $params;
     }
 
-    /**
-     * Verify key exists, creates them.
-     *
-     * @return \lang_string|string|void
-     */
-    public static function verify_private_key() {
-        $key = get_config('core_ltix', 'privatekey');
-
-        // If we already generated a valid key, no need to check.
-        if (empty($key)) {
-
-            // Create the private key.
-            $kid = bin2hex(openssl_random_pseudo_bytes(10));
-            set_config('kid', $kid, 'core_ltix');
-            $config = array(
-                "digest_alg" => "sha256",
-                "private_key_bits" => 2048,
-                "private_key_type" => OPENSSL_KEYTYPE_RSA,
-            );
-            $res = openssl_pkey_new($config);
-            openssl_pkey_export($res, $privatekey);
-
-            if (!empty($privatekey)) {
-                set_config('privatekey', $privatekey, 'core_ltix');
-            } else {
-                return get_string('opensslconfiginvalid', 'core_ltix');
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     *
-     * @param int $typeid LTI type ID.
-     * @param string[] $scopes  Array of scopes which give permission for the current request.
-     *
-     * @return string|int|boolean  The OAuth consumer key, the LTI type ID for the validated bearer token,
-                                 true for requests not requiring a scope, otherwise false.
-    */
-    public static function get_oauth_key_from_headers($typeid = null, $scopes = null) {
-        global $DB;
-
-        $now = time();
-
-        $requestheaders = OAuthUtil::get_headers();
-
-        if (isset($requestheaders['Authorization'])) {
-            if (substr($requestheaders['Authorization'], 0, 6) == "OAuth ") {
-                $headerparameters = OAuthUtil::split_header($requestheaders['Authorization']);
-
-                return format_string($headerparameters['oauth_consumer_key']);
-            } else if (empty($scopes)) {
-                return true;
-            } else if (substr($requestheaders['Authorization'], 0, 7) == 'Bearer ') {
-                $tokenvalue = trim(substr($requestheaders['Authorization'], 7));
-                $conditions = array('token' => $tokenvalue);
-                if (!empty($typeid)) {
-                    $conditions['typeid'] = intval($typeid);
-                }
-                $token = $DB->get_record('lti_access_tokens', $conditions);
-                if ($token) {
-                    // Log token access.
-                    $DB->set_field('lti_access_tokens', 'lastaccess', $now, array('id' => $token->id));
-                    $permittedscopes = json_decode($token->scope);
-                    if ((intval($token->validuntil) > $now) && !empty(array_intersect($scopes, $permittedscopes))) {
-                        return intval($token->typeid);
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public static function handle_oauth_body_post($oauthconsumerkey, $oauthconsumersecret, $body, $requestheaders = null) {
-
-        if ($requestheaders == null) {
-            $requestheaders = OAuthUtil::get_headers();
-        }
-
-        // Must reject application/x-www-form-urlencoded.
-        if (isset($requestheaders['Content-type'])) {
-            if ($requestheaders['Content-type'] == 'application/x-www-form-urlencoded' ) {
-                throw new OAuthException("OAuth request body signing must not use application/x-www-form-urlencoded");
-            }
-        }
-
-        if (isset($requestheaders['Authorization']) && (substr($requestheaders['Authorization'], 0, 6) == "OAuth ")) {
-            $headerparameters = OAuthUtil::split_header($requestheaders['Authorization']);
-            $oauthbodyhash = $headerparameters['oauth_body_hash'];
-        }
-
-        if ( ! isset($oauthbodyhash)  ) {
-            throw new OAuthException("OAuth request body signing requires oauth_body_hash body");
-        }
-
-        // Verify the message signature.
-        $store = new TrivialOAuthDataStore();
-        $store->add_consumer($oauthconsumerkey, $oauthconsumersecret);
-
-        $server = new OAuthServer($store);
-
-        $method = new OAuthSignatureMethod_HMAC_SHA1();
-        $server->add_signature_method($method);
-        $request = OAuthRequest::from_request();
-
-        try {
-            $server->verify_request($request);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            throw new OAuthException("OAuth signature failed: " . $message);
-        }
-
-        $postdata = $body;
-
-        $hash = base64_encode(sha1($postdata, true));
-
-        if ( $hash != $oauthbodyhash ) {
-            throw new OAuthException("OAuth oauth_body_hash mismatch");
-        }
-
-        return $postdata;
-    }
 }
