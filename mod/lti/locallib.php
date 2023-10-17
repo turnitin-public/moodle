@@ -1247,6 +1247,7 @@ function lti_build_content_item_selection_request($id, $course, moodle_url $retu
 /**
  * Verifies the OAuth signature of an incoming message.
  *
+ * @deprecated since Moodle 4.4
  * @param int $typeid The tool type ID.
  * @param string $consumerkey The consumer key.
  * @return stdClass Tool type
@@ -1254,48 +1255,7 @@ function lti_build_content_item_selection_request($id, $course, moodle_url $retu
  * @throws lti\OAuthException
  */
 function lti_verify_oauth_signature($typeid, $consumerkey) {
-    $tool = lti_get_type($typeid);
-    // Validate parameters.
-    if (!$tool) {
-        throw new moodle_exception('errortooltypenotfound', 'mod_lti');
-    }
-    $typeconfig = lti_get_type_config($typeid);
-
-    if (isset($tool->toolproxyid)) {
-        $toolproxy = lti_get_tool_proxy($tool->toolproxyid);
-        $key = $toolproxy->guid;
-        $secret = $toolproxy->secret;
-    } else {
-        $toolproxy = null;
-        if (!empty($typeconfig['resourcekey'])) {
-            $key = $typeconfig['resourcekey'];
-        } else {
-            $key = '';
-        }
-        if (!empty($typeconfig['password'])) {
-            $secret = $typeconfig['password'];
-        } else {
-            $secret = '';
-        }
-    }
-
-    if ($consumerkey !== $key) {
-        throw new moodle_exception('errorincorrectconsumerkey', 'mod_lti');
-    }
-
-    $store = new lti\TrivialOAuthDataStore();
-    $store->add_consumer($key, $secret);
-    $server = new lti\OAuthServer($store);
-    $method = new lti\OAuthSignatureMethod_HMAC_SHA1();
-    $server->add_signature_method($method);
-    $request = lti\OAuthRequest::from_request();
-    try {
-        $server->verify_request($request);
-    } catch (lti\OAuthException $e) {
-        throw new lti\OAuthException("OAuth signature failed: " . $e->getMessage());
-    }
-
-    return $tool;
+    return \core_ltix\oauth_helper::verify_oauth_signature($typeid, $consumerkey);
 }
 
 /**
@@ -2728,15 +2688,13 @@ function lti_get_tool_proxies_from_registration_url($regurl) {
 /**
  * Generates some of the tool proxy configuration based on the admin configuration details
  *
+ * @deprecated since Moodle 4.4
  * @param int $id
  *
  * @return mixed Tool Proxy details
  */
 function lti_get_tool_proxy($id) {
-    global $DB;
-
-    $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
-    return $toolproxy;
+    return \core_ltix\tool_helper::get_tool_proxy($id);
 }
 
 /**
@@ -2974,6 +2932,7 @@ function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $insta
 /**
  * Signs the petition to launch the external tool using OAuth
  *
+ * @deprecated since Moodle 4.4
  * @param array  $oldparms     Parameters to be passed for signing
  * @param string $endpoint     url of the external tool
  * @param string $method       Method for sending the parameters (e.g. POST)
@@ -2982,20 +2941,7 @@ function lti_set_tool_settings($settings, $toolproxyid, $courseid = null, $insta
  * @return array|null
  */
 function lti_sign_parameters($oldparms, $endpoint, $method, $oauthconsumerkey, $oauthconsumersecret) {
-
-    $parms = $oldparms;
-
-    $testtoken = '';
-
-    // TODO: Switch to core oauthlib once implemented - MDL-30149.
-    $hmacmethod = new lti\OAuthSignatureMethod_HMAC_SHA1();
-    $testconsumer = new lti\OAuthConsumer($oauthconsumerkey, $oauthconsumersecret, null);
-    $accreq = lti\OAuthRequest::from_consumer_and_token($testconsumer, $testtoken, $method, $endpoint, $parms);
-    $accreq->sign_request($hmacmethod, $testconsumer, $testtoken);
-
-    $newparms = $accreq->get_parameters();
-
-    return $newparms;
+    return \core_ltix\oauth_helper::sign_parameters($oldparms, $endpoint, $method, $oauthconsumerkey, $oauthconsumersecret);
 }
 
 /**

@@ -258,4 +258,18 @@ class tool_helper {
         $DB->delete_records('lti_tool_proxies', array('id' => $id));
     }
 
+    /**
+     * Generates some of the tool proxy configuration based on the admin configuration details
+     *
+     * @param int $id
+     *
+     * @return mixed Tool Proxy details
+     */
+    public static function get_tool_proxy($id) {
+        global $DB;
+
+        $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
+        return $toolproxy;
+    }
+
 }
