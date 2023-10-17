@@ -14,14 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
-* Strings for component 'ltix', language 'en'.
-*
-* @package    core_ltix
-* @author     Alex Morris <alex.morris@catalyst.net.nz>
-* @copyright  2023 Catalyst IT
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+namespace core_ltix\privacy;
 
-$string['ltix'] = 'LTIx';
-$string['privacy:metadata'] = 'The LTIx subsystem does not store any personal data.';
+use core_privacy\local\metadata\null_provider;
+
+/**
+ * Privacy Subsystem for core_ltix implementing null_provider.
+ *
+ * @package    core_ltix
+ * @author     Alex Morris <alex.morris@catalyst.net.nz>
+ * @copyright  2023 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}
