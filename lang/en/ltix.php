@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['ltix'] = 'LTIx';
+$string['privacy:metadata'] = 'The LTIx subsystem does not store any personal data.';
 $string['accepted'] = 'Accepted';
 $string['accept_grades_admin'] = 'Accept grades from the tool';
 $string['accept_grades_admin_help'] = 'Specify whether the tool provider can add, update, read, and delete grades associated with instances of this tool.
