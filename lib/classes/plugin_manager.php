@@ -1921,6 +1921,8 @@ class core_plugin_manager {
             'ltiservice' => array(
                 'gradebookservices', 'memberships', 'profile', 'toolproxy', 'toolsettings', 'basicoutcomes'
             ),
+            
+            "ltisource" => [],
 
             'mlbackend' => array(
                 'php', 'python'
@@ -2034,8 +2036,6 @@ class core_plugin_manager {
                 'graphs',
                 'objectives'
             ),
-
-            'source' => [],
             
             'tiny' => [
                 'accessibilitychecker',
