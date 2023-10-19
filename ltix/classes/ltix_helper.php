@@ -12,50 +12,7 @@ declare(strict_types = 1);
 namespace core_ltix;
 
 use context_course;
-defined('MOODLE_INTERNAL') || die();
-
-
-define('LTI_URL_DOMAIN_REGEX', '/(?:https?:\/\/)?(?:www\.)?([^\/]+)(?:\/|$)/i');
-
-define('LTI_LAUNCH_CONTAINER_DEFAULT', 1);
-define('LTI_LAUNCH_CONTAINER_EMBED', 2);
-define('LTI_LAUNCH_CONTAINER_EMBED_NO_BLOCKS', 3);
-define('LTI_LAUNCH_CONTAINER_WINDOW', 4);
-define('LTI_LAUNCH_CONTAINER_REPLACE_MOODLE_WINDOW', 5);
-
-define('LTI_TOOL_STATE_ANY', 0);
-define('LTI_TOOL_STATE_CONFIGURED', 1);
-define('LTI_TOOL_STATE_PENDING', 2);
-define('LTI_TOOL_STATE_REJECTED', 3);
-define('LTI_TOOL_PROXY_TAB', 4);
-
-define('LTI_TOOL_PROXY_STATE_CONFIGURED', 1);
-define('LTI_TOOL_PROXY_STATE_PENDING', 2);
-define('LTI_TOOL_PROXY_STATE_ACCEPTED', 3);
-define('LTI_TOOL_PROXY_STATE_REJECTED', 4);
-
-define('LTI_SETTING_NEVER', 0);
-define('LTI_SETTING_ALWAYS', 1);
-define('LTI_SETTING_DELEGATE', 2);
-
-define('LTI_COURSEVISIBLE_NO', 0);
-define('LTI_COURSEVISIBLE_PRECONFIGURED', 1);
-define('LTI_COURSEVISIBLE_ACTIVITYCHOOSER', 2);
-
-define('LTI_VERSION_1', 'LTI-1p0');
-define('LTI_VERSION_2', 'LTI-2p0');
-define('LTI_VERSION_1P3', '1.3.0');
-define('LTI_RSA_KEY', 'RSA_KEY');
-define('LTI_JWK_KEYSET', 'JWK_KEYSET');
-
-define('LTI_DEFAULT_ORGID_SITEID', 'SITEID');
-define('LTI_DEFAULT_ORGID_SITEHOST', 'SITEHOST');
-
-define('LTI_ACCESS_TOKEN_LIFE', 3600);
-
-// Standard prefix for JWT claims.
-define('LTI_JWT_CLAIM_PREFIX', 'https://purl.imsglobal.org/spec/lti');
-
+require_once($CFG->dirroot . '/ltix/ltixconstants.php');
 
 class ltix_helper
 {
@@ -70,7 +27,7 @@ class ltix_helper
         $admintypes = self::lti_get_lti_types_by_course($COURSE->id);
 
         $types = array();
-        if (has_capability('moodle/ltix:addmanualinstance', context_course::instance($COURSE->id))) {
+        if (has_capability('moodle/ltix:addpreconfiguredinstance', context_course::instance($COURSE->id))) {
             $types[0] = (object)array('name' => get_string('automatic', 'ltix'), 'course' => 0, 'toolproxyid' => null);
         }
 
@@ -98,11 +55,8 @@ class ltix_helper
 
         list($coursevisiblesql, $coursevisparams) = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
         $courseconds = [];
-        if (has_capability('moodle/ltix:addmanualinstance', context_course::instance($courseid))) {
-            $courseconds[] = "course = :courseid";
-        }
         if (has_capability('moodle/ltix:addpreconfiguredinstance', context_course::instance($courseid))) {
-            $courseconds[] = "course = :siteid";
+            $courseconds[] = "course = :courseid";
         }
         if (!$courseconds) {
             return [];
