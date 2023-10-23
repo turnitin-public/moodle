@@ -49,28 +49,42 @@ class ltix_helper
     public static function lti_get_lti_types_by_course($courseid, $coursevisible = null) {
         global $DB, $SITE;
 
-        if ($coursevisible === null) {
+        if (empty($coursevisible)) {
             $coursevisible = [LTI_COURSEVISIBLE_PRECONFIGURED, LTI_COURSEVISIBLE_ACTIVITYCHOOSER];
         }
+        [$coursevisiblesql, $coursevisparams] = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
+        [$coursevisiblesql1, $coursevisparams1] = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
+        [$coursevisibleoverriddensql, $coursevisoverriddenparams] = $DB->get_in_or_equal(
+            $coursevisible,
+            SQL_PARAMS_NAMED,
+            'coursevisibleoverridden');
 
-        list($coursevisiblesql, $coursevisparams) = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
-        $courseconds = [];
-        if (has_capability('moodle/ltix:addpreconfiguredinstance', context_course::instance($courseid))) {
-            $courseconds[] = "course = :courseid";
-        }
-        if (!$courseconds) {
-            return [];
-        }
-        $coursecond = implode(" OR ", $courseconds);
+        $coursecond = implode(" OR ", ["t.course = :courseid", "t.course = :siteid"]);
+        $coursecategory = $DB->get_field('course', 'category', ['id' => $courseid]);
         $query = "SELECT *
-                FROM {lti_types}
-               WHERE coursevisible $coursevisiblesql
-                 AND ($coursecond)
-                 AND state = :active
-            ORDER BY name ASC";
+                    FROM (SELECT t.*, c.coursevisible as coursevisibleoverridden
+                            FROM {lti_types} t
+                       LEFT JOIN {lti_types_categories} tc ON t.id = tc.typeid
+                       LEFT JOIN {lti_coursevisible} c ON c.typeid = t.id AND c.courseid = $courseid
+                           WHERE (t.coursevisible $coursevisiblesql
+                                 OR (c.coursevisible $coursevisiblesql1 AND t.coursevisible NOT IN (:lticoursevisibleno)))
+                             AND ($coursecond)
+                             AND t.state = :active
+                             AND (tc.id IS NULL OR tc.categoryid = :categoryid)) tt
+                   WHERE tt.coursevisibleoverridden IS NULL
+                      OR tt.coursevisibleoverridden $coursevisibleoverriddensql";
 
-        return $DB->get_records_sql($query,
-            array('siteid' => $SITE->id, 'courseid' => $courseid, 'active' => LTI_TOOL_STATE_CONFIGURED) + $coursevisparams);
+        return $DB->get_records_sql(
+            $query,
+            [
+                'siteid' => $SITE->id,
+                'courseid' => $courseid,
+                'active' => LTI_TOOL_STATE_CONFIGURED,
+                'categoryid' => $coursecategory,
+                'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
+                'lticoursevisibleno' => LTI_COURSEVISIBLE_NO,
+            ] + $coursevisparams + $coursevisparams1 + $coursevisoverriddenparams
+        );
     }
 
     /**
