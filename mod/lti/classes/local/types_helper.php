@@ -17,6 +17,7 @@
 namespace mod_lti\local;
 
 use core\context\course;
+use core_ltix\ltix_helper;
 
 /**
  * Helper class specifically dealing with LTI types (preconfigured tools).
@@ -45,42 +46,7 @@ class types_helper {
             return [];
         }
 
-        if (empty($coursevisible)) {
-            $coursevisible = [LTI_COURSEVISIBLE_PRECONFIGURED, LTI_COURSEVISIBLE_ACTIVITYCHOOSER];
-        }
-        [$coursevisiblesql, $coursevisparams] = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
-        [$coursevisiblesql1, $coursevisparams1] = $DB->get_in_or_equal($coursevisible, SQL_PARAMS_NAMED, 'coursevisible');
-        [$coursevisibleoverriddensql, $coursevisoverriddenparams] = $DB->get_in_or_equal(
-            $coursevisible,
-            SQL_PARAMS_NAMED,
-            'coursevisibleoverridden');
-
-        $coursecond = implode(" OR ", ["t.course = :courseid", "t.course = :siteid"]);
-        $coursecategory = $DB->get_field('course', 'category', ['id' => $courseid]);
-        $query = "SELECT *
-                    FROM (SELECT t.*, c.coursevisible as coursevisibleoverridden
-                            FROM {lti_types} t
-                       LEFT JOIN {lti_types_categories} tc ON t.id = tc.typeid
-                       LEFT JOIN {lti_coursevisible} c ON c.typeid = t.id AND c.courseid = $courseid
-                           WHERE (t.coursevisible $coursevisiblesql
-                                 OR (c.coursevisible $coursevisiblesql1 AND t.coursevisible NOT IN (:lticoursevisibleno)))
-                             AND ($coursecond)
-                             AND t.state = :active
-                             AND (tc.id IS NULL OR tc.categoryid = :categoryid)) tt
-                   WHERE tt.coursevisibleoverridden IS NULL
-                      OR tt.coursevisibleoverridden $coursevisibleoverriddensql";
-
-        return $DB->get_records_sql(
-            $query,
-            [
-                'siteid' => $SITE->id,
-                'courseid' => $courseid,
-                'active' => LTI_TOOL_STATE_CONFIGURED,
-                'categoryid' => $coursecategory,
-                'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
-                'lticoursevisibleno' => LTI_COURSEVISIBLE_NO,
-            ] + $coursevisparams + $coursevisparams1 + $coursevisoverriddenparams
-        );
+        return ltix_helper::lti_get_lti_types_by_course($courseid, $coursevisible);
     }
 
     /**
