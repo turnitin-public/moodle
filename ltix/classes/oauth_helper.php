@@ -75,7 +75,7 @@ class oauth_helper {
      * @param string $consumerkey The consumer key.
      * @return stdClass Tool type
      * @throws moodle_exception
-     * @throws lti\OAuthException
+     * @throws OAuthException
      */
     public static function verify_oauth_signature($typeid, $consumerkey) {
         $tool = helper::get_type($typeid);
