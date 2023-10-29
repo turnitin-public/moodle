@@ -16,6 +16,8 @@
 
 namespace core_ltix\task;
 
+use core_ltix\task\clean_access_tokens;
+
 /**
  * Tests cleaning up the access tokens task.
  *
