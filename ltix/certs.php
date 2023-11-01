@@ -17,17 +17,11 @@
 /**
  * This file returns an array of available public keys
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2019 Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_lti\local\ltiopenid\jwks_helper;
+use core_ltix\endpoints_helper;
+//implementation moved to ltix/classes/endpoints_helper.php
 
-define('NO_DEBUG_DISPLAY', true);
-define('NO_MOODLE_COOKIES', true);
-
-require_once(__DIR__ . '/../../config.php');
-
-@header('Content-Type: application/json; charset=utf-8');
-
-echo json_encode(jwks_helper::get_jwks(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+endpoints_helper::get_certs_endpoint();
