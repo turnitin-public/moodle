@@ -25,6 +25,7 @@
 namespace ltixservice_basicoutcomes\local\service;
 
 defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . "/../../../../../../config.php");
 
 /**
  * A service implementing Basic Outcomes.

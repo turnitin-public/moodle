@@ -35,22 +35,22 @@ $PAGE->set_url($pageurl);
 
 admin_externalpage_setup('ltitoolproxies');
 
-$PAGE->set_title(get_string('toolregistration', 'core_ltix'));
+$PAGE->set_title(get_string('toolregistration', 'ltix'));
 
 $configuredtoolproxieshtml = '';
 $pendingtoolproxieshtml = '';
 $acceptedtoolproxieshtml = '';
 $rejectedtoolproxieshtml = '';
 
-$configured = get_string('configured', 'core_ltix');
-$pending = get_string('pending', 'core_ltix');
-$accepted = get_string('accepted', 'core_ltix');
-$rejected = get_string('rejected', 'core_ltix');
+$configured = get_string('configured', 'ltix');
+$pending = get_string('pending', 'ltix');
+$accepted = get_string('accepted', 'ltix');
+$rejected = get_string('rejected', 'ltix');
 
-$name = get_string('name', 'core_ltix');
-$url = get_string('registrationurl', 'core_ltix');
-$action = get_string('action', 'core_ltix');
-$createdon = get_string('createdon', 'core_ltix');
+$name = get_string('name', 'ltix');
+$url = get_string('registrationurl', 'ltix');
+$action = get_string('action', 'ltix');
+$createdon = get_string('createdon', 'ltix');
 
 $toolproxies = $DB->get_records('lti_tool_proxies');
 
@@ -85,8 +85,8 @@ switch ($tab) {
         $configuredselected = 'class="selected"';
         break;
 }
-$registertype = get_string('registertype', 'core_ltix');
-$config = get_string('manage_tools', 'core_ltix');
+$registertype = get_string('registertype', 'ltix');
+$config = get_string('manage_tools', 'ltix');
 
 $registertypeurl = "{$CFG->wwwroot}/ltix/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
 
@@ -181,9 +181,9 @@ $template = <<< EOD
 EOD;
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('manage_tool_proxies', 'core_ltix'), 2);
-echo $OUTPUT->heading(new lang_string('toolproxy', 'core_ltix') .
-        $OUTPUT->help_icon('toolproxy', 'core_ltix'), 3);
+echo $OUTPUT->heading(get_string('manage_tool_proxies', 'ltix'), 2);
+echo $OUTPUT->heading(new lang_string('toolproxy', 'ltix') .
+        $OUTPUT->help_icon('toolproxy', 'ltix'), 3);
 
 echo $OUTPUT->box_start('generalbox');
 

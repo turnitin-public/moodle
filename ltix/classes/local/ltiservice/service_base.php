@@ -26,7 +26,15 @@
 
 namespace core_ltix\local\ltiservice;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once(__DIR__ . '/../../../../config.php');
+
+// TODO: Switch to core oauthlib once implemented - MDL-30149.
+use moodle\ltix as lti;
 use stdClass;
+
 
 /**
  * The core_ltix\local\ltiservice\service_base class.
@@ -361,7 +369,7 @@ abstract class service_base {
      */
     public static function get_service_path() {
 
-        $url = new \moodle_url('/mod/lti/services.php');
+        $url = new \moodle_url('/ltix/services.php');
 
         return $url->out(false);
 

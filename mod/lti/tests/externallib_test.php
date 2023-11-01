@@ -18,7 +18,6 @@ namespace mod_lti;
 
 use core_external\external_api;
 use mod_lti_external;
-use mod_lti_testcase;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,7 +25,6 @@ global $CFG;
 
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/tests/mod_lti_testcase.php');
 
 /**
  * External tool module external functions tests
@@ -37,7 +35,7 @@ require_once($CFG->dirroot . '/mod/lti/tests/mod_lti_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-class externallib_test extends mod_lti_testcase {
+class externallib_test extends \externallib_advanced_testcase {
 
     /**
      * Set up for every test
@@ -83,42 +81,6 @@ class externallib_test extends mod_lti_testcase {
             'studentrole' => $studentrole,
             'teacherrole' => $teacherrole
         ];
-    }
-
-    /**
-     * Test get_tool_proxies.
-     */
-    public function test_mod_lti_get_tool_proxies() {
-        // Create two tool proxies. One to associate with tool, and one to leave orphaned.
-        $this->setAdminUser();
-        $proxy = $this->generate_tool_proxy("1");
-        $orphanedproxy = $this->generate_tool_proxy("2");
-        $this->generate_tool_type("1", $proxy->id); // Associate proxy 1 with tool type.
-
-        // Fetch all proxies.
-        $proxies = mod_lti_external::get_tool_proxies(false);
-        $proxies = external_api::clean_returnvalue(mod_lti_external::get_tool_proxies_returns(), $proxies);
-
-        $this->assertCount(2, $proxies);
-        $this->assertEqualsCanonicalizing([(array) $proxy, (array) $orphanedproxy], $proxies);
-    }
-
-    /**
-     * Test get_tool_proxies with orphaned proxies only.
-     */
-    public function test_mod_lti_get_orphaned_tool_proxies() {
-        // Create two tool proxies. One to associate with tool, and one to leave orphaned.
-        $this->setAdminUser();
-        $proxy = $this->generate_tool_proxy("1");
-        $orphanedproxy = $this->generate_tool_proxy("2");
-        $this->generate_tool_type("1", $proxy->id); // Associate proxy 1 with tool type.
-
-        // Fetch all proxies.
-        $proxies = mod_lti_external::get_tool_proxies(true);
-        $proxies = external_api::clean_returnvalue(mod_lti_external::get_tool_proxies_returns(), $proxies);
-
-        $this->assertCount(1, $proxies);
-        $this->assertEqualsCanonicalizing([(array) $orphanedproxy], $proxies);
     }
 
     /**
@@ -416,7 +378,8 @@ class externallib_test extends mod_lti_testcase {
         $this->setAdminUser();
         $proxy = mod_lti_external::create_tool_proxy('Test proxy', $this->getExternalTestFileUrl('/test.html'), array(), array());
         $proxy = (object) external_api::clean_returnvalue(mod_lti_external::create_tool_proxy_returns(), $proxy);
-        $this->assertNotEmpty(\core_ltix\helper::get_tool_proxy($proxy->id));
+        $this->assertNotEmpty(lti_get_tool_proxy($proxy->id));
+        $this->assertDebuggingCalled();
 
         $proxy = mod_lti_external::delete_tool_proxy($proxy->id);
         $proxy = (object) external_api::clean_returnvalue(mod_lti_external::delete_tool_proxy_returns(), $proxy);
@@ -424,7 +387,8 @@ class externallib_test extends mod_lti_testcase {
         $this->assertEquals('Test proxy', $proxy->name);
         $this->assertEquals($this->getExternalTestFileUrl('/test.html'), $proxy->regurl);
         $this->assertEquals(LTI_TOOL_PROXY_STATE_PENDING, $proxy->state);
-        $this->assertEmpty(\core_ltix\helper::get_tool_proxy($proxy->id));
+        $this->assertEmpty(lti_get_tool_proxy($proxy->id));
+        $this->assertDebuggingCalled();
     }
 
     /**

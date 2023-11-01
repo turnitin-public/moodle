@@ -47,21 +47,37 @@ class core_ltix_register_types_form extends moodleform {
 
         $mform    =& $this->_form;
 
+<<<<<<<< HEAD:ltix/classes/form/register_form.php
         $mform->addElement('header', 'setup', get_string('registration_options', 'core_ltix'));
+========
+        $mform->addElement('header', 'setup', get_string('registration_options', 'ltix'));
+>>>>>>>> bd7240cf59e (MDL-79116 ltix: endpoints migration):ltix/register_form.php
 
         // Tool Provider name.
 
         $strrequired = get_string('required');
+<<<<<<<< HEAD:ltix/classes/form/register_form.php
         $mform->addElement('text', 'lti_registrationname', get_string('registrationname', 'core_ltix'));
         $mform->setType('lti_registrationname', PARAM_TEXT);
         $mform->addHelpButton('lti_registrationname', 'registrationname', 'core_ltix');
+========
+        $mform->addElement('text', 'lti_registrationname', get_string('registrationname', 'ltix'));
+        $mform->setType('lti_registrationname', PARAM_TEXT);
+        $mform->addHelpButton('lti_registrationname', 'registrationname', 'ltix'); //need to change reference to ltix
+>>>>>>>> bd7240cf59e (MDL-79116 ltix: endpoints migration):ltix/register_form.php
         $mform->addRule('lti_registrationname', $strrequired, 'required', null, 'client');
 
         // Registration URL.
 
+<<<<<<<< HEAD:ltix/classes/form/register_form.php
         $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'core_ltix'), array('size' => '64'));
         $mform->setType('lti_registrationurl', PARAM_URL);
         $mform->addHelpButton('lti_registrationurl', 'registrationurl', 'core_ltix');
+========
+        $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'ltix'), array('size' => '64'));
+        $mform->setType('lti_registrationurl', PARAM_URL);
+        $mform->addHelpButton('lti_registrationurl', 'registrationurl', 'ltix'); //need to change reference to ltix
+>>>>>>>> bd7240cf59e (MDL-79116 ltix: endpoints migration):ltix/register_form.php
         $mform->addRule('lti_registrationurl', $strrequired, 'required', null, 'client');
 
         // LTI Capabilities.
@@ -69,10 +85,17 @@ class core_ltix_register_types_form extends moodleform {
         $options = array_keys(\core_ltix\helper::get_capabilities());
         natcasesort($options);
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
+<<<<<<<< HEAD:ltix/classes/form/register_form.php
         $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'core_ltix'),
             array_combine($options, $options), $attributes);
         $mform->setType('lti_capabilities', PARAM_TEXT);
         $mform->addHelpButton('lti_capabilities', 'capabilities', 'core_ltix');
+========
+        $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'ltix'),
+            array_combine($options, $options), $attributes);
+        $mform->setType('lti_capabilities', PARAM_TEXT);
+        $mform->addHelpButton('lti_capabilities', 'capabilities', 'ltix');
+>>>>>>>> bd7240cf59e (MDL-79116 ltix: endpoints migration):ltix/register_form.php
         $mform->addRule('lti_capabilities', $strrequired, 'required', null, 'client');
 
         // LTI Services.
@@ -83,9 +106,15 @@ class core_ltix_register_types_form extends moodleform {
             $options[$service->get_id()] = $service->get_name();
         }
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
+<<<<<<<< HEAD:ltix/classes/form/register_form.php
         $mform->addElement('select', 'lti_services', get_string('services', 'core_ltix'), $options, $attributes);
         $mform->setType('lti_services', PARAM_TEXT);
         $mform->addHelpButton('lti_services', 'services', 'core_ltix');
+========
+        $mform->addElement('select', 'lti_services', get_string('services', 'ltix'), $options, $attributes);
+        $mform->setType('lti_services', PARAM_TEXT);
+        $mform->addHelpButton('lti_services', 'services', 'ltix');
+>>>>>>>> bd7240cf59e (MDL-79116 ltix: endpoints migration):ltix/register_form.php
         $mform->addRule('lti_services', $strrequired, 'required', null, 'client');
 
         $mform->addElement('hidden', 'toolproxyid');

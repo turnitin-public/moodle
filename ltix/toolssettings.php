@@ -28,6 +28,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->dirroot.'/ltix/edit_form.php'); //need to move to ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', '', PARAM_ALPHANUMEXT);
@@ -89,7 +90,7 @@ if (\core_ltix\helper::request_is_using_ssl() && !empty($type->lti_secureicon)) 
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new \core_ltix\form\edit_types($pageurl, (object)array('isadmin' => true, 'istool' => true));
+$form = new core_ltix_edit_types_form($pageurl, (object)array('isadmin' => true, 'istool' => true));
 
 if ($data = $form->get_data()) {
     $type = new stdClass();
@@ -105,11 +106,11 @@ if ($data = $form->get_data()) {
     redirect($redirect);
 }
 
-$PAGE->set_title(get_string('toolsetup', 'core_ltix'));
-$PAGE->navbar->add(get_string('lti_administration', 'core_ltix'), $CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=modsettinglti');
+$PAGE->set_title(get_string('toolsetup', 'ltix'));
+$PAGE->navbar->add(get_string('lti_administration', 'ltix'), $CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=modsettinglti');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('toolsetup', 'core_ltix'));
+echo $OUTPUT->heading(get_string('toolsetup', 'ltix'));
 echo $OUTPUT->box_start('generalbox');
 
 if ($action == 'update') {

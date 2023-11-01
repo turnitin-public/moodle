@@ -18,9 +18,11 @@ namespace core_ltix;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/ltix/constants.php');
 
 use core_ltix\local\ltiopenid\registration_helper;
+use core_ltix\local\ltiopenid\jwks_helper;
 use core_ltix\local\ltiservice\service_helper;
 use core_component;
 use core_text;
@@ -34,6 +36,10 @@ use moodle_exception;
 use coding_exception;
 use moodle_url;
 use stdClass;
+use Firebase\JWT\JWT;
+use core_ltix\service_exception_handler;
+use moodle\ltix as lti;
+use ltiservice_basicoutcomes\local\service\basicoutcomes;
 
 /**
  * Helper class specifically dealing with LTI tools.
@@ -2244,10 +2250,10 @@ class helper {
             $services = self::get_services();
             foreach ($services as $service) {
                 $serviceparameters = $service->get_launch_parameters('basic-lti-launch-request',
-                        $course->id, $USER->id , $typeid, $instance->id);
+                    $course->id, $USER->id , $typeid, $instance->id);
                 foreach ($serviceparameters as $paramkey => $paramvalue) {
                     $requestparams['custom_' . $paramkey] = self::parse_custom_parameter($toolproxy, $tool,
-                    $requestparams, $paramvalue, $islti2);
+                        $requestparams, $paramvalue, $islti2);
                 }
             }
         }
@@ -2290,7 +2296,7 @@ class helper {
 
         return array($endpoint, $parms);
     }
- 
+
     /**
      * Launch an external tool activity.
      *
@@ -2827,12 +2833,12 @@ class helper {
     public static function get_tool_table($tools, $id) {
         global $OUTPUT;
         $html = '';
-    
+
         $typename = get_string('typename', 'lti');
         $baseurl = get_string('baseurl', 'lti');
         $action = get_string('action', 'lti');
         $createdon = get_string('createdon', 'lti');
-    
+
         if (!empty($tools)) {
             $html .= "
             <div id=\"{$id}_tools_container\" style=\"margin-top:.5em;margin-bottom:.5em\">
@@ -2846,13 +2852,13 @@ class helper {
                         </tr>
                     </thead>
             ";
-    
+
             foreach ($tools as $type) {
                 $date = userdate($type->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
                 $accept = get_string('accept', 'lti');
                 $update = get_string('update', 'lti');
                 $delete = get_string('delete', 'lti');
-    
+
                 if (empty($type->toolproxyid)) {
                     $baseurl = new \moodle_url('/mod/lti/typessettings.php', array(
                             'action' => 'accept',
@@ -2870,28 +2876,28 @@ class helper {
                         ));
                     $ref = $type->tpname;
                 }
-    
+
                 $accepthtml = $OUTPUT->action_icon($baseurl,
                         new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                         array('title' => $accept, 'class' => 'editing_accept'));
-    
+
                 $deleteaction = 'delete';
-    
+
                 if ($type->state == LTI_TOOL_STATE_CONFIGURED) {
                     $accepthtml = '';
                 }
-    
+
                 if ($type->state != LTI_TOOL_STATE_REJECTED) {
                     $deleteaction = 'reject';
                     $delete = get_string('reject', 'lti');
                 }
-    
+
                 $updateurl = clone($baseurl);
                 $updateurl->param('action', 'update');
                 $updatehtml = $OUTPUT->action_icon($updateurl,
                         new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                         array('title' => $update, 'class' => 'editing_update'));
-    
+
                 if (($type->state != LTI_TOOL_STATE_REJECTED) || empty($type->toolproxyid)) {
                     $deleteurl = clone($baseurl);
                     $deleteurl->param('action', $deleteaction);
@@ -2922,10 +2928,10 @@ class helper {
         } else {
             $html .= get_string('no_' . $id, 'lti');
         }
-    
+
         return $html;
     }
-    
+
     /**
      * This function builds the tab for a category of tool proxies
      *
@@ -2936,13 +2942,13 @@ class helper {
      */
     public static function get_tool_proxy_table($toolproxies, $id) {
         global $OUTPUT;
-    
+
         if (!empty($toolproxies)) {
             $typename = get_string('typename', 'lti');
             $url = get_string('registrationurl', 'lti');
             $action = get_string('action', 'lti');
             $createdon = get_string('createdon', 'lti');
-    
+
             $html = <<< EOD
             <div id="{$id}_tool_proxies_container" style="margin-top: 0.5em; margin-bottom: 0.5em">
                 <table id="{$id}_tool_proxies">
@@ -2960,40 +2966,40 @@ class helper {
                 $accept = get_string('register', 'lti');
                 $update = get_string('update', 'lti');
                 $delete = get_string('delete', 'lti');
-    
+
                 $baseurl = new \moodle_url('/mod/lti/registersettings.php', array(
                         'action' => 'accept',
                         'id' => $toolproxy->id,
                         'sesskey' => sesskey(),
                         'tab' => $id
                     ));
-    
+
                 $registerurl = new \moodle_url('/mod/lti/register.php', array(
-                        'id' => $toolproxy->id,
-                        'sesskey' => sesskey(),
-                        'tab' => 'tool_proxy'
-                    ));
-    
+                    'id' => $toolproxy->id,
+                    'sesskey' => sesskey(),
+                    'tab' => 'tool_proxy'
+                ));
+
                 $accepthtml = $OUTPUT->action_icon($registerurl,
                         new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                         array('title' => $accept, 'class' => 'editing_accept'));
-    
+
                 $deleteaction = 'delete';
-    
+
                 if ($toolproxy->state != LTI_TOOL_PROXY_STATE_CONFIGURED) {
                     $accepthtml = '';
                 }
-    
+
                 if (($toolproxy->state == LTI_TOOL_PROXY_STATE_CONFIGURED) || ($toolproxy->state == LTI_TOOL_PROXY_STATE_PENDING)) {
                     $delete = get_string('cancel', 'lti');
                 }
-    
+
                 $updateurl = clone($baseurl);
                 $updateurl->param('action', 'update');
                 $updatehtml = $OUTPUT->action_icon($updateurl,
                         new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                         array('title' => $update, 'class' => 'editing_update'));
-    
+
                 $deleteurl = clone($baseurl);
                 $deleteurl->param('action', $deleteaction);
                 $deletehtml = $OUTPUT->action_icon($deleteurl,
@@ -3020,7 +3026,7 @@ class helper {
         } else {
             $html = get_string('no_' . $id, 'lti');
         }
-    
+
         return $html;
     }
 
@@ -3073,7 +3079,7 @@ class helper {
 
     public static function get_shared_secrets_by_key($key) {
         global $DB;
-    
+
         // Look up the shared secret for the specified key in both the types_config table (for configured tools)
         // And in the lti resource table for ad-hoc tools.
         $lti13 = LTI_VERSION_1P3;
@@ -3096,14 +3102,14 @@ class helper {
                   SELECT password AS value
                    FROM {lti}
                   WHERE resourcekey = :key3";
-    
+
         $sharedsecrets = $DB->get_records_sql($query, array('configured1' => LTI_TOOL_STATE_CONFIGURED, 'ltiversion' => $lti13,
             'configured2' => LTI_TOOL_STATE_CONFIGURED, 'key1' => $key, 'key2' => $key, 'key3' => $key));
-    
+
         $values = array_map(function($item) {
             return $item->value;
         }, $sharedsecrets);
-    
+
         // There should really only be one shared secret per key. But, we can't prevent
         // more than one getting entered. For instance, if the same key is used for two tool providers.
         return $values;
@@ -3326,7 +3332,7 @@ class helper {
         if (empty($lti->launchcontainer)) {
             $lti->launchcontainer = LTI_LAUNCH_CONTAINER_DEFAULT;
         }
-    
+
         if ($lti->launchcontainer == LTI_LAUNCH_CONTAINER_DEFAULT) {
             if (isset($toolconfig['launchcontainer'])) {
                 $launchcontainer = $toolconfig['launchcontainer'];
@@ -3334,20 +3340,20 @@ class helper {
         } else {
             $launchcontainer = $lti->launchcontainer;
         }
-    
+
         if (empty($launchcontainer) || $launchcontainer == LTI_LAUNCH_CONTAINER_DEFAULT) {
             $launchcontainer = LTI_LAUNCH_CONTAINER_EMBED_NO_BLOCKS;
         }
-    
+
         $devicetype = core_useragent::get_device_type();
-    
+
         // Scrolling within the object element doesn't work on iOS or Android
         // Opening the popup window also had some issues in testing
         // For mobile devices, always take up the entire screen to ensure the best experience.
         if ($devicetype === core_useragent::DEVICETYPE_MOBILE || $devicetype === core_useragent::DEVICETYPE_TABLET ) {
             $launchcontainer = LTI_LAUNCH_CONTAINER_REPLACE_MOODLE_WINDOW;
         }
-    
+
         return $launchcontainer;
     }
 
@@ -3403,7 +3409,7 @@ class helper {
         if ($tempdir = make_temp_directory('mod_lti', false)) {
             if ($tempfile = tempnam($tempdir, 'mod_lti_request'.date('YmdHis'))) {
                 $content  = "Request Headers:\n";
-                foreach (moodle\ltix\OAuthUtil::get_headers() as $header => $value) {
+                foreach (\core_ltix\OAuthUtil::get_headers() as $header => $value) {
                     $content .= "$header: $value\n";
                 }
                 $content .= "Request Body:\n";
@@ -3607,6 +3613,29 @@ class helper {
     }
 
     /**
+     * Returns the icon for the given tool type
+     *
+     * @param stdClass $type The tool type
+     *
+     * @return string The url to the tool type's corresponding icon
+     */
+    public static function get_tool_type_icon_url(stdClass $type) {
+        global $OUTPUT;
+
+        $iconurl = $type->secureicon;
+
+        if (empty($iconurl)) {
+            $iconurl = $type->icon;
+        }
+
+        if (empty($iconurl)) {
+            $iconurl = $OUTPUT->image_url('i/lti', 'core')->out();
+        }
+
+        return $iconurl;
+    }
+
+    /**
      * Returns the course url for the given tool type
      *
      * @param stdClass $type The tool type
@@ -3632,7 +3661,7 @@ class helper {
         $courseurl = self::get_tool_type_course_url($type);
 
         $urls = array(
-            'icon' => get_tool_type_icon_url($type),
+            'icon' => self::get_tool_type_icon_url($type),
             'edit' => self::get_tool_type_edit_url($type),
         );
 
@@ -3661,7 +3690,7 @@ class helper {
         global $OUTPUT;
 
         $urls = array(
-            'icon' => $OUTPUT->image_url('monologo', 'lti')->out(),
+            'icon' => $OUTPUT->image_url('i/lti', 'core')->out(),
             'edit' => self::get_tool_proxy_edit_url($proxy),
         );
 
@@ -3797,4 +3826,523 @@ class helper {
 
         return $DB->get_records('lti_types', array('toolproxyid' => $toolproxyid), 'state DESC, timemodified DESC');
     }
+
+    /**
+     * Replaces the mod/lti/auth.php file.
+     *
+     */
+    public static function get_auth_endpoint() {
+        global $_POST, $_SERVER;
+
+        if (!isloggedin() && empty($_POST['repost'])) {
+            header_remove("Set-Cookie");
+            $PAGE->set_pagelayout('popup');
+            $PAGE->set_context(context_system::instance());
+            $output = $PAGE->get_renderer('mod_lti');
+            $page = new \core_ltix\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
+            echo $output->header();
+            echo $output->render($page);
+            echo $output->footer();
+            return;
+        }
+
+        $scope = optional_param('scope', '', PARAM_TEXT);
+        $responsetype = optional_param('response_type', '', PARAM_TEXT);
+        $clientid = optional_param('client_id', '', PARAM_TEXT);
+        $redirecturi = optional_param('redirect_uri', '', PARAM_URL);
+        $loginhint = optional_param('login_hint', '', PARAM_TEXT);
+        $ltimessagehintenc = optional_param('lti_message_hint', '', PARAM_TEXT);
+        $state = optional_param('state', '', PARAM_TEXT);
+        $responsemode = optional_param('response_mode', '', PARAM_TEXT);
+        $nonce = optional_param('nonce', '', PARAM_TEXT);
+        $prompt = optional_param('prompt', '', PARAM_TEXT);
+
+        $ok = !empty($scope) && !empty($responsetype) && !empty($clientid) &&
+            !empty($redirecturi) && !empty($loginhint) &&
+            !empty($nonce);
+
+        if (!$ok) {
+            $error = 'invalid_request';
+        }
+        $ltimessagehint = json_decode($ltimessagehintenc);
+        $ok = $ok && isset($ltimessagehint->launchid);
+        if (!$ok) {
+            $error = 'invalid_request';
+            $desc = 'No launch id in LTI hint';
+        }
+        if ($ok && ($scope !== 'openid')) {
+            $ok = false;
+            $error = 'invalid_scope';
+        }
+        if ($ok && ($responsetype !== 'id_token')) {
+            $ok = false;
+            $error = 'unsupported_response_type';
+        }
+        if ($ok) {
+            $launchid = $ltimessagehint->launchid;
+            list($courseid, $typeid, $id, $messagetype, $foruserid, $titleb64, $textb64) = explode(',', $SESSION->$launchid, 7);
+            unset($SESSION->$launchid);
+            $config = self::get_type_type_config($typeid);
+            $ok = ($clientid === $config->lti_clientid);
+            if (!$ok) {
+                $error = 'unauthorized_client';
+            }
+        }
+        if ($ok && ($loginhint !== $USER->id)) {
+            $ok = false;
+            $error = 'access_denied';
+        }
+
+        // If we're unable to load up config; we cannot trust the redirect uri for POSTing to.
+        if (empty($config)) {
+            throw new moodle_exception('invalidrequest', 'error');
+        } else {
+            $uris = array_map("trim", explode("\n", $config->lti_redirectionuris));
+            if (!in_array($redirecturi, $uris)) {
+                throw new moodle_exception('invalidrequest', 'error');
+            }
+        }
+        if ($ok) {
+            if (isset($responsemode)) {
+                $ok = ($responsemode === 'form_post');
+                if (!$ok) {
+                    $error = 'invalid_request';
+                    $desc = 'Invalid response_mode';
+                }
+            } else {
+                $ok = false;
+                $error = 'invalid_request';
+                $desc = 'Missing response_mode';
+            }
+        }
+        if ($ok && !empty($prompt) && ($prompt !== 'none')) {
+            $ok = false;
+            $error = 'invalid_request';
+            $desc = 'Invalid prompt';
+        }
+
+        if ($ok) {
+            $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+            if ($id) {
+                $cm = get_coursemodule_from_id('lti', $id, 0, false, MUST_EXIST);
+                $context = context_module::instance($cm->id);
+                require_login($course, true, $cm);
+                require_capability('mod/lti:view', $context);
+                $lti = $DB->get_record('lti', array('id' => $cm->instance), '*', MUST_EXIST);
+                $lti->cmid = $cm->id;
+                list($endpoint, $params) = self::get_launch_data($lti, $nonce, $messagetype, $foruserid);
+            } else {
+                require_login($course);
+                $context = context_course::instance($courseid);
+                require_capability('moodle/course:manageactivities', $context);
+                require_capability('mod/lti:addcoursetool', $context);
+                // Set the return URL. We send the launch container along to help us avoid frames-within-frames when the user returns.
+                $returnurlparams = [
+                    'course' => $courseid,
+                    'id' => $typeid,
+                    'sesskey' => sesskey()
+                ];
+                $returnurl = new \moodle_url('/ltix/contentitem_return.php', $returnurlparams);
+                // Prepare the request.
+                $title = base64_decode($titleb64);
+                $text = base64_decode($textb64);
+                $request = lti_build_content_item_selection_request($typeid, $course, $returnurl, $title, $text,
+                    [], [], false, true, false, false, false, $nonce);
+                $endpoint = $request->url;
+                $params = $request->params;
+            }
+        } else {
+            $params['error'] = $error;
+            if (!empty($desc)) {
+                $params['error_description'] = $desc;
+            }
+        }
+        if (isset($state)) {
+            $params['state'] = $state;
+        }
+        unset($SESSION->lti_message_hint);
+        $r = '<form action="' . $redirecturi . "\" name=\"ltiAuthForm\" id=\"ltiAuthForm\" " .
+            "method=\"post\" enctype=\"application/x-www-form-urlencoded\">\n";
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $key = htmlspecialchars($key, ENT_COMPAT);
+                $value = htmlspecialchars($value, ENT_COMPAT);
+                $r .= "  <input type=\"hidden\" name=\"{$key}\" value=\"{$value}\"/>\n";
+            }
+        }
+        $r .= "</form>\n";
+        $r .= "<script type=\"text/javascript\">\n" .
+            "//<![CDATA[\n" .
+            "document.ltiAuthForm.submit();\n" .
+            "//]]>\n" .
+            "</script>\n";
+        echo $r;
+    }
+
+    /**
+     * Replaces the mod/lti/certs.php file.
+     *
+     */
+    public static function get_certs_endpoint() {
+
+        @header('Content-Type: application/json; charset=utf-8');
+
+        echo json_encode(jwks_helper::get_jwks(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Replaces the mod/lti/token.php file.
+     *
+     */
+    public static function get_token_endpoint() {
+
+        require_once(__DIR__ . '/../../config.php');
+
+        $response = new \core_ltix\local\ltiservice\response();
+
+        $contenttype = isset($_SERVER['CONTENT_TYPE']) ? explode(';', $_SERVER['CONTENT_TYPE'], 2)[0] : '';
+
+        $ok = ($_SERVER['REQUEST_METHOD'] === 'POST') && ($contenttype === 'application/x-www-form-urlencoded');
+        $error = 'invalid_request';
+
+        $clientassertion = optional_param('client_assertion', '', PARAM_TEXT);
+        $clientassertiontype = optional_param('client_assertion_type', '', PARAM_TEXT);
+        $granttype = optional_param('grant_type', '', PARAM_TEXT);
+        $scope = optional_param('scope', '', PARAM_TEXT);
+
+        if ($ok) {
+            $ok = !empty($clientassertion) && !empty($clientassertiontype) &&
+                !empty($granttype) && !empty($scope);
+        }
+
+        if ($ok) {
+            $ok = ($clientassertiontype === 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') &&
+                ($granttype === 'client_credentials');
+            $error = 'unsupported_grant_type';
+        }
+
+        if ($ok) {
+            $parts = explode('.', $clientassertion);
+            $ok = (count($parts) === 3);
+            if ($ok) {
+                $payload = JWT::urlsafeB64Decode($parts[1]);
+                $claims = json_decode($payload, true);
+                $ok = !is_null($claims) && !empty($claims['sub']);
+            }
+            $error = 'invalid_request';
+        }
+
+        if ($ok) {
+            $tool = $DB->get_record('lti_types', array('clientid' => $claims['sub']));
+            if ($tool) {
+                try {
+                    lti_verify_jwt_signature($tool->id, $claims['sub'], $clientassertion);
+                    $ok = true;
+                } catch (Exception $e) {
+                    $error = $e->getMessage();
+                    $ok = false;
+                }
+            } else {
+                $error = 'invalid_client';
+                $ok = false;
+            }
+        }
+
+        if ($ok) {
+            $scopes = array();
+            $requestedscopes = explode(' ', $scope);
+            $typeconfig = self::get_type_config($tool->id);
+            $permittedscopes = self::get_permitted_service_scopes($tool, $typeconfig);
+            $scopes = array_intersect($requestedscopes, $permittedscopes);
+            $ok = !empty($scopes);
+            $error = 'invalid_scope';
+        }
+
+        if ($ok) {
+            $token = lti_new_access_token($tool->id, $scopes);
+            $expiry = LTI_ACCESS_TOKEN_LIFE;
+            $permittedscopes = implode(' ', $scopes);
+            $body = <<< EOD
+            {
+              "access_token" : "{$token->token}",
+              "token_type" : "Bearer",
+              "expires_in" : {$expiry},
+              "scope" : "{$permittedscopes}"
+            }
+            EOD;
+        } else {
+            $response->set_code(400);
+            $body = <<< EOD
+            {
+              "error" : "{$error}"
+            }
+            EOD;
+        }
+
+        $response->set_body($body);
+
+        $response->send();
+    }
+
+    /**
+     * wraps mod/lti/service.php and ltix/service.php into a function
+     */
+    public static function get_service_endpoint()
+    {
+        define('NO_DEBUG_DISPLAY', true);
+        define('NO_MOODLE_COOKIES', true);
+        global $DB, $PAGE;
+
+        $rawbody = file_get_contents("php://input");
+
+        $logrequests  = self::should_log_request($rawbody);
+        $errorhandler = new service_exception_handler($logrequests);
+
+        // Register our own error handler so we can always send valid XML response.
+        set_exception_handler(array($errorhandler, 'handle'));
+
+        if ($logrequests) {
+            self::log_request($rawbody);
+        }
+
+        $ok = true;
+        $type = null;
+        $toolproxy = false;
+
+        $consumerkey = lti\get_oauth_key_from_headers(null, array(basicoutcomes::SCOPE_BASIC_OUTCOMES));
+        if ($consumerkey === false) {
+            throw new Exception('Missing or invalid consumer key or access token.');
+        } else if (is_string($consumerkey)) {
+            $toolproxy = self::get_tool_proxy_from_guid($consumerkey);
+            if ($toolproxy !== false) {
+                $secrets = array($toolproxy->secret);
+            } else if (!empty($tool)) {
+                $secrets = array($typeconfig['password']);
+            } else {
+                $secrets = self::get_shared_secrets_by_key($consumerkey);
+            }
+            $sharedsecret = service_helper::verify_message($consumerkey, self::get_shared_secrets_by_key($consumerkey), $rawbody);
+            if ($sharedsecret === false) {
+                throw new Exception('Message signature not valid');
+            }
+        }
+
+        // TODO MDL-46023 Replace this code with a call to the new library.
+        $xml = simplexml_load_string($rawbody);
+        if (!$xml) {
+            throw new Exception('Invalid XML content');
+        }
+
+        $body = $xml->imsx_POXBody;
+        foreach ($body->children() as $child) {
+            $messagetype = $child->getName();
+        }
+
+        // We know more about the message, update error handler to send better errors.
+        $errorhandler->set_message_id(parse_message_id($xml));
+        $errorhandler->set_message_type($messagetype);
+
+        switch ($messagetype) {
+            case 'replaceResultRequest':
+                $parsed = parse_grade_replace_message($xml);
+
+                $ltiinstance = $DB->get_record('lti', array('id' => $parsed->instanceid));
+
+                if (!accepts_grades($ltiinstance)) {
+                    throw new Exception('Tool does not accept grades');
+                }
+
+                verify_sourcedid($ltiinstance, $parsed);
+                set_session_user($parsed->userid);
+
+                $gradestatus = update_grade($ltiinstance, $parsed->userid, $parsed->launchid, $parsed->gradeval);
+
+                if (!$gradestatus) {
+                    throw new Exception('Grade replace response');
+                }
+
+                $responsexml = get_response_xml(
+                    'success',
+                    'Grade replace response',
+                    $parsed->messageid,
+                    'replaceResultResponse'
+                );
+
+                echo $responsexml->asXML();
+
+                break;
+
+            case 'readResultRequest':
+                $parsed = parse_grade_read_message($xml);
+
+                $ltiinstance = $DB->get_record('lti', array('id' => $parsed->instanceid));
+
+                if (!accepts_grades($ltiinstance)) {
+                    throw new Exception('Tool does not accept grades');
+                }
+
+                // Getting the grade requires the context is set.
+                $context = context_course::instance($ltiinstance->course);
+                $PAGE->set_context($context);
+
+                verify_sourcedid($ltiinstance, $parsed);
+
+                $grade = read_grade($ltiinstance, $parsed->userid);
+
+                $responsexml = get_response_xml(
+                    'success',  // Empty grade is also 'success'.
+                    'Result read',
+                    $parsed->messageid,
+                    'readResultResponse'
+                );
+
+                $node = $responsexml->imsx_POXBody->readResultResponse;
+                $node = $node->addChild('result')->addChild('resultScore');
+                $node->addChild('language', 'en');
+                $node->addChild('textString', isset($grade) ? $grade : '');
+
+                echo $responsexml->asXML();
+
+                break;
+
+            case 'deleteResultRequest':
+                $parsed = parse_grade_delete_message($xml);
+
+                $ltiinstance = $DB->get_record('lti', array('id' => $parsed->instanceid));
+
+                if (!accepts_grades($ltiinstance)) {
+                    throw new Exception('Tool does not accept grades');
+                }
+
+                verify_sourcedid($ltiinstance, $parsed);
+                set_session_user($parsed->userid);
+
+                $gradestatus = delete_grade($ltiinstance, $parsed->userid);
+
+                if (!$gradestatus) {
+                    throw new Exception('Grade delete request');
+                }
+
+                $responsexml = get_response_xml(
+                    'success',
+                    'Grade delete request',
+                    $parsed->messageid,
+                    'deleteResultResponse'
+                );
+
+                echo $responsexml->asXML();
+
+                break;
+
+            default:
+                // Fire an event if we get a web service request which we don't support directly.
+                // This will allow others to extend the LTI services, which I expect to be a common
+                // use case, at least until the spec matures.
+                $data = new stdClass();
+                $data->body = $rawbody;
+                $data->xml = $xml;
+                $data->messageid = parse_message_id($xml);
+                $data->messagetype = $messagetype;
+                $data->consumerkey = $consumerkey;
+                $data->sharedsecret = $sharedsecret;
+                $eventdata = array();
+                $eventdata['other'] = array();
+                $eventdata['other']['messageid'] = $data->messageid;
+                $eventdata['other']['messagetype'] = $messagetype;
+                $eventdata['other']['consumerkey'] = $consumerkey;
+
+                // Before firing the event, allow subplugins a chance to handle.
+                if (extend_lti_services($data)) {
+                    break;
+                }
+
+                // If an event handler handles the web service, it should set this global to true
+                // So this code knows whether to send an "operation not supported" or not.
+                global $ltiwebservicehandled;
+                $ltiwebservicehandled = false;
+
+                try {
+                    $event = \core_ltix\event\unknown_service_api_called::create($eventdata);
+                    $event->set_message_data($data);
+                    $event->trigger();
+                } catch (Exception $e) {
+                    $ltiwebservicehandled = false;
+                }
+
+                if (!$ltiwebservicehandled) {
+                    $responsexml = get_response_xml(
+                        'unsupported',
+                        'unsupported',
+                        parse_message_id($xml),
+                        $messagetype
+                    );
+
+                    echo $responsexml->asXML();
+                }
+
+                break;
+        }
+
+    }
+
+    /**
+     * wraps mod/lti/services.php and ltix/services.php into a function
+     */
+    public static function get_services_endpoint()
+    {
+        define('NO_DEBUG_DISPLAY', true);
+        define('NO_MOODLE_COOKIES', true);
+        $response = new \core_ltix\local\ltiservice\response();
+
+        $isget = $response->get_request_method() === local\ltiservice\resource_base::HTTP_GET;
+        $isdelete = $response->get_request_method() === local\ltiservice\resource_base::HTTP_DELETE;
+
+        if ($isget) {
+            $response->set_accept(isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '');
+        } else {
+            $response->set_content_type(isset($_SERVER['CONTENT_TYPE']) ? explode(';', $_SERVER['CONTENT_TYPE'], 2)[0] : '');
+        }
+
+        $ok = false;
+        $path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+
+        $accept = $response->get_accept();
+        $contenttype = $response->get_content_type();
+
+        $services = self::get_services();
+        foreach ($services as $service) {
+            $resources = $service->get_resources();
+            foreach ($resources as $resource) {
+                if (($isget && !empty($accept) && (strpos($accept, '*/*') === false) &&
+                        !in_array($accept, $resource->get_formats())) ||
+                    ((!$isget && !$isdelete) && !in_array($contenttype, $resource->get_formats()))) {
+                    continue;
+                }
+                $template = $resource->get_template();
+                $template = preg_replace('/{config_type}/', '(toolproxy|tool)', $template);
+                $template = preg_replace('/\{[a-zA-Z_]+\}/', '[^/]+', $template);
+                $template = preg_replace('/\(([0-9a-zA-Z_\-,\/]+)\)/', '(\\1|)', $template);
+                $template = str_replace('/', '\/', $template);
+                if (preg_match("/^{$template}$/", $path) === 1) {
+                    $ok = true;
+                    break 2;
+                }
+            }
+        }
+        if (!$ok) {
+            $response->set_code(400);
+            $response->set_reason("No handler found for {$path} {$accept} {$contenttype}");
+        } else {
+            $body = file_get_contents('php://input');
+            $response->set_request_data($body);
+            if (in_array($response->get_request_method(), $resource->get_methods())) {
+                $resource->execute($response);
+            } else {
+                $response->set_code(405);
+            }
+        }
+        $response->send();
+
+    }
+
 }

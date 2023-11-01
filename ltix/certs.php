@@ -21,8 +21,8 @@
  * @copyright  2019 Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 use core_ltix\helper;
 require_once(__DIR__ . '/../config.php');
+//implementation moved to ltix/classes/helper.php
 
 helper::get_certs_endpoint();
