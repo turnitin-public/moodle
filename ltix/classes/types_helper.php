@@ -183,6 +183,31 @@ class types_helper {
         return $typeconfig;
     }
 
+    /**
+     * Initializes an array with the scopes for services supported by the LTI module
+     * and authorized for this particular tool instance.
+     *
+     * @param object $type  LTI tool type
+     * @param array  $typeconfig  LTI tool type configuration
+     *
+     * @return array List of scopes
+     */
+    function get_permitted_service_scopes($type, $typeconfig) {
+
+        $services = \core_ltix\tool_helper::get_services();
+        $scopes = array();
+        foreach ($services as $service) {
+            $service->set_type($type);
+            $service->set_typeconfig($typeconfig);
+            $servicescopes = $service->get_permitted_scopes();
+            if (!empty($servicescopes)) {
+                $scopes = array_merge($scopes, $servicescopes);
+            }
+        }
+
+        return $scopes;
+    }
+
     public static function get_type($typeid) {
         global $DB;
 

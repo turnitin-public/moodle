@@ -17,6 +17,7 @@
 namespace core_ltix;
 
 use core_ltix\ltiopenid\jwks_helper;
+use core_ltix\types_helper;
 use Firebase\JWT\JWT;
 
 /**
@@ -33,7 +34,6 @@ class endpoints_helper {
      */
     public static function get_auth_endpoint() {
         require_once(__DIR__ . '/../../config.php');
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
         global $_POST, $_SERVER;
 
         if (!isloggedin() && empty($_POST['repost'])) {
@@ -41,7 +41,7 @@ class endpoints_helper {
             $PAGE->set_pagelayout('popup');
             $PAGE->set_context(context_system::instance());
             $output = $PAGE->get_renderer('mod_lti');
-            $page = new \mod_lti\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
+            $page = new \core_ltix\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
             echo $output->header();
             echo $output->render($page);
             echo $output->footer();
@@ -144,7 +144,7 @@ class endpoints_helper {
                     'id' => $typeid,
                     'sesskey' => sesskey()
                 ];
-                $returnurl = new \moodle_url('/mod/lti/contentitem_return.php', $returnurlparams);
+                $returnurl = new \moodle_url('/ltix/contentitem_return.php', $returnurlparams);
                 // Prepare the request.
                 $title = base64_decode($titleb64);
                 $text = base64_decode($textb64);
@@ -205,9 +205,8 @@ class endpoints_helper {
         define('NO_DEBUG_DISPLAY', true);
         define('NO_MOODLE_COOKIES', true);
         require_once(__DIR__ . '/../../config.php');
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
-        $response = new \mod_lti\local\ltiservice\response();
+        $response = new \mod_lti\local\ltiservice\response(); //This will be moved when the ltiservice is moved to core.
 
         $contenttype = isset($_SERVER['CONTENT_TYPE']) ? explode(';', $_SERVER['CONTENT_TYPE'], 2)[0] : '';
 
@@ -260,8 +259,8 @@ class endpoints_helper {
         if ($ok) {
             $scopes = array();
             $requestedscopes = explode(' ', $scope);
-            $typeconfig = lti_get_type_config($tool->id);
-            $permittedscopes = lti_get_permitted_service_scopes($tool, $typeconfig);
+            $typeconfig = types_helper::get_type_config($tool->id);
+            $permittedscopes = types_helper::get_permitted_service_scopes($tool, $typeconfig);
             $scopes = array_intersect($requestedscopes, $permittedscopes);
             $ok = !empty($scopes);
             $error = 'invalid_scope';
