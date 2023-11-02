@@ -23,6 +23,7 @@
  */
 
 use core_ltix\endpoints_helper;
+require_once(__DIR__ . '/../config.php');
 //implementation moved to ltix/classes/endpoints_helper.php
 
 endpoints_helper::get_token_endpoint();
