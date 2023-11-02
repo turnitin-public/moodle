@@ -67,3 +67,6 @@ define('LTI_JWT_CLAIM_PREFIX', 'https://purl.imsglobal.org/spec/lti');
 define('LTI_ITEM_TYPE', 'mod');
 define('LTI_ITEM_MODULE', 'lti');
 define('LTI_SOURCE', 'mod/lti');
+//Used by endpoints_helper
+define('NO_DEBUG_DISPLAY', true);
+define('NO_MOODLE_COOKIES', true);

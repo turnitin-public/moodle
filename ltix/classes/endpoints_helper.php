@@ -20,6 +20,9 @@ use core_ltix\ltiopenid\jwks_helper;
 use core_ltix\types_helper;
 use Firebase\JWT\JWT;
 
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/../constants.php');
+
 /**
  * Helper class specifically dealing with LTI tools.
  *
@@ -33,7 +36,6 @@ class endpoints_helper {
      *
      */
     public static function get_auth_endpoint() {
-        require_once(__DIR__ . '/../../config.php');
         global $_POST, $_SERVER;
 
         if (!isloggedin() && empty($_POST['repost'])) {
@@ -186,10 +188,6 @@ class endpoints_helper {
      *
      */
     public static function get_certs_endpoint() {
-
-        define('NO_DEBUG_DISPLAY', true);
-        define('NO_MOODLE_COOKIES', true);
-        require_once(__DIR__ . '/../../config.php');
 
         @header('Content-Type: application/json; charset=utf-8');
 
