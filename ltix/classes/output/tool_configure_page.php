@@ -21,11 +21,10 @@
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_lti\output;
+namespace core_ltix\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
 use moodle_url;
 use renderable;
@@ -50,14 +49,14 @@ class tool_configure_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
 
-        $keyhelp = new help_icon('resourcekey', 'mod_lti');
-        $secrethelp = new help_icon('password', 'mod_lti');
+        $keyhelp = new help_icon('resourcekey', 'mod_lti'); //This will be changed to core_ltix when the renderer is moved
+        $secrethelp = new help_icon('password', 'mod_lti'); //This will be changed to core_ltix when the renderer is moved
 
-        $url = new moodle_url('/mod/lti/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
+        $url = new moodle_url('/mod/lti/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));//This will be changed to ltix/typessettings.php when typesettings is moved.
         $data->configuremanualurl = $url->out();
         $url = new moodle_url('/admin/settings.php?section=modsettinglti');
         $data->managetoolsurl = $url->out();
-        $url = new moodle_url('/mod/lti/toolproxies.php');
+        $url = new moodle_url('/mod/lti/toolproxies.php');//This will be changed to ltix/typessettings.php when toolproxies is moved.
         $data->managetoolproxiesurl = $url->out();
         $data->keyhelp = $keyhelp->export_for_template($output);
         $data->secrethelp = $secrethelp->export_for_template($output);
