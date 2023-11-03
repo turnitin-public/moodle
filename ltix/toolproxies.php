@@ -17,7 +17,7 @@
 /**
  * This file contains all necessary code to launch a Tool Proxy registration
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,47 +25,46 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 // No guest autologin.
 require_login(0, false);
 
-$pageurl = new moodle_url('/mod/lti/toolproxies.php');
+$pageurl = new moodle_url('/ltix/toolproxies.php');
 $PAGE->set_url($pageurl);
 
 admin_externalpage_setup('ltitoolproxies');
 
-$PAGE->set_title(get_string('toolregistration', 'lti'));
+$PAGE->set_title(get_string('toolregistration', 'ltix'));
 
 $configuredtoolproxieshtml = '';
 $pendingtoolproxieshtml = '';
 $acceptedtoolproxieshtml = '';
 $rejectedtoolproxieshtml = '';
 
-$configured = get_string('configured', 'lti');
-$pending = get_string('pending', 'lti');
-$accepted = get_string('accepted', 'lti');
-$rejected = get_string('rejected', 'lti');
+$configured = get_string('configured', 'ltix');
+$pending = get_string('pending', 'ltix');
+$accepted = get_string('accepted', 'ltix');
+$rejected = get_string('rejected', 'ltix');
 
-$name = get_string('name', 'lti');
-$url = get_string('registrationurl', 'lti');
-$action = get_string('action', 'lti');
-$createdon = get_string('createdon', 'lti');
+$name = get_string('name', 'ltix');
+$url = get_string('registrationurl', 'ltix');
+$action = get_string('action', 'ltix');
+$createdon = get_string('createdon', 'ltix');
 
 $toolproxies = $DB->get_records('lti_tool_proxies');
 
 $configuredtoolproxies = \core_ltix\tool_helper::filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_CONFIGURED);
-$configuredtoolproxieshtml = lti_get_tool_proxy_table($configuredtoolproxies, 'tp_configured');
+$configuredtoolproxieshtml = \core_ltix\types_helper::get_tool_proxy_table($configuredtoolproxies, 'tp_configured');
 
 $pendingtoolproxies = \core_ltix\tool_helper::filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_PENDING);
-$pendingtoolproxieshtml = lti_get_tool_proxy_table($pendingtoolproxies, 'tp_pending');
+$pendingtoolproxieshtml = \core_ltix\types_helper::get_tool_proxy_table($pendingtoolproxies, 'tp_pending');
 
 $acceptedtoolproxies = \core_ltix\tool_helper::filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_ACCEPTED);
-$acceptedtoolproxieshtml = lti_get_tool_proxy_table($acceptedtoolproxies, 'tp_accepted');
+$acceptedtoolproxieshtml = \core_ltix\types_helper::get_tool_proxy_table($acceptedtoolproxies, 'tp_accepted');
 
 $rejectedtoolproxies = \core_ltix\tool_helper::filter_tool_proxy_types($toolproxies, LTI_TOOL_PROXY_STATE_REJECTED);
-$rejectedtoolproxieshtml = lti_get_tool_proxy_table($rejectedtoolproxies, 'tp_rejected');
+$rejectedtoolproxieshtml = \core_ltix\types_helper::get_tool_proxy_table($rejectedtoolproxies, 'tp_rejected');
 
 $tab = optional_param('tab', '', PARAM_ALPHAEXT);
 $configuredselected = '';
@@ -89,7 +88,7 @@ switch ($tab) {
 $registertype = get_string('registertype', 'lti');
 $config = get_string('manage_tools', 'lti');
 
-$registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
+$registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";//move registersettings.php to core_ltix
 
 $template = <<< EOD
 <div id="tp_tabs" class="yui-navset">
@@ -182,8 +181,8 @@ $template = <<< EOD
 EOD;
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('manage_tool_proxies', 'lti'), 2);
-echo $OUTPUT->heading(new lang_string('toolproxy', 'lti') .
+echo $OUTPUT->heading(get_string('manage_tool_proxies', 'ltix'), 2);
+echo $OUTPUT->heading(new lang_string('toolproxy', 'ltix') .
         $OUTPUT->help_icon('toolproxy', 'lti'), 3);
 
 echo $OUTPUT->box_start('generalbox');

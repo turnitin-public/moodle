@@ -903,4 +903,102 @@ class types_helper {
         }
     }
 
+    /**
+     * This function builds the tab for a category of tool proxies
+     *
+     * @param object    $toolproxies    Tool proxy instance objects
+     * @param string    $id             Category ID
+     *
+     * @return string                   HTML for tab
+     */
+    function get_tool_proxy_table($toolproxies, $id) {
+        global $OUTPUT;
+
+        if (!empty($toolproxies)) {
+            $typename = get_string('typename', 'lti');
+            $url = get_string('registrationurl', 'lti');
+            $action = get_string('action', 'lti');
+            $createdon = get_string('createdon', 'lti');
+
+            $html = <<< EOD
+            <div id="{$id}_tool_proxies_container" style="margin-top: 0.5em; margin-bottom: 0.5em">
+                <table id="{$id}_tool_proxies">
+                    <thead>
+                        <tr>
+                            <th>{$typename}</th>
+                            <th>{$url}</th>
+                            <th>{$createdon}</th>
+                            <th>{$action}</th>
+                        </tr>
+                    </thead>
+            EOD;
+            foreach ($toolproxies as $toolproxy) {
+                $date = userdate($toolproxy->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
+                $accept = get_string('register', 'lti');
+                $update = get_string('update', 'lti');
+                $delete = get_string('delete', 'lti');
+
+                $baseurl = new \moodle_url('/mod/lti/registersettings.php', array( //Need to move registersettings.php to core_ltix
+                    'action' => 'accept',
+                    'id' => $toolproxy->id,
+                    'sesskey' => sesskey(),
+                    'tab' => $id
+                ));
+
+                $registerurl = new \moodle_url('/mod/lti/register.php', array( //Need to move register.php to core_ltix
+                    'id' => $toolproxy->id,
+                    'sesskey' => sesskey(),
+                    'tab' => 'tool_proxy'
+                ));
+
+                $accepthtml = $OUTPUT->action_icon($registerurl,
+                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    array('title' => $accept, 'class' => 'editing_accept'));
+
+                $deleteaction = 'delete';
+
+                if ($toolproxy->state != LTI_TOOL_PROXY_STATE_CONFIGURED) {
+                    $accepthtml = '';
+                }
+
+                if (($toolproxy->state == LTI_TOOL_PROXY_STATE_CONFIGURED) || ($toolproxy->state == LTI_TOOL_PROXY_STATE_PENDING)) {
+                    $delete = get_string('cancel', 'lti');
+                }
+
+                $updateurl = clone($baseurl);
+                $updateurl->param('action', 'update');
+                $updatehtml = $OUTPUT->action_icon($updateurl,
+                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    array('title' => $update, 'class' => 'editing_update'));
+
+                $deleteurl = clone($baseurl);
+                $deleteurl->param('action', $deleteaction);
+                $deletehtml = $OUTPUT->action_icon($deleteurl,
+                    new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                    array('title' => $delete, 'class' => 'editing_delete'));
+                $html .= <<< EOD
+                    <tr>
+                        <td>
+                            {$toolproxy->name}
+                        </td>
+                        <td>
+                            {$toolproxy->regurl}
+                        </td>
+                        <td>
+                            {$date}
+                        </td>
+                        <td align="center">
+                            {$accepthtml}{$updatehtml}{$deletehtml}
+                        </td>
+                    </tr>
+                EOD;
+            }
+            $html .= '</table></div>';
+        } else {
+            $html = get_string('no_' . $id, 'lti');
+        }
+
+        return $html;
+    }
+
 }
