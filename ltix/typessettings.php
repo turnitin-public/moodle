@@ -37,7 +37,7 @@
  *
  * It is used to create a new form used to pre-configure lti activities
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2009 Marc Alier, Jordi Piguillem, Nikolas Galanis
  *  marc.alier@upc.edu
  * @copyright  2009 Universitat Politecnica de Catalunya http://www.upc.edu
@@ -50,8 +50,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once($CFG->dirroot.'/mod/lti/edit_form.php');//need to move the functions needed to core_ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
@@ -60,7 +59,7 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new moodle_url($CFG->wwwroot . '/ltix/toolconfigure.php');
 }
 
 // No guest autologin.
@@ -77,7 +76,7 @@ if (!empty($id)) {
         if (!empty($returnto)) {
             $params['returnto'] = $returnto;
         }
-        $redirect = new moodle_url('/mod/lti/toolssettings.php', $params);
+        $redirect = new moodle_url('/mod/lti/toolssettings.php', $params); //Need to move toolsettings to core_ltix.
         redirect($redirect);
     }
     $type->lti_coursecategories = '';
@@ -95,7 +94,7 @@ if (!empty($id)) {
     $type->lti_coursecategories = '';
 }
 
-$pageurl = new moodle_url('/mod/lti/typessettings.php');
+$pageurl = new moodle_url('/ltix/typessettings.php');
 if (!empty($id)) {
     $pageurl->param('id', $id);
 }
@@ -128,7 +127,7 @@ if (\core_ltix\tool_helper::request_is_using_ssl() && !empty($type->lti_secureic
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new mod_lti_edit_types_form(
+$form = new mod_lti_edit_types_form( //need to modify this to core_ltix_edit_types_form
     $pageurl,
     (object) [
         'isadmin' => true,
@@ -159,15 +158,15 @@ if ($data = $form->get_data()) {
     redirect($redirect);
 }
 
-$PAGE->set_title(get_string('toolsetup', 'lti'));
+$PAGE->set_title(get_string('toolsetup', 'ltix'));
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('ltitoolconfigure');
-$PAGE->navbar->add(get_string('manage_external_tools', 'lti'), new moodle_url('/mod/lti/toolconfigure.php'));
-$PAGE->navbar->add(get_string('toolsetup', 'lti'), $PAGE->url);
-$PAGE->requires->js_call_amd('mod_lti/coursecategory', 'init', [$type->lti_coursecategories]);
+$PAGE->navbar->add(get_string('manage_external_tools', 'ltix'), new moodle_url('/ltix/toolconfigure.php'));
+$PAGE->navbar->add(get_string('toolsetup', 'ltix'), $PAGE->url);
+$PAGE->requires->js_call_amd('mod_lti/coursecategory', 'init', [$type->lti_coursecategories]);//Change reference to core_ltix
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('toolsetup', 'lti'));
+echo $OUTPUT->heading(get_string('toolsetup', 'ltix'));
 echo $OUTPUT->box_start('generalbox');
 
 if ($action == 'update') {

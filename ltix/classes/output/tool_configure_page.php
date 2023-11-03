@@ -17,7 +17,7 @@
 /**
  * Class containing data for tool_configure page
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -52,11 +52,11 @@ class tool_configure_page implements renderable, templatable {
         $keyhelp = new help_icon('resourcekey', 'mod_lti'); //This will be changed to core_ltix when the renderer is moved
         $secrethelp = new help_icon('password', 'mod_lti'); //This will be changed to core_ltix when the renderer is moved
 
-        $url = new moodle_url('/mod/lti/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));//This will be changed to ltix/typessettings.php when typesettings is moved.
+        $url = new moodle_url('/ltix/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
         $data->configuremanualurl = $url->out();
         $url = new moodle_url('/admin/settings.php?section=modsettinglti');
         $data->managetoolsurl = $url->out();
-        $url = new moodle_url('/mod/lti/toolproxies.php');//This will be changed to ltix/typessettings.php when toolproxies is moved.
+        $url = new moodle_url('/ltix/toolproxies.php');
         $data->managetoolproxiesurl = $url->out();
         $data->keyhelp = $keyhelp->export_for_template($output);
         $data->secrethelp = $secrethelp->export_for_template($output);

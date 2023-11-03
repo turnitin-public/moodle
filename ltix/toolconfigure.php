@@ -17,7 +17,7 @@
 /**
  * This page allows the configuration of external tools that meet the LTI specification.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @author     Ryan Wyllie
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -43,11 +43,11 @@ if ($cartridgeurl) {
 
 $pageurl = new moodle_url('/ltix/toolconfigure.php');
 $PAGE->set_url($pageurl);
-$PAGE->set_title(get_string('toolregistration', 'mod_lti'));
+$PAGE->set_title(get_string('toolregistration', 'mod_lti'));//Need to point to core_ltix
 $PAGE->requires->string_for_js('success', 'moodle');
 $PAGE->requires->string_for_js('error', 'moodle');
-$PAGE->requires->string_for_js('successfullycreatedtooltype', 'mod_lti');
-$PAGE->requires->string_for_js('failedtocreatetooltype', 'mod_lti');
+$PAGE->requires->string_for_js('successfullycreatedtooltype', 'mod_lti');//Need to point to core_ltix
+$PAGE->requires->string_for_js('failedtocreatetooltype', 'mod_lti');//Need to point to core_ltix
 $output = $PAGE->get_renderer('mod_lti'); //This should be changed to core_ltix when renderer is moved.
 
 echo $output->header();
