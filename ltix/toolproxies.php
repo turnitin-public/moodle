@@ -85,10 +85,10 @@ switch ($tab) {
         $configuredselected = 'class="selected"';
         break;
 }
-$registertype = get_string('registertype', 'lti');
-$config = get_string('manage_tools', 'lti');
+$registertype = get_string('registertype', 'ltix');
+$config = get_string('manage_tools', 'ltix');
 
-$registertypeurl = "{$CFG->wwwroot}/mod/lti/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";//move registersettings.php to core_ltix
+$registertypeurl = "{$CFG->wwwroot}/ltix/registersettings.php?action=add&amp;sesskey={$USER->sesskey}&amp;tab=tool_proxy";
 
 $template = <<< EOD
 <div id="tp_tabs" class="yui-navset">
