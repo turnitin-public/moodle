@@ -20,7 +20,7 @@
  * It is used to create a new form used to configure the capabilities
  * and services to be offered to the tool provider.
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,8 +28,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/register_form.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once($CFG->dirroot.'/mod/lti/register_form.php'); //need to move register_form.php to ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
@@ -38,14 +37,14 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new moodle_url($CFG->wwwroot . '/ltix/toolconfigure.php');
 }
 
 // No guest autologin.
 require_login(0, false);
 
 $isupdate = !empty($id);
-$pageurl = new moodle_url('/mod/lti/registersettings.php');
+$pageurl = new moodle_url('/ltix/registersettings.php');
 if ($isupdate) {
     $pageurl->param('id', $id);
 }
@@ -56,7 +55,7 @@ $PAGE->set_url($pageurl);
 
 admin_externalpage_setup('ltitoolproxies');
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
+$redirect = new moodle_url('/ltix/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
 if (!empty($returnurl)) {
     $redirect = $returnurl;
@@ -77,7 +76,7 @@ if ($isupdate) {
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('modules');
 
-$form = new mod_lti_register_types_form($pageurl, (object)$data);
+$form = new mod_lti_register_types_form($pageurl, (object)$data); //need to move when register_form is moved
 
 if ($form->is_cancelled()) {
     redirect($redirect);
@@ -85,11 +84,11 @@ if ($form->is_cancelled()) {
     $id = \core_ltix\tool_helper::add_tool_proxy($data);
     redirect($redirect);
 } else {
-    $PAGE->set_title(get_string('toolregistration', 'lti'));
-    $PAGE->navbar->add(get_string('lti_administration', 'lti'), $redirect);
+    $PAGE->set_title(get_string('toolregistration', 'ltix'));
+    $PAGE->navbar->add(get_string('lti_administration', 'ltix'), $redirect);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('toolregistration', 'lti'));
+    echo $OUTPUT->heading(get_string('toolregistration', 'ltix'));
     echo $OUTPUT->box_start('generalbox');
     if ($action == 'update') {
         $toolproxy = \core_ltix\tool_helper::get_tool_proxy_config($id);

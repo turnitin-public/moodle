@@ -76,7 +76,7 @@ if (!empty($id)) {
         if (!empty($returnto)) {
             $params['returnto'] = $returnto;
         }
-        $redirect = new moodle_url('/mod/lti/toolssettings.php', $params); //Need to move toolsettings to core_ltix.
+        $redirect = new moodle_url('/ltix/toolssettings.php', $params);
         redirect($redirect);
     }
     $type->lti_coursecategories = '';

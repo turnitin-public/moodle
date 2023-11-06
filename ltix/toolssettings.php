@@ -20,7 +20,7 @@
  * It is used to create a new form used to configure the capabilities
  * and services to be offered to the tool provider.
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,8 +28,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once($CFG->dirroot.'/mod/lti/edit_form.php'); //need to move to ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', '', PARAM_ALPHANUMEXT);
@@ -38,7 +37,7 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new moodle_url($CFG->wwwroot . '/ltix/toolconfigure.php');
 }
 
 // No guest autologin.
@@ -57,11 +56,11 @@ if ($err) {
     if (!empty($returnto)) {
         $params['returnto'] = $returnto;
     }
-    $redirect = new moodle_url('/mod/lti/typessettings.php', $params);
+    $redirect = new moodle_url('/ltix/typessettings.php', $params);
     redirect($redirect);
 }
 
-$pageurl = new moodle_url('/mod/lti/toolssettings.php');
+$pageurl = new moodle_url('/ltix/toolssettings.php');
 if (!empty($id)) {
     $pageurl->param('id', $id);
 }
@@ -91,7 +90,7 @@ if (\core_ltix\tool_helper::request_is_using_ssl() && !empty($type->lti_secureic
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new mod_lti_edit_types_form($pageurl, (object)array('isadmin' => true, 'istool' => true));
+$form = new mod_lti_edit_types_form($pageurl, (object)array('isadmin' => true, 'istool' => true));//need to change this when edit_form moves
 
 if ($data = $form->get_data()) {
     $type = new stdClass();
@@ -107,11 +106,11 @@ if ($data = $form->get_data()) {
     redirect($redirect);
 }
 
-$PAGE->set_title(get_string('toolsetup', 'lti'));
-$PAGE->navbar->add(get_string('lti_administration', 'lti'), $CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=modsettinglti');
+$PAGE->set_title(get_string('toolsetup', 'ltix'));
+$PAGE->navbar->add(get_string('lti_administration', 'ltix'), $CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=modsettinglti');
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('toolsetup', 'lti'));
+echo $OUTPUT->heading(get_string('toolsetup', 'ltix'));
 echo $OUTPUT->box_start('generalbox');
 
 if ($action == 'update') {
