@@ -183,7 +183,7 @@ EOD;
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('manage_tool_proxies', 'ltix'), 2);
 echo $OUTPUT->heading(new lang_string('toolproxy', 'ltix') .
-        $OUTPUT->help_icon('toolproxy', 'lti'), 3);
+        $OUTPUT->help_icon('toolproxy', 'ltix'), 3);
 
 echo $OUTPUT->box_start('generalbox');
 

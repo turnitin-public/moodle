@@ -24,34 +24,167 @@
  */
 
 $string['accepted'] = 'Accepted';
+$string['accept_grades_admin'] = 'Accept grades from the tool';
+$string['accept_grades_admin_help'] = 'Specify whether the tool provider can add, update, read, and delete grades associated with instances of this tool.
+
+Some tool providers support reporting grades back to Moodle based on actions taken within the tool, creating a more integrated
+experience.';
 $string['action'] = 'Action';
 $string['active'] = 'Active';
+$string['always'] = 'Always';
+$string['capabilities'] = 'Capabilities';
 $string['cleanaccesstokens'] = 'External tool removal of expired access tokens';
+$string['clientidadmin'] = 'Client ID';
+$string['clientidadmin_help'] = 'The client ID is a unique value used to identify a tool. It is created automatically for each tool which uses the JWT security profile introduced in LTI 1.3 and should be part of the details passed to the tool provider so that they can configure the connection at their end.';
 $string['configured'] = 'Configured';
+$string['contentitem_deeplinking'] = 'Supports Deep Linking (Content-Item Message)';
+$string['contentitem_deeplinking_help'] = 'If ticked, the option \'Select content\' will be available when adding an external tool.';
 $string['contentselected'] = 'Content selected';
 $string['courseactivitiesorresources'] = 'Course activities or resources';
 $string['courseinformation'] = 'Course information';
 $string['createdon'] = 'Created on';
+$string['custom'] = 'Custom parameters';
+$string['custom_help'] = 'Custom parameters are settings used by the tool provider. For example, a custom parameter may be used to display
+a specific resource from the provider.  Each parameter should be entered on a separate line using a format of "name=value"; for example, "chapter=3".
+
+It is safe to leave this field unchanged unless directed by the tool provider.';
+$string['default_launch_container'] = 'Default launch container';
+$string['default_launch_container_help'] = 'The launch container affects the display of the tool when launched from the course. Some launch containers provide more screen
+real estate to the tool, and others provide a more integrated feel with the Moodle environment.
+
+* **Default** - Use the launch container specified by the tool configuration.
+* **Embed** - The tool is displayed within the existing Moodle window, in a manner similar to most other Activity types.
+* **Embed, without blocks** - The tool is displayed within the existing Moodle window, with just the navigation controls
+        at the top of the page.
+* **New window** - The tool opens in a new window, occupying all the available space.
+        Depending on the browser, it will open in a new tab or a popup window.
+        It is possible that browsers will prevent the new window from opening.';
+$string['delegate'] = 'Delegate to teacher';
+$string['delegate_tool'] = 'As specified in Deep Linking definition or Delegate to teacher';
 $string['duplicateregurl'] = 'This registration URL is already in use';
+$string['embed'] = 'Embed';
+$string['embed_no_blocks'] = 'Embed, without blocks';
 $string['errorincorrectconsumerkey'] = 'Consumer key is incorrect.';
 $string['errorinvaliddata'] = 'Invalid data: {$a}';
 $string['errorinvalidresponseformat'] = 'Invalid Content-Item response format.';
 $string['errortooltypenotfound'] = 'LTI tool type not found.';
+$string['existing_window'] = 'Existing window';
+$string['force_ssl'] = 'Force SSL';
+$string['force_ssl_help'] = 'Selecting this option forces all launches to this tool provider to use SSL.
+
+In addition, all web service requests from the tool provider will use SSL.
+
+If using this option, confirm that this Moodle site and the tool provider support SSL.';
+$string['icon_url'] = 'Icon URL';
+$string['icon_url_help'] = 'The icon URL allows the icon that shows up in the course listing for this activity to be modified. Instead of using the default
+LTI icon, an icon which conveys the type of activity may be specified.';
+$string['initiatelogin'] = 'Initiate login URL';
+$string['initiatelogin_help'] = 'The tool URL to which requests for initiating a login are to be sent.  This URL is required before a message can be successfully sent to the tool.';
+$string['jwtsecurity'] = 'LTI 1.3';
+$string['keytype'] = 'Public key type';
+$string['keytype_help'] = 'The authentication method used to validate the tool.';
+$string['keytype_keyset'] = 'Keyset URL';
+$string['keytype_rsa'] = 'RSA key';
 $string['lti_administration'] = 'Edit preconfigured tool';
+$string['ltiversion'] = 'LTI version';
+$string['ltiversion_help'] = 'The version of LTI being used for signing messages and service requests: LTI 1.0/1.1 and LTI 2.0 use the OAuth 1.0A security profile; LTI 1.3.0 uses JWTs.';
 $string['ltix'] = 'LTIx';
 $string['manage_external_tools'] = 'Manage tools';
 $string['manage_tools'] = 'Manage preconfigured tools';
 $string['manage_tool_proxies'] = 'Manage external tool registrations';
+$string['miscellaneous'] = 'Miscellaneous';
 $string['name'] = 'Name';
+$string['never'] = 'Never';
+$string['new_window'] = 'New window';
+$string['oauthsecurity'] = 'LTI 1.0/1.1';
 $string['opensslconfiginvalid'] = 'LTI 1.3 requires a valid openssl.cnf to be configured and available to your web server. Please contact the site administrator to configure and enable openssl for this site.';
+$string['organizationid_default'] = 'Default organisation ID';
+$string['organizationid_default_help'] = 'The default value to use for Organisation ID. Site ID identifies this installation of Moodle.';
+$string['organizationidguid'] = 'Organisation ID';
+$string['organizationidguid_help'] = 'A unique identifier for this Moodle instance passed to the tool as the Platform Instance GUID.
+
+If this field is left blank, the default value will be used.';
+$string['organizationurl'] = 'Organisation URL';
+$string['organizationurl_help'] = 'The base URL of this Moodle instance.
+
+If this field is left blank, a default value will be used based on the site configuration.';
+$string['parameter'] = 'Tool parameters';
+$string['parameter_help'] = 'Tool parameters are settings requested to be passed by the tool provider in the accepted tool proxy.';
+$string['password_admin'] = 'Shared secret';
+$string['password_admin_help'] = 'The shared secret can be thought of as a password used to authenticate access to the tool. It should be provided
+along with the consumer key from the tool provider.
+
+Tools which do not require secure communication from Moodle and do not provide additional services (such as grade reporting)
+may not require a shared secret.';
 $string['pending'] = 'Pending';
+$string['privacy'] = 'Privacy';
 $string['privacy:metadata'] = 'The LTIx subsystem does not store any personal data.';
+$string['publickey'] = 'Public key';
+$string['publickeyset'] = 'Public keyset';
+$string['publickeyset_help'] = 'Public keyset from where this site will retrieve the tool\'s public key to allow signatures of incoming messages and service requests to be verified.';
+$string['publickey_help'] = 'The public key (in PEM format) provided by the tool to allow signatures of incoming messages and service requests to be verified.';
+$string['redirectionuris'] = 'Redirection URI(s)';
+$string['redirectionuris_help'] = 'A list of URIs (one per line) which the tool uses when making authorisation requests.  At least one must be registered before a message can be successfully sent to the tool.';
 $string['registertype'] = 'Configure a new external tool registration';
+$string['registration_options'] = 'Registration options';
+$string['registrationname'] = 'Tool provider name';
 $string['registrationurl'] = 'Registration URL';
 $string['rejected'] = 'Rejected';
+$string['resourcekey_admin'] = 'Consumer key';
+$string['resourcekey_admin_help'] = 'The consumer key can be thought of as a username used to authenticate access to the tool.
+It can be used by the tool provider to uniquely identify the Moodle site from which users launch into the tool.
+
+The consumer key must be provided by the tool provider. The method of obtaining a consumer key varies between
+tool providers. It may be an automated process, or it may require a dialogue with the tool provider.
+
+Tools which do not require secure communication from Moodle and do not provide additional services (such as grade reporting)
+may not require a resource key.';
+$string['restricttocategory'] = 'Restrict to category';
+$string['restricttocategory_help'] = 'To restrict use of this tool to courses within a category, select the category or categories from the list.';
+$string['secure_icon_url'] = 'Secure icon URL';
+$string['secure_icon_url_help'] = 'Similar to the icon URL, but used when the site is accessed securely through SSL. This field is to prevent the browser from displaying a warning about an insecure image.';
+$string['secure_launch_url'] = 'Secure tool URL';
+$string['secure_launch_url_help'] = 'Similar to the tool URL, but used instead of the tool URL if high security is required. Moodle will use the secure tool URL instead of the tool URL if the Moodle site is accessed through SSL, or if the tool configuration is set to always launch through SSL.
+
+The tool URL may also be set to an https address to force launching through SSL, and this field may be left blank.';
+$string['services'] = 'Services';
+$string['share_email'] = 'Share launcher\'s email with the tool';
+$string['share_email_admin'] = 'Share launcher\'s email with tool';
+$string['share_email_admin_help'] = 'Specify whether the e-mail address of the user launching the tool will be shared with the tool provider.
+The tool provider may need launcher\'s e-mail addresses to distinguish users with the same name in the UI, or send e-mails
+to users based on actions within the tool.';
+$string['share_email_help'] = 'Specify whether the e-mail address of the user launching the tool will be shared with the tool provider.
+
+The tool provider may need launcher\'s email addresses to distinguish users with the same name, or send emails to users based on actions within the tool.
+
+Note that this setting may be overridden in the tool configuration.';
+$string['share_name'] = 'Share launcher\'s name with the tool';
+$string['share_name_admin'] = 'Share launcher\'s name with tool';
+$string['share_name_admin_help'] = 'Specify whether the full name of the user launching the tool should be shared with the tool provider.
+The tool provider may need launchers\' names to show meaningful information within the tool.';
+$string['share_name_help'] = 'Specify whether the full name of the user launching the tool should be shared with the tool provider.
+
+The tool provider may need launchers\' names to show meaningful information within the tool.
+
+Note that this setting may be overridden in the tool configuration.';
+$string['show_in_course_activity_chooser'] = 'Show in activity chooser and as a preconfigured tool';
+$string['show_in_course_lti1'] = 'Tool configuration usage';
+$string['show_in_course_lti1_help'] = 'This tool may be shown in the activity chooser for a teacher to select to add to a course. Alternatively, it may be shown in the preconfigured tool drop-down menu when adding an external tool to a course. A further option is for the tool configuration to only be used if the exact tool URL is entered when adding an external tool to a course.';
+$string['show_in_course_lti2'] = 'Tool configuration usage';
+$string['show_in_course_lti2_help'] = 'This tool can be shown in the activity chooser for a teacher to select to add to a course or in the preconfigured tool drop-down menu when adding an external tool to a course.';
+$string['show_in_course_no'] = 'Do not show; use only when a matching tool URL is entered';
+$string['show_in_course_preconfigured'] = 'Show as preconfigured tool when adding an external tool';
+$string['siteid'] = 'Site ID';
+$string['sitehost'] = 'Site hostname';
+$string['tool_settings'] = 'Tool settings';
+$string['tooldescription'] = 'Tool description';
 $string['toolproxy'] = 'External tool registrations';
 $string['toolregistration'] = 'External tool registration';
 $string['toolsetup'] = 'External tool configuration';
+$string['toolurl'] = 'Tool URL';
+$string['toolurl_contentitemselectionrequest'] = 'Content Selection URL';
+$string['toolurl_contentitemselectionrequest_help'] = 'The Content Selection URL will be used to launch the content selection page from the tool provider. If it is empty, the Tool URL will be used';
+$string['typename'] = 'Tool name';
 $string['unknownstate'] = 'Unknown state';
 $string['useraccountinformation'] = 'User account information';
 $string['userpersonalinformation'] = 'User personal information';
