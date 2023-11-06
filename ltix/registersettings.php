@@ -28,7 +28,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/register_form.php'); //need to move register_form.php to ltix
+require_once($CFG->dirroot.'/ltix/register_form.php'); //need to move register_form.php to ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
@@ -76,7 +76,7 @@ if ($isupdate) {
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('modules');
 
-$form = new mod_lti_register_types_form($pageurl, (object)$data); //need to move when register_form is moved
+$form = new core_ltix_register_types_form($pageurl, (object)$data); //need to move when register_form is moved
 
 if ($form->is_cancelled()) {
     redirect($redirect);

@@ -17,7 +17,7 @@
 /**
  * This file defines the main tool registration configuration form
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,17 +26,16 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
 /**
- * The mod_lti_register_types_form class.
+ * The core_ltix_register_types_form class.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_lti_register_types_form extends moodleform {
+class core_ltix_register_types_form extends moodleform {
 
     /**
      * Set up the form definition.
@@ -46,21 +45,21 @@ class mod_lti_register_types_form extends moodleform {
 
         $mform    =& $this->_form;
 
-        $mform->addElement('header', 'setup', get_string('registration_options', 'lti'));
+        $mform->addElement('header', 'setup', get_string('registration_options', 'ltix'));
 
         // Tool Provider name.
 
         $strrequired = get_string('required');
-        $mform->addElement('text', 'lti_registrationname', get_string('registrationname', 'lti'));
+        $mform->addElement('text', 'lti_registrationname', get_string('registrationname', 'ltix'));
         $mform->setType('lti_registrationname', PARAM_TEXT);
-        $mform->addHelpButton('lti_registrationname', 'registrationname', 'lti');
+        $mform->addHelpButton('lti_registrationname', 'registrationname', 'ltix'); //need to change reference to ltix
         $mform->addRule('lti_registrationname', $strrequired, 'required', null, 'client');
 
         // Registration URL.
 
-        $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'lti'), array('size' => '64'));
+        $mform->addElement('text', 'lti_registrationurl', get_string('registrationurl', 'ltix'), array('size' => '64'));
         $mform->setType('lti_registrationurl', PARAM_URL);
-        $mform->addHelpButton('lti_registrationurl', 'registrationurl', 'lti');
+        $mform->addHelpButton('lti_registrationurl', 'registrationurl', 'ltix'); //need to change reference to ltix
         $mform->addRule('lti_registrationurl', $strrequired, 'required', null, 'client');
 
         // LTI Capabilities.
@@ -68,10 +67,10 @@ class mod_lti_register_types_form extends moodleform {
         $options = array_keys(\core_ltix\tool_helper::get_capabilities());
         natcasesort($options);
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
-        $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'lti'),
+        $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'ltix'),
             array_combine($options, $options), $attributes);
         $mform->setType('lti_capabilities', PARAM_TEXT);
-        $mform->addHelpButton('lti_capabilities', 'capabilities', 'lti');
+        $mform->addHelpButton('lti_capabilities', 'capabilities', 'ltix');
         $mform->addRule('lti_capabilities', $strrequired, 'required', null, 'client');
 
         // LTI Services.
@@ -82,9 +81,9 @@ class mod_lti_register_types_form extends moodleform {
             $options[$service->get_id()] = $service->get_name();
         }
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
-        $mform->addElement('select', 'lti_services', get_string('services', 'lti'), $options, $attributes);
+        $mform->addElement('select', 'lti_services', get_string('services', 'ltix'), $options, $attributes);
         $mform->setType('lti_services', PARAM_TEXT);
-        $mform->addHelpButton('lti_services', 'services', 'lti');
+        $mform->addHelpButton('lti_services', 'services', 'ltix');
         $mform->addRule('lti_services', $strrequired, 'required', null, 'client');
 
         $mform->addElement('hidden', 'toolproxyid');
