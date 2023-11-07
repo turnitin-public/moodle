@@ -43,11 +43,11 @@ if ($cartridgeurl) {
 
 $pageurl = new moodle_url('/ltix/toolconfigure.php');
 $PAGE->set_url($pageurl);
-$PAGE->set_title(get_string('toolregistration', 'mod_lti'));//Need to point to core_ltix
+$PAGE->set_title(get_string('toolregistration', 'ltix'));
 $PAGE->requires->string_for_js('success', 'moodle');
 $PAGE->requires->string_for_js('error', 'moodle');
-$PAGE->requires->string_for_js('successfullycreatedtooltype', 'mod_lti');//Need to point to core_ltix
-$PAGE->requires->string_for_js('failedtocreatetooltype', 'mod_lti');//Need to point to core_ltix
+$PAGE->requires->string_for_js('successfullycreatedtooltype', 'ltix');
+$PAGE->requires->string_for_js('failedtocreatetooltype', 'ltix');
 $output = $PAGE->get_renderer('mod_lti'); //This should be changed to core_ltix when renderer is moved.
 
 echo $output->header();

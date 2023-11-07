@@ -69,6 +69,7 @@ $string['errorinvaliddata'] = 'Invalid data: {$a}';
 $string['errorinvalidresponseformat'] = 'Invalid Content-Item response format.';
 $string['errortooltypenotfound'] = 'LTI tool type not found.';
 $string['existing_window'] = 'Existing window';
+$string['failedtocreatetooltype'] = 'Failed to create new tool. Please check the URL and try again.';
 $string['force_ssl'] = 'Force SSL';
 $string['force_ssl_help'] = 'Selecting this option forces all launches to this tool provider to use SSL.
 
@@ -176,15 +177,45 @@ $string['show_in_course_no'] = 'Do not show; use only when a matching tool URL i
 $string['show_in_course_preconfigured'] = 'Show as preconfigured tool when adding an external tool';
 $string['siteid'] = 'Site ID';
 $string['sitehost'] = 'Site hostname';
+$string['successfullycreatedtooltype'] = 'Successfully created new tool!';
 $string['tool_settings'] = 'Tool settings';
 $string['tooldescription'] = 'Tool description';
+$string['tooldescription_help'] = 'The description of the tool that will be displayed to teachers in the activity list.
+
+This should describe what the tool is for and what it does and any additional information the teacher may need to know.';
 $string['toolproxy'] = 'External tool registrations';
 $string['toolregistration'] = 'External tool registration';
 $string['toolsetup'] = 'External tool configuration';
 $string['toolurl'] = 'Tool URL';
+$string['toolurl_help'] = 'The tool URL is used to match tool URLs to the correct tool configuration. Prefixing the URL with http(s) is optional.
+
+Additionally, the base URL is used as the tool URL if a tool URL is not specified in the external tool instance.
+
+For example, a base URL of *tool.com* would match the following:
+
+* tool.com
+* tool.com/quizzes
+* tool.com/quizzes/quiz.php?id=10
+* www.tool.com/quizzes
+
+A base URL of *www.tool.com/quizzes* would match the following:
+
+* www.tool.com/quizzes
+* tool.com/quizzes
+* tool.com/quizzes/take.php?id=10
+
+A base URL of *quiz.tool.com* would match the following:
+
+* quiz.tool.com
+* quiz.tool.com/take.php?id=10
+
+If two different tool configurations are for the same domain, the most specific match will be used.
+
+You can also insert a cartridge URL if you have one and the details for the tool will be automatically filled.';
 $string['toolurl_contentitemselectionrequest'] = 'Content Selection URL';
 $string['toolurl_contentitemselectionrequest_help'] = 'The Content Selection URL will be used to launch the content selection page from the tool provider. If it is empty, the Tool URL will be used';
 $string['typename'] = 'Tool name';
+$string['typename_help'] = 'The tool name is used to identify the tool provider within Moodle. The name entered will be visible to teachers when adding external tools within courses.';
 $string['unknownstate'] = 'Unknown state';
 $string['useraccountinformation'] = 'User account information';
 $string['userpersonalinformation'] = 'User personal information';

@@ -48,9 +48,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php');//need to move the functions needed to core_ltix
+require_once($CFG->dirroot.'/ltix/edit_form.php');
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
@@ -127,7 +127,7 @@ if (\core_ltix\tool_helper::request_is_using_ssl() && !empty($type->lti_secureic
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new mod_lti_edit_types_form( //need to modify this to core_ltix_edit_types_form
+$form = new core_ltix_edit_types_form(
     $pageurl,
     (object) [
         'isadmin' => true,
