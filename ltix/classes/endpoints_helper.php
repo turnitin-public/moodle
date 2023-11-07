@@ -200,8 +200,6 @@ class endpoints_helper {
      */
     public static function get_token_endpoint() {
 
-        define('NO_DEBUG_DISPLAY', true);
-        define('NO_MOODLE_COOKIES', true);
         require_once(__DIR__ . '/../../config.php');
 
         $response = new \mod_lti\local\ltiservice\response(); //This will be moved when the ltiservice is moved to core.
