@@ -17,7 +17,7 @@
 /**
  * This file contains a controller for receiving LTI service requests
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,14 +26,13 @@
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
 
-require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(__DIR__ . '/../config.php');
 
 
-$response = new \mod_lti\local\ltiservice\response();
+$response = new \core_ltix\local\ltiservice\response();
 
-$isget = $response->get_request_method() === mod_lti\local\ltiservice\resource_base::HTTP_GET;
-$isdelete = $response->get_request_method() === mod_lti\local\ltiservice\resource_base::HTTP_DELETE;
+$isget = $response->get_request_method() === core_ltix\local\ltiservice\resource_base::HTTP_GET;
+$isdelete = $response->get_request_method() === core_ltix\local\ltiservice\resource_base::HTTP_DELETE;
 
 if ($isget) {
     $response->set_accept(isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '');

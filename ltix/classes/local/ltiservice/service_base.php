@@ -17,19 +17,19 @@
 /**
  * This file contains an abstract definition of an LTI service
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
-namespace mod_lti\local\ltiservice;
+namespace core_ltix\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/ltix/OAuthBody.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
@@ -38,9 +38,9 @@ use stdClass;
 
 
 /**
- * The mod_lti\local\ltiservice\service_base class.
+ * The core_ltix\local\ltiservice\service_base class.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -370,7 +370,7 @@ abstract class service_base {
      */
     public static function get_service_path() {
 
-        $url = new \moodle_url('/mod/lti/services.php');
+        $url = new \moodle_url('/ltix/services.php');
 
         return $url->out(false);
 

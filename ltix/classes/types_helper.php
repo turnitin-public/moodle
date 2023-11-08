@@ -915,10 +915,10 @@ class types_helper {
         global $OUTPUT;
 
         if (!empty($toolproxies)) {
-            $typename = get_string('typename', 'lti');
-            $url = get_string('registrationurl', 'lti');
-            $action = get_string('action', 'lti');
-            $createdon = get_string('createdon', 'lti');
+            $typename = get_string('typename', 'ltix');
+            $url = get_string('registrationurl', 'ltix');
+            $action = get_string('action', 'ltix');
+            $createdon = get_string('createdon', 'ltix');
 
             $html = <<< EOD
             <div id="{$id}_tool_proxies_container" style="margin-top: 0.5em; margin-bottom: 0.5em">
@@ -934,11 +934,11 @@ class types_helper {
             EOD;
             foreach ($toolproxies as $toolproxy) {
                 $date = userdate($toolproxy->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
-                $accept = get_string('register', 'lti');
-                $update = get_string('update', 'lti');
-                $delete = get_string('delete', 'lti');
+                $accept = get_string('register', 'ltix');
+                $update = get_string('update', 'ltix');
+                $delete = get_string('delete', 'ltix');
 
-                $baseurl = new \moodle_url('/mod/lti/registersettings.php', array( //Need to move registersettings.php to core_ltix
+                $baseurl = new \moodle_url('/ltix/registersettings.php', array(
                     'action' => 'accept',
                     'id' => $toolproxy->id,
                     'sesskey' => sesskey(),
@@ -962,7 +962,7 @@ class types_helper {
                 }
 
                 if (($toolproxy->state == LTI_TOOL_PROXY_STATE_CONFIGURED) || ($toolproxy->state == LTI_TOOL_PROXY_STATE_PENDING)) {
-                    $delete = get_string('cancel', 'lti');
+                    $delete = get_string('cancel', 'ltix');
                 }
 
                 $updateurl = clone($baseurl);
@@ -995,10 +995,91 @@ class types_helper {
             }
             $html .= '</table></div>';
         } else {
-            $html = get_string('no_' . $id, 'lti');
+            $html = get_string('no_' . $id, 'ltix');
         }
 
         return $html;
+    }
+
+    /**
+     * Extracts the named contexts from a tool proxy
+     *
+     * @param object $json
+     *
+     * @return array Contexts
+     */
+    function get_contexts($json) {
+
+        $contexts = array();
+        if (isset($json->{'@context'})) {
+            foreach ($json->{'@context'} as $context) {
+                if (is_object($context)) {
+                    $contexts = array_merge(get_object_vars($context), $contexts);
+                }
+            }
+        }
+
+        return $contexts;
+
+    }
+
+    /**
+     * Converts an ID to a fully-qualified ID
+     *
+     * @param array $contexts
+     * @param string $id
+     *
+     * @return string Fully-qualified ID
+     */
+    function get_fqid($contexts, $id) {
+
+        $parts = explode(':', $id, 2);
+        if (count($parts) > 1) {
+            if (array_key_exists($parts[0], $contexts)) {
+                $id = $contexts[$parts[0]] . $parts[1];
+            }
+        }
+
+        return $id;
+
+    }
+
+    function get_shared_secrets_by_key($key) {
+        global $DB;
+
+        // Look up the shared secret for the specified key in both the types_config table (for configured tools)
+        // And in the lti resource table for ad-hoc tools.
+        $lti13 = LTI_VERSION_1P3;
+        $query = "SELECT " . $DB->sql_compare_text('t2.value', 256) . " AS value
+                FROM {lti_types_config} t1
+                JOIN {lti_types_config} t2 ON t1.typeid = t2.typeid
+                JOIN {lti_types} type ON t2.typeid = type.id
+              WHERE t1.name = 'resourcekey'
+                AND " . $DB->sql_compare_text('t1.value', 256) . " = :key1
+                AND t2.name = 'password'
+                AND type.state = :configured1
+                AND type.ltiversion <> :ltiversion
+               UNION
+              SELECT tp.secret AS value
+                FROM {lti_tool_proxies} tp
+                JOIN {lti_types} t ON tp.id = t.toolproxyid
+              WHERE tp.guid = :key2
+                AND t.state = :configured2
+               UNION
+              SELECT password AS value
+               FROM {lti}
+              WHERE resourcekey = :key3";
+
+        $sharedsecrets = $DB->get_records_sql($query, array('configured1' => LTI_TOOL_STATE_CONFIGURED, 'ltiversion' => $lti13,
+            'configured2' => LTI_TOOL_STATE_CONFIGURED, 'key1' => $key, 'key2' => $key, 'key3' => $key));
+
+        $values = array_map(function($item) {
+            return $item->value;
+        }, $sharedsecrets);
+
+        // There should really only be one shared secret per key. But, we can't prevent
+        // more than one getting entered. For instance, if the same key is used for two tool providers.
+        return $values;
     }
 
 }

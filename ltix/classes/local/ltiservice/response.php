@@ -17,21 +17,21 @@
 /**
  * This file contains an abstract definition of an LTI service
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
-namespace mod_lti\local\ltiservice;
+namespace core_ltix\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * The mod_lti\local\ltiservice\response class.
+ * The core_ltix\local\ltiservice\response class.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

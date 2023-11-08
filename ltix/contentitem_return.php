@@ -17,14 +17,13 @@
 /**
  * Handle the return from the Tool Provider after selecting a content item.
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2015 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once('../config.php');
 
 $id = required_param('id', PARAM_INT);
 $courseid = required_param('course', PARAM_INT);
@@ -33,7 +32,7 @@ $jwt = optional_param('JWT', '', PARAM_RAW);
 
 $context = context_course::instance($courseid);
 
-$pageurl = new moodle_url('/mod/lti/contentitem_return.php');
+$pageurl = new moodle_url('/ltix/contentitem_return.php');
 $PAGE->set_url($pageurl);
 $PAGE->set_pagelayout('popup');
 $PAGE->set_context($context);
@@ -45,8 +44,8 @@ if (!empty($_POST["repost"])) {
     unset($_POST["repost"]);
 } else if (!isloggedin()) {
     header_remove("Set-Cookie");
-    $output = $PAGE->get_renderer('mod_lti');
-    $page = new \mod_lti\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
+    $output = $PAGE->get_renderer('mod_lti');//Need to change to core_ltix when renderer is moved.
+    $page = new \core_ltix\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
     echo $output->header();
     echo $output->render($page);
     echo $output->footer();
@@ -75,7 +74,7 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
 require_sesskey();
 require_capability('moodle/course:manageactivities', $context);
-require_capability('mod/lti:addcoursetool', $context);
+require_capability('moodle/ltix:addcoursetool', $context);
 
 $redirecturl = null;
 $returndata = null;
@@ -91,7 +90,7 @@ if (empty($errormsg) && !empty($items)) {
 echo $OUTPUT->header();
 
 // Call JS module to redirect the user to the course page or close the dialogue on error/cancel.
-$PAGE->requires->js_call_amd('mod_lti/contentitem_return', 'init', [$returndata]);
+$PAGE->requires->js_call_amd('mod_lti/contentitem_return', 'init', [$returndata]);//Need to move contentitem_return.js when ltix/amd
 
 echo $OUTPUT->footer();
 
@@ -103,7 +102,7 @@ if ($errormsg) {
 } else if (!empty($returndata)) {
     // Means success.
     if (!$msg) {
-        $msg = get_string('successfullyfetchedtoolconfigurationfromcontent', 'lti');
+        $msg = get_string('successfullyfetchedtoolconfigurationfromcontent', 'ltix');
     }
     \core\notification::success($msg);
 }

@@ -32,6 +32,7 @@ experience.';
 $string['action'] = 'Action';
 $string['active'] = 'Active';
 $string['always'] = 'Always';
+$string['cancel'] = 'Cancel';
 $string['capabilities'] = 'Capabilities';
 $string['cleanaccesstokens'] = 'External tool removal of expired access tokens';
 $string['clientidadmin'] = 'Client ID';
@@ -61,6 +62,7 @@ real estate to the tool, and others provide a more integrated feel with the Mood
         It is possible that browsers will prevent the new window from opening.';
 $string['delegate'] = 'Delegate to teacher';
 $string['delegate_tool'] = 'As specified in Deep Linking definition or Delegate to teacher';
+$string['delete'] = 'Delete';
 $string['duplicateregurl'] = 'This registration URL is already in use';
 $string['embed'] = 'Embed';
 $string['embed_no_blocks'] = 'Embed, without blocks';
@@ -126,6 +128,8 @@ $string['publickeyset_help'] = 'Public keyset from where this site will retrieve
 $string['publickey_help'] = 'The public key (in PEM format) provided by the tool to allow signatures of incoming messages and service requests to be verified.';
 $string['redirectionuris'] = 'Redirection URI(s)';
 $string['redirectionuris_help'] = 'A list of URIs (one per line) which the tool uses when making authorisation requests.  At least one must be registered before a message can be successfully sent to the tool.';
+$string['register'] = 'Register';
+$string['register_warning'] = 'The registration page seems to be taking a while to open. If it does not appear, check that you entered the correct URL in the configuration settings. If Moodle is using https, ensure the tool you are configuring supports https and you are using https in the URL.';
 $string['registertype'] = 'Configure a new external tool registration';
 $string['registration_options'] = 'Registration options';
 $string['registrationname'] = 'Tool provider name';
@@ -178,6 +182,7 @@ $string['show_in_course_preconfigured'] = 'Show as preconfigured tool when addin
 $string['siteid'] = 'Site ID';
 $string['sitehost'] = 'Site hostname';
 $string['successfullycreatedtooltype'] = 'Successfully created new tool!';
+$string['successfullyfetchedtoolconfigurationfromcontent'] = 'Successfully fetched tool configuration from the selected content.';
 $string['tool_settings'] = 'Tool settings';
 $string['tooldescription'] = 'Tool description';
 $string['tooldescription_help'] = 'The description of the tool that will be displayed to teachers in the activity list.
@@ -217,6 +222,7 @@ $string['toolurl_contentitemselectionrequest_help'] = 'The Content Selection URL
 $string['typename'] = 'Tool name';
 $string['typename_help'] = 'The tool name is used to identify the tool provider within Moodle. The name entered will be visible to teachers when adding external tools within courses.';
 $string['unknownstate'] = 'Unknown state';
+$string['update'] = 'Update';
 $string['useraccountinformation'] = 'User account information';
 $string['userpersonalinformation'] = 'User personal information';
 

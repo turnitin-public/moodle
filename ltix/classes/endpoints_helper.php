@@ -202,7 +202,7 @@ class endpoints_helper {
 
         require_once(__DIR__ . '/../../config.php');
 
-        $response = new \mod_lti\local\ltiservice\response(); //This will be moved when the ltiservice is moved to core.
+        $response = new \core_ltix\local\ltiservice\response();
 
         $contenttype = isset($_SERVER['CONTENT_TYPE']) ? explode(';', $_SERVER['CONTENT_TYPE'], 2)[0] : '';
 

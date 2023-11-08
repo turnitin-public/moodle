@@ -49,8 +49,8 @@ class tool_configure_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
 
-        $keyhelp = new help_icon('resourcekey', 'ltix'); //This will be changed to core_ltix when the renderer is moved
-        $secrethelp = new help_icon('password', 'ltix'); //This will be changed to core_ltix when the renderer is moved
+        $keyhelp = new help_icon('resourcekey', 'ltix');
+        $secrethelp = new help_icon('password', 'ltix');
 
         $url = new moodle_url('/ltix/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
         $data->configuremanualurl = $url->out();

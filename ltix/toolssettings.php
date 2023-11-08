@@ -28,7 +28,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php'); //need to move to ltix
+require_once($CFG->dirroot.'/ltix/edit_form.php'); //need to move to ltix
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', '', PARAM_ALPHANUMEXT);
@@ -90,7 +90,7 @@ if (\core_ltix\tool_helper::request_is_using_ssl() && !empty($type->lti_secureic
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new mod_lti_edit_types_form($pageurl, (object)array('isadmin' => true, 'istool' => true));//need to change this when edit_form moves
+$form = new core_ltix_edit_types_form($pageurl, (object)array('isadmin' => true, 'istool' => true));
 
 if ($data = $form->get_data()) {
     $type = new stdClass();

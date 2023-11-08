@@ -17,7 +17,7 @@
 /**
  * LTI web service endpoints
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  Copyright (c) 2011 Moodlerooms Inc. (http://www.moodlerooms.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Chris Scribner
@@ -26,9 +26,8 @@
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
 
-require_once(__DIR__ . "/../../config.php");
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
-require_once($CFG->dirroot.'/mod/lti/servicelib.php');
+require_once(__DIR__ . "/../config.php");
+require_once($CFG->dirroot.'/mod/lti/servicelib.php');//TODO: Change reference to ltix.
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use mod_lti\service_exception_handler;
@@ -61,9 +60,9 @@ if ($consumerkey === false) {
     } else if (!empty($tool)) {
         $secrets = array($typeconfig['password']);
     } else {
-        $secrets = lti_get_shared_secrets_by_key($consumerkey);
+        $secrets = \core_ltix\types_helper::get_shared_secrets_by_key($consumerkey);
     }
-    $sharedsecret = lti_verify_message($consumerkey, lti_get_shared_secrets_by_key($consumerkey), $rawbody);
+    $sharedsecret = lti_verify_message($consumerkey, \core_ltix\types_helper::get_shared_secrets_by_key($consumerkey), $rawbody);
     if ($sharedsecret === false) {
         throw new Exception('Message signature not valid');
     }
@@ -204,7 +203,7 @@ switch ($messagetype) {
         $ltiwebservicehandled = false;
 
         try {
-            $event = \mod_lti\event\unknown_service_api_called::create($eventdata);
+            $event = \mod_lti\event\unknown_service_api_called::create($eventdata); //TODO: Change to core_ltix when event is moved
             $event->set_message_data($data);
             $event->trigger();
         } catch (Exception $e) {
