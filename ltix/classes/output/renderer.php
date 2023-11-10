@@ -17,11 +17,11 @@
 /**
  * Renderer class for template library.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_lti\output;
+namespace core_ltix\output;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -30,7 +30,7 @@ use plugin_renderer_base;
 /**
  * Renderer class for template library.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,7 +45,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_tool_configure_page($page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('mod_lti/tool_configure', $data);
+        return parent::render_from_template('core_ltix/tool_configure', $data);
     }
 
     /**
@@ -57,7 +57,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_external_registration_return_page($page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('mod_lti/external_registration_return', $data);
+        return parent::render_from_template('core_ltix/external_registration_return', $data);
     }
 
     /**
@@ -69,7 +69,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_registration_upgrade_choice_page($page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('mod_lti/registration_upgrade_choice_page', $data);
+        return parent::render_from_template('core_ltix/registration_upgrade_choice_page', $data);
     }
 
     /**
@@ -81,7 +81,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_repost_crosssite_page(repost_crosssite_page $page): string {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('mod_lti/repost_crosssite', $data);
+        return parent::render_from_template('core_ltix/repost_crosssite', $data);
     }
 
     /**
@@ -96,7 +96,7 @@ class renderer extends plugin_renderer_base {
         $headerrenderable = $page->get_header();
         $table = $page->get_table();
         $headercontext = $headerrenderable->export_for_template($this);
-        $headeroutput = parent::render_from_template('mod_lti/course_tools_page_header', $headercontext);
+        $headeroutput = parent::render_from_template('core_ltix/course_tools_page_header', $headercontext);
 
         return $headeroutput . $table->output();
     }

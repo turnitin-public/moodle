@@ -17,7 +17,7 @@
 /**
  * Utility code for LTI service handling.
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  Copyright (c) 2011 Moodlerooms Inc. (http://www.moodlerooms.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Chris Scribner
@@ -26,15 +26,14 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/ltix/OAuthBody.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\ltix as lti;
 
-define('LTI_ITEM_TYPE', 'mod');
-define('LTI_ITEM_MODULE', 'lti');
-define('LTI_SOURCE', 'mod/lti');
+define('LTI_ITEM_TYPE', 'core');
+define('LTI_ITEM_MODULE', 'ltix');
+define('LTI_SOURCE', 'ltix');
 
 function lti_get_response_xml($codemajor, $description, $messageref, $messagetype) {
     $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><imsx_POXEnvelopeResponse />');
@@ -145,7 +144,7 @@ function lti_accepts_grades($ltiinstance) {
     $ltitype = $DB->get_record('lti_types', array('id' => $ltiinstance->typeid));
 
     if (empty($ltitype->toolproxyid)) {
-        $typeconfig = lti_get_config($ltiinstance);
+        $typeconfig = \core_ltix\service_helper::lti_get_config($ltiinstance);
 
         $typeacceptgrades = isset($typeconfig['acceptgrades']) ? $typeconfig['acceptgrades'] : LTI_SETTING_DELEGATE;
 
@@ -279,7 +278,7 @@ function lti_verify_message($key, $sharedsecrets, $body, $headers = null) {
  * @throws Exception
  */
 function lti_verify_sourcedid($ltiinstance, $parsed) {
-    $sourceid = lti_build_sourcedid($parsed->instanceid, $parsed->userid,
+    $sourceid = \core_ltix\service_helper::lti_build_sourcedid($parsed->instanceid, $parsed->userid,
         $ltiinstance->servicesalt, $parsed->typeid, $parsed->launchid);
 
     if ($sourceid->hash != $parsed->sourcedidhash) {

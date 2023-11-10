@@ -163,7 +163,7 @@ $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('ltitoolconfigure');
 $PAGE->navbar->add(get_string('manage_external_tools', 'ltix'), new moodle_url('/ltix/toolconfigure.php'));
 $PAGE->navbar->add(get_string('toolsetup', 'ltix'), $PAGE->url);
-$PAGE->requires->js_call_amd('mod_lti/coursecategory', 'init', [$type->lti_coursecategories]);//Change reference to core_ltix
+$PAGE->requires->js_call_amd('core_ltix/coursecategory', 'init', [$type->lti_coursecategories]);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('toolsetup', 'ltix'));

@@ -44,7 +44,7 @@ if (!empty($_POST["repost"])) {
     unset($_POST["repost"]);
 } else if (!isloggedin()) {
     header_remove("Set-Cookie");
-    $output = $PAGE->get_renderer('mod_lti');//Need to change to core_ltix when renderer is moved.
+    $output = $PAGE->get_renderer('core_ltix');
     $page = new \core_ltix\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
     echo $output->header();
     echo $output->render($page);
@@ -90,7 +90,7 @@ if (empty($errormsg) && !empty($items)) {
 echo $OUTPUT->header();
 
 // Call JS module to redirect the user to the course page or close the dialogue on error/cancel.
-$PAGE->requires->js_call_amd('mod_lti/contentitem_return', 'init', [$returndata]);//Need to move contentitem_return.js when ltix/amd
+$PAGE->requires->js_call_amd('core_ltix/contentitem_return', 'init', [$returndata]);
 
 echo $OUTPUT->footer();
 

@@ -48,7 +48,7 @@ $PAGE->requires->string_for_js('success', 'moodle');
 $PAGE->requires->string_for_js('error', 'moodle');
 $PAGE->requires->string_for_js('successfullycreatedtooltype', 'ltix');
 $PAGE->requires->string_for_js('failedtocreatetooltype', 'ltix');
-$output = $PAGE->get_renderer('mod_lti'); //This should be changed to core_ltix when renderer is moved.
+$output = $PAGE->get_renderer('core_ltix');
 
 echo $output->header();
 

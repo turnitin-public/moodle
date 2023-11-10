@@ -27,7 +27,7 @@ define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . "/../config.php");
-require_once($CFG->dirroot.'/mod/lti/servicelib.php');//TODO: Change reference to ltix.
+require_once($CFG->dirroot.'/ltix/servicelib.php');//TODO: Change reference to ltix.
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use mod_lti\service_exception_handler;

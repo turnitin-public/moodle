@@ -16,7 +16,7 @@
 /**
  * Select course categories for LTI tool.
  *
- * @module     mod_lti/coursecategory
+ * @module     core_ltix/coursecategory
  * @copyright  2023 Jackson D'souza <jackson.dsouza@catalyst-eu.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      4.3
@@ -40,7 +40,7 @@ define([], function() {
                 }
             }
 
-            const lticategorytree = document.querySelector('.modltitree');
+            const lticategorytree = document.querySelector('.modltitree'); // Need to change to .coreltitree whenn template folder is moved
             const ltitreecheckbox = lticategorytree.querySelectorAll('input[type="checkbox"]');
             let listvalue = '';
             for (let i = 0; i < ltitreecheckbox.length; i++) {
@@ -79,7 +79,7 @@ define([], function() {
         return parents;
     }
 
-    return /** @alias module:mod_lti/coursecategory */ {
+    return /** @alias module:core_ltix/coursecategory */ {
 
         /**
          * Initialise this module.
