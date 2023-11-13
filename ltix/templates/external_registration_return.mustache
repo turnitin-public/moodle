@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/external_registration_return
+    @template core_ltix/external_registration_return
 
     This template provides the layout for the external tool configuration page in the
     LTI module.
@@ -32,12 +32,12 @@
 }}
 <div id="external-registration-return-container">
     <div class="registration-loading-container loading-screen">
-        {{> mod_lti/loader }}
+        {{> core_ltix/loader }}
         <p class="loading-text">{{#str}} loadinghelp, moodle {{/str}}</p>
     </div>
 </div>
 {{#js}}
-    require(['mod_lti/external_registration'], function(registration) {
+    require(['core_ltix/external_registration'], function(registration) {
         registration.init();
     });
 {{/js}}

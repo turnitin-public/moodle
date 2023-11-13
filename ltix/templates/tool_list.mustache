@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/tool_list
+    @template core_ltix/tool_list
 
     This template provides a list of LTI tools.
 
@@ -35,12 +35,12 @@
 }}
 <div id="tool-card-container">
     {{^proxies}}{{^tools}}
-        <p>{{#str}} no_lti_tools, mod_lti {{/str}}</p>
+        <p>{{#str}} no_lti_tools, core_ltix {{/str}}</p>
     {{/tools}}{{/proxies}}
     {{#proxies}}
-        {{> mod_lti/tool_proxy_card }}
+        {{> core_ltix/tool_proxy_card }}
     {{/proxies}}
     {{#tools}}
-        {{> mod_lti/tool_card }}
+        {{> core_ltix/tool_card }}
     {{/tools}}
 </div>

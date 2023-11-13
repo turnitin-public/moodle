@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/tool_deeplinking_results
+    @template core_ltix/tool_deeplinking_results
 
     This template lists the items that will be added to the course after
     a deep linking flow.
@@ -45,14 +45,14 @@
     }
 }}
 <p>
-    {{#str}} contentitem_multiple_description, mod_lti {{/str}}
+    {{#str}} contentitem_multiple_description, core_ltix {{/str}}
 </p>
 <ul>
     {{#items}}
         <li>
             <strong>{{{name}}}</strong>
             {{#instructorchoiceacceptgrades}}
-                <em>{{#str}} contentitem_multiple_graded , mod_lti, {{{grade_modgrade_point}}} {{/str}}</em>
+                <em>{{#str}} contentitem_multiple_graded , core_ltix, {{{grade_modgrade_point}}} {{/str}}</em>
             {{/instructorchoiceacceptgrades}}
         </li>
     {{/items}}

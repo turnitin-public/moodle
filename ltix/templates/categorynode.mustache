@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/categorynode
+    @template core_ltix/categorynode
 
     Provides a template for the course categories tree view.
 
@@ -76,7 +76,7 @@
 
 
 {{^id}}
-    <div class="accordion modltitree" id="accordion">
+    <div class="accordion coreltixtree" id="accordion">
 {{/id}}
     {{#nodes}}
         {{#haschildren}}
@@ -92,7 +92,7 @@
             <div id="collapse{{{id}}}" class="accordion-body collapse">
                 <div class="accordion-inner">
                     <div class="accordion" id="accordion{{{id}}}">
-                        {{>mod_lti/categorynode}}
+                        {{>core_ltix/categorynode}}
                     </div>
                 </div>
             </div>

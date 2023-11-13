@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/tool_type_capabilities_agree
+    @template core_ltix/tool_type_capabilities_agree
 
     List of tool type's capabilities to be agreed to.
 
@@ -30,11 +30,11 @@
 
 }}
 <div class="capabilities-container tool-type-{{id}}">
-    <p>{{#str}} capabilitiesrequired, mod_lti {{/str}}</p>
+    <p>{{#str}} capabilitiesrequired, core_ltix {{/str}}</p>
     <ul>
         {{#capabilitygroups}}<li>{{.}}</li>{{/capabilitygroups}}
     </ul>
-    <p>{{#str}} confirmtoolactivation, mod_lti {{/str}}</p>
+    <p>{{#str}} confirmtoolactivation, core_ltix {{/str}}</p>
     <button class="yes btn btn-success">{{#str}} yes {{/str}}</button>
     <button class="no btn btn-danger">{{#str}} no {{/str}}</button>
 </div>

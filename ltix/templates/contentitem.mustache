@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/contentitem
+    @template core_ltix/contentitem
 
     Provides a template for the creation of a new external tool instance via the content-item message.
 
@@ -43,9 +43,9 @@
 }}
 <div id="contentitem-container" class="contentitem-container">
     <div class="contentitem-loading-container loading-screen">
-        {{> mod_lti/loader }}
+        {{> core_ltix/loader }}
         <p class="loading-text">{{#str}} loadinghelp, moodle {{/str}}</p>
-        <p id="tool-loading-failed" class="hidden">{{#str}} register_warning, mod_lti {{/str}}</p>
+        <p id="tool-loading-failed" class="hidden">{{#str}} register_warning, core_ltix {{/str}}</p>
     </div>
     <div class="contentitem-page">
         <iframe id="contentitem-page-iframe" name="contentitem-page-iframe" class="hidden" tabindex="0">

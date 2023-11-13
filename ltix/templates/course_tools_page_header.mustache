@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/course_tool_page_header
+    @template core_ltix/course_tool_page_header
 
     Contains the page header for the 'LTI External tools' course page.
 
@@ -43,14 +43,14 @@
 }}
 <div>
     <p>
-        {{#str}} courseexternaltoolsinfo, mod_lti {{/str}}
+        {{#str}} courseexternaltoolsinfo, core_ltix {{/str}}
     </p>
     {{#notoolsnotice}}
         {{> core/notification_info}}
     {{/notoolsnotice}}
     {{#addlink}}
         <div class="mb-3">
-            <a class="btn btn-primary" href="{{{.}}}">{{#str}}addtool, mod_lti{{/str}}</a>
+            <a class="btn btn-primary" href="{{{.}}}">{{#str}}addtool, core_ltix{{/str}}</a>
         </div>
     {{/addlink}}
 </div>

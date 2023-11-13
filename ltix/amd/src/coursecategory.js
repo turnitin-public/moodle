@@ -40,7 +40,7 @@ define([], function() {
                 }
             }
 
-            const lticategorytree = document.querySelector('.modltitree'); // Need to change to .coreltitree whenn template folder is moved
+            const lticategorytree = document.querySelector('.coreltixtree');
             const ltitreecheckbox = lticategorytree.querySelectorAll('input[type="checkbox"]');
             let listvalue = '';
             for (let i = 0; i < ltitreecheckbox.length; i++) {

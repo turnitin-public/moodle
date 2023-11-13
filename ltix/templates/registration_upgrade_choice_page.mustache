@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_lti/registration_upgrade_choice_page.mustache
+    @template core_ltix/registration_upgrade_choice_page.mustache
 
     This template provides the layout to display the upgrade choices
     available when registering a tool for which there exists at least
@@ -46,15 +46,15 @@
     }
 
 }}
-<p>{{#str}}dynreg_update_text, mod_lti {{/str}}</p>
+<p>{{#str}}dynreg_update_text, core_ltix {{/str}}</p>
 <div class="alert alert-warning" role="alert">
-{{#str}}dynreg_update_warn_dupdomain, mod_lti {{/str}}
+{{#str}}dynreg_update_warn_dupdomain, core_ltix {{/str}}
 </div>
 <table class="table table-striped">
 <tr>
-<th>{{#str}}dynreg_update_name, mod_lti {{/str}}</th>
-<th>{{#str}}dynreg_update_url, mod_lti {{/str}}</th>
-<th>{{#str}}dynreg_update_version, mod_lti {{/str}}</th>
+<th>{{#str}}dynreg_update_name, core_ltix {{/str}}</th>
+<th>{{#str}}dynreg_update_url, core_ltix {{/str}}</th>
+<th>{{#str}}dynreg_update_version, core_ltix {{/str}}</th>
 <th></th>
 </tr>
 {{#tools}}
@@ -63,20 +63,20 @@
   <td>{{baseurl}}</td>
   <td>{{ltiversion}}</td>
   <td><button data-href="startltiadvregistration.php?url={{startregurlenc}}&type={{id}}" class="btn btn-outline-primary">
-      <span class="btn-loader">{{> mod_lti/loader }}</span>
-      {{#str}}dynreg_update_btn_update, mod_lti {{/str}}
+      <span class="btn-loader">{{> core_ltix/loader }}</span>
+      {{#str}}dynreg_update_btn_update, core_ltix {{/str}}
       </button>
   </td>
   </tr>
 {{/tools}}
 </table>
 {{^tools}}
-{{#str}}dynreg_update_notools, mod_lti {{/str}}
+{{#str}}dynreg_update_notools, core_ltix {{/str}}
 {{/tools}}
 <div>
   <button data-href="startltiadvregistration.php?url={{startregurlenc}}&type=0" class="btn btn-primary">
-    <span class="btn-loader">{{> mod_lti/loader }}</span>
-    {{#str}}dynreg_update_btn_new, mod_lti {{/str}}
+    <span class="btn-loader">{{> core_ltix/loader }}</span>
+    {{#str}}dynreg_update_btn_new, core_ltix {{/str}}
   </button>
 </div>
 <form method="POST" id="startregform">
