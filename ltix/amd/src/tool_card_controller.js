@@ -17,15 +17,15 @@
  * Controls all of the behaviour and interaction with a tool type card. These are
  * listed on the LTI tool type management page.
  *
- * See template: mod_lti/tool_card
+ * See template: core_ltix/tool_card
  *
- * @module     mod_lti/tool_card_controller
+ * @module     core_ltix/tool_card_controller
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
  define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'core/modal',
-        'mod_lti/tool_type', 'mod_lti/events', 'mod_lti/keys',
+        'mod_lti/tool_type', 'core_ltix/events', 'core_ltix/keys',
         'core/str'],
         function($, ajax, notification, templates, Modal, toolType, ltiEvents, KEYS, str) {
 
@@ -237,15 +237,15 @@
         str.get_strings([
                 {
                     key: 'delete',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'delete_confirmation',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'delete',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'cancel',
@@ -481,7 +481,7 @@
             announceSuccess(element);
             return toolTypeData;
         }).then(function(toolTypeData) {
-            return templates.render('mod_lti/tool_card', toolTypeData);
+            return templates.render('core_ltix/tool_card', toolTypeData);
         }).then(function(html, js) {
             templates.replaceNode(element, html, js);
             return;
@@ -653,7 +653,7 @@
                     'authrequest': element.data('authrequesturl')
                 }
             };
-            var bodyPromise = templates.render('mod_lti/tool_config_modal_body', context);
+            var bodyPromise = templates.render('core_ltix/tool_config_modal_body', context);
             var mailTo = 'mailto:?subject=' + encodeURIComponent(element.data('mailtosubject')) +
                 '&body=' + encodeURIComponent(element.data('platformidstr')) + ':%20' +
                 encodeURIComponent(element.data('platformid')) + '%0D%0A' +
@@ -670,7 +670,7 @@
             context = {
                 'mailto': mailTo
             };
-            var footerPromise = templates.render('mod_lti/tool_config_modal_footer', context);
+            var footerPromise = templates.render('core_ltix/tool_config_modal_footer', context);
             Modal.create({
                 large: true,
                 title: element.data('modaltitle'),
@@ -681,7 +681,7 @@
         });
     };
 
-    return /** @alias module:mod_lti/tool_card_controller */ {
+    return /** @alias module:core_ltix/tool_card_controller */ {
 
         /**
          * Initialise this module.

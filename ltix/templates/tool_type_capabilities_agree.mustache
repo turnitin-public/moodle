@@ -39,7 +39,7 @@
     <button class="no btn btn-danger">{{#str}} no {{/str}}</button>
 </div>
 {{#js}}
-    require(['jquery', 'mod_lti/events', 'mod_lti/keys'], function($, ltiEvents, KEYS) {
+    require(['jquery', 'core_ltix/events', 'core_ltix/keys'], function($, ltiEvents, KEYS) {
         var container = $('.capabilities-container.tool-type-{{id}}');
         var yesButton = container.find('button.yes');
         var noButton = container.find('button.no');

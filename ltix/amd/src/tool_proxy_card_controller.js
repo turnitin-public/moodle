@@ -17,14 +17,14 @@
  * Controls all of the behaviour and interaction with a tool type card. These are
  * listed on the LTI tool type management page.
  *
- * See template: mod_lti/tool_proxy_card
+ * See template: core_ltix/tool_proxy_card
  *
- * @module     mod_lti/tool_proxy_card_controller
+ * @module     core_ltix/tool_proxy_card_controller
  * @copyright  2016 John Okely <john@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/tool_proxy', 'mod_lti/events', 'mod_lti/keys',
+define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/tool_proxy', 'core_ltix/events', 'core_ltix/keys',
         'core/str'],
         function($, ajax, notification, templates, toolProxy, ltiEvents, KEYS, str) {
 
@@ -172,15 +172,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/t
         str.get_strings([
                 {
                     key: 'delete',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'delete_confirmation',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'delete',
-                    component: 'mod_lti'
+                    component: 'core_ltix'
                 },
                 {
                     key: 'cancel',
@@ -268,7 +268,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/t
             });
     };
 
-    return /** @alias module:mod_lti/tool_card_controller */ {
+    return /** @alias module:core_ltix/tool_card_controller */ {
 
         /**
          * Initialise this module.

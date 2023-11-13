@@ -17,14 +17,14 @@
  * Encapsules the behavior for creating a tool type from a cartridge URL
  * in Moodle. Manages the UI while operations are occuring.
  *
- * See template: mod_lti/cartridge_registration_form
+ * See template: core_ltix/cartridge_registration_form
  *
- * @module     mod_lti/cartridge_registration_form
+ * @module     core_ltix/cartridge_registration_form
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'mod_lti/events', 'mod_lti/keys', 'core/str'],
+define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'core_ltix/events', 'core_ltix/keys', 'core/str'],
         function($, ajax, notification, toolType, ltiEvents, KEYS, str) {
 
     var SELECTORS = {
@@ -151,7 +151,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'mod_lt
         var promise = toolType.create({cartridgeurl: url, key: consumerKey, secret: sharedSecret});
 
         promise.done(function() {
-            str.get_string('successfullycreatedtooltype', 'mod_lti').done(function(s) {
+            str.get_string('successfullycreatedtooltype', 'core_ltix').done(function(s) {
                 $(document).trigger(ltiEvents.NEW_TOOL_TYPE);
                 $(document).trigger(ltiEvents.STOP_CARTRIDGE_REGISTRATION);
                 $(document).trigger(ltiEvents.REGISTRATION_FEEDBACK, {
@@ -159,7 +159,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'mod_lt
                 });
             }).fail(notification.exception);
         }).fail(function() {
-            str.get_string('failedtocreatetooltype', 'mod_lti').done(function(s) {
+            str.get_string('failedtocreatetooltype', 'core_ltix').done(function(s) {
                 $(document).trigger(ltiEvents.NEW_TOOL_TYPE);
                 $(document).trigger(ltiEvents.STOP_CARTRIDGE_REGISTRATION);
                 $(document).trigger(ltiEvents.REGISTRATION_FEEDBACK, {
@@ -202,7 +202,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'mod_lt
         });
     };
 
-    return /** @alias module:mod_lti/cartridge_registration_form */ {
+    return /** @alias module:core_ltix/cartridge_registration_form */ {
 
         /**
          * Initialise this module.

@@ -18,13 +18,13 @@
  * which can call any existing webservice using the current session.
  * In addition, it can batch multiple requests and return multiple responses.
  *
- * @module     mod_lti/tool_configure_controller
+ * @module     core_ltix/tool_configure_controller
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification', 'core/templates', 'mod_lti/events',
-        'mod_lti/keys', 'mod_lti/tool_types_and_proxies', 'mod_lti/tool_type', 'mod_lti/tool_proxy', 'core/str', 'core/config'],
+define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification', 'core/templates', 'core_ltix/events',
+        'core_ltix/keys', 'mod_lti/tool_types_and_proxies', 'mod_lti/tool_type', 'mod_lti/tool_proxy', 'core/str', 'core/config'],
         function($, ajax,
                  pagedContentFactory, notification, templates, ltiEvents, KEYS,
                  toolTypesAndProxies, toolType, toolProxy, str, config) {
@@ -393,7 +393,7 @@ define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification'
             tools: data.types,
             proxies: data.proxies,
         };
-        return templates.render('mod_lti/tool_list', context)
+        return templates.render('core_ltix/tool_list', context)
             .done(function(html, js) {
                     return {html, js};
                 }
@@ -450,7 +450,7 @@ define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification'
         });
 
         promise.fail(function() {
-            str.get_string('errorbadurl', 'mod_lti')
+            str.get_string('errorbadurl', 'core_ltix')
                 .done(function(s) {
                         $(document).trigger(ltiEvents.REGISTRATION_FEEDBACK, {
                                 message: s,
@@ -515,7 +515,7 @@ define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification'
 
     };
 
-    return /** @alias module:mod_lti/cartridge_registration_form */ {
+    return /** @alias module:core_ltix/cartridge_registration_form */ {
 
         /**
          * Initialise this module.

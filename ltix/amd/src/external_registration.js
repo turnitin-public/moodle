@@ -20,15 +20,15 @@
  * Manages the UI while operations are occuring, including rendering external
  * registration page within the iframe.
  *
- * See template: mod_lti/external_registration
+ * See template: core_ltix/external_registration
  *
- * @module     mod_lti/external_registration
+ * @module     core_ltix/external_registration
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/events',
-        'mod_lti/tool_proxy', 'mod_lti/tool_type', 'mod_lti/keys', 'core/str'],
+define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'core_ltix/events',
+        'mod_lti/tool_proxy', 'mod_lti/tool_type', 'core_ltix/keys', 'core/str'],
         function($, ajax, notification, templates, ltiEvents, toolProxy, toolType, KEYS, str) {
 
     var SELECTORS = {
@@ -268,7 +268,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
      * Gets the external registration request required to be sent to the external
      * registration page using a form.
      *
-     * See mod_lti/tool_proxy_registration_form template.
+     * See core_ltix/tool_proxy_registration_form template.
      *
      * @method getRegistrationRequest
      * @private
@@ -277,7 +277,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
      */
     var getRegistrationRequest = function(id) {
         var request = {
-            methodname: 'mod_lti_get_tool_proxy_registration_request',
+            methodname: 'core_ltix_get_tool_proxy_registration_request',
             args: {
                 id: id
             }
@@ -319,7 +319,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
             notification.exception(failure);
             finishExternalRegistration();
             stopLoadingCancel();
-            str.get_string('failedtodeletetoolproxy', 'mod_lti').done(function(s) {
+            str.get_string('failedtodeletetoolproxy', 'core_ltix').done(function(s) {
                 var feedback = {
                     message: s,
                     error: true
@@ -340,7 +340,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
      * @return {Promise} jQuery Deferred object
      */
     var renderExternalRegistrationWindow = function(registrationRequest) {
-        var promise = templates.render('mod_lti/tool_proxy_registration_form', registrationRequest);
+        var promise = templates.render('core_ltix/tool_proxy_registration_form', registrationRequest);
 
         promise.done(function(html, js) {
             // Show the external registration page in an iframe.
@@ -386,7 +386,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
     var promptForToolTypeCapabilitiesAgreement = function(typeData) {
         var promise = $.Deferred();
 
-        templates.render('mod_lti/tool_type_capabilities_agree', typeData).done(function(html, js) {
+        templates.render('core_ltix/tool_type_capabilities_agree', typeData).done(function(html, js) {
             var container = getToolTypeCapabilitiesTemplateContainer();
 
             hideExternalRegistrationContent();
@@ -559,7 +559,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
         // from the external registration page and handles the external page's returned
         // parameters.
         //
-        // See AMD module mod_lti/external_registration_return.
+        // See AMD module core_ltix/external_registration_return.
         window.triggerExternalRegistrationComplete = function(data) {
             var promise = $.Deferred();
             var feedback = {
@@ -568,7 +568,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/e
             };
 
             if (data.status == "success") {
-                str.get_string('successfullycreatedtooltype', 'mod_lti').done(function(s) {
+                str.get_string('successfullycreatedtooltype', 'core_ltix').done(function(s) {
                     feedback.message = s;
                 }).fail(notification.exception);
 

@@ -80,6 +80,7 @@ real estate to the tool, and others provide a more integrated feel with the Mood
 $string['delegate'] = 'Delegate to teacher';
 $string['delegate_tool'] = 'As specified in Deep Linking definition or Delegate to teacher';
 $string['delete'] = 'Delete';
+$string['delete_confirmation'] = 'Are you sure you want to delete this preconfigured tool?';
 $string['duplicateregurl'] = 'This registration URL is already in use';
 $string['dynreg_update_btn_new'] = 'Register as a new external tool';
 $string['dynreg_update_btn_update'] = 'Update';
@@ -94,12 +95,14 @@ $string['embed'] = 'Embed';
 $string['embed_no_blocks'] = 'Embed, without blocks';
 $string['enterkeyandsecret'] = 'Enter your consumer key and shared secret';
 $string['enterkeyandsecret_help'] = 'If you were given a consumer key and/or shared secret, input them here';
+$string['errorbadurl'] = 'URL is not a valid tool URL or cartridge.';
 $string['errorincorrectconsumerkey'] = 'Consumer key is incorrect.';
 $string['errorinvaliddata'] = 'Invalid data: {$a}';
 $string['errorinvalidresponseformat'] = 'Invalid Content-Item response format.';
 $string['errortooltypenotfound'] = 'LTI tool type not found.';
 $string['existing_window'] = 'Existing window';
 $string['failedtocreatetooltype'] = 'Failed to create new tool. Please check the URL and try again.';
+$string['failedtodeletetoolproxy'] = 'Failed to delete tool registration. You may need to visit "Manage external tool registrations" and delete it manually.';
 $string['force_ssl'] = 'Force SSL';
 $string['force_ssl_help'] = 'Selecting this option forces all launches to this tool provider to use SSL.
 

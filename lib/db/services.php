@@ -816,6 +816,14 @@ $functions = array(
         'ajax' => true,
         'readonlysession' => false, // Fetching removes from stack.
     ),
+    'core_ltix_get_tool_proxy_registration_request' => array(
+        'classname'     => 'core_ltix_external',
+        'methodname'    => 'get_tool_proxy_registration_request',
+        'description'   => 'Get a registration request for a tool proxy',
+        'type'          => 'read',
+        'capabilities'  => 'moodle/site:config',
+        'ajax'          => true
+    ),
     'core_session_touch' => array(
         'classname' => 'core\session\external',
         'methodname' => 'touch_session',

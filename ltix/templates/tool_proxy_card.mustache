@@ -44,7 +44,7 @@
         "id": 1,
         "name": "Test Tool",
         "urls": {
-            "edit": "https://moodle.example.com/mod/lti/registersettings.php",
+            "edit": "https://moodle.example.com/ltix/registersettings.php",
             "icon": "https://moodle.example.com/theme/image.php/boost/lti/-1/icon"
         },
         "state": {
@@ -114,7 +114,7 @@
     </div>
 </div>
 {{#js}}
-    require(['jquery', 'mod_lti/tool_proxy_card_controller'], function($, controller) {
+    require(['jquery', 'core_ltix/tool_proxy_card_controller'], function($, controller) {
         var cardElement = $('[data-proxy-id={{id}}]');
         controller.init(cardElement);
     });
