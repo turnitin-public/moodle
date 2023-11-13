@@ -911,7 +911,7 @@ class types_helper {
      *
      * @return string                   HTML for tab
      */
-    function get_tool_proxy_table($toolproxies, $id) {
+    public static function get_tool_proxy_table($toolproxies, $id) {
         global $OUTPUT;
 
         if (!empty($toolproxies)) {
