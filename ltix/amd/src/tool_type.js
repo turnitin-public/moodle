@@ -16,7 +16,7 @@
 /**
  * Provides an interface for a tool type in the Moodle server.
  *
- * @module     mod_lti/tool_type
+ * @module     core_ltix/tool_type
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
@@ -28,7 +28,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          * search args.
          *
          * See also:
-         * mod/lti/classes/external.php get_tool_types_parameters()
+         * ltix/classes/external.php get_tool_types_parameters()
          *
          * @method query
          * @public
@@ -37,7 +37,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          */
         query: function(args) {
             var request = {
-                methodname: 'mod_lti_get_tool_types',
+                methodname: 'core_ltix_get_tool_types',
                 args: args || {}
             };
 
@@ -54,7 +54,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          * The promise will fail if the URL is not a cartridge, so you must handle the fail result.
          *
          * See also:
-         * mod/lti/classes/external.php create_tool_type_parameters()
+         * ltix/classes/external.php create_tool_type_parameters()
          *
          * @method create
          * @public
@@ -63,7 +63,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          */
         create: function(args) {
             var request = {
-                methodname: 'mod_lti_create_tool_type',
+                methodname: 'core_ltix_create_tool_type',
                 args: args
             };
 
@@ -76,7 +76,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          * Update a tool type in Moodle.
          *
          * See also:
-         * mod/lti/classes/external.php update_tool_type_parameters()
+         * ltix/classes/external.php update_tool_type_parameters()
          *
          * @method update
          * @public
@@ -85,7 +85,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          */
         update: function(args) {
             var request = {
-                methodname: 'mod_lti_update_tool_type',
+                methodname: 'core_ltix_update_tool_type',
                 args: args
             };
 
@@ -106,7 +106,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          */
         'delete': function(id) {
             var request = {
-                methodname: 'mod_lti_delete_tool_type',
+                methodname: 'core_ltix_delete_tool_type',
                 args: {
                     id: id
                 }
@@ -144,7 +144,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          */
         isCartridge: function(url) {
             var request = {
-                methodname: 'mod_lti_is_cartridge',
+                methodname: 'core_ltix_is_cartridge',
                 args: {
                     url: url
                 }

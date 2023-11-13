@@ -25,7 +25,7 @@
  * @since      3.1
  */
  define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'core/modal',
-        'mod_lti/tool_type', 'core_ltix/events', 'core_ltix/keys',
+        'core_ltix/tool_type', 'core_ltix/events', 'core_ltix/keys',
         'core/str'],
         function($, ajax, notification, templates, Modal, toolType, ltiEvents, KEYS, str) {
 

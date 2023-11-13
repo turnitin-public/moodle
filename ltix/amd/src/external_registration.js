@@ -28,7 +28,7 @@
  * @since      3.1
  */
 define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'core_ltix/events',
-        'mod_lti/tool_proxy', 'mod_lti/tool_type', 'core_ltix/keys', 'core/str'],
+        'core_ltix/tool_proxy', 'core_ltix/tool_type', 'core_ltix/keys', 'core/str'],
         function($, ajax, notification, templates, ltiEvents, toolProxy, toolType, KEYS, str) {
 
     var SELECTORS = {

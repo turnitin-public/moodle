@@ -17,9 +17,9 @@
  * Handles the return params from the external registration page after it
  * redirects back to Moodle.
  *
- * See also: mod/lti/externalregistrationreturn.php
+ * See also: ltix/externalregistrationreturn.php
  *
- * @module     mod_lti/external_registration_return
+ * @module     core_ltix/external_registration_return
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1

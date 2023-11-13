@@ -17,7 +17,7 @@
 /**
  * External tool module external API
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @category   external
  * @copyright  2015 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,19 +35,16 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
 /**
  * External tool module external functions
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @category   external
  * @copyright  2015 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-class mod_lti_external extends external_api {
+class core_ltix_external extends external_api {
 
     /**
      * Returns structure be used for returning a tool type from a web service.
@@ -196,7 +193,6 @@ class mod_lti_external extends external_api {
      */
     public static function get_tool_launch_data($toolid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/lib.php');
 
         $params = self::validate_parameters(self::get_tool_launch_data_parameters(),
                                             array(
@@ -214,7 +210,7 @@ class mod_lti_external extends external_api {
         require_capability('mod/lti:view', $context);
 
         $lti->cmid = $cm->id;
-        list($endpoint, $parms) = lti_get_launch_data($lti);
+        list($endpoint, $parms) = \core_ltix\endpoints_helper::get_launch_data($lti);
 
         $parameters = array();
         foreach ($parms as $name => $value) {

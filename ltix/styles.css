@@ -392,37 +392,37 @@
     vertical-align: middle;
 }
 
-#accordion.modltitree {
+#accordion.coreltixtree {
     border-radius: 4px;
     padding-left: 8px;
 }
 
-#accordion.modltitree .accordion-inner {
+#accordion.coreltixtree .accordion-inner {
     padding-left: 20px;
 }
 
-#accordion.modltitree .accordion-inner .accordion p {
+#accordion.coreltixtree .accordion-inner .accordion p {
     margin-bottom: 0;
     padding-left: 15px;
 }
 
-#accordion.modltitree .accordion-group {
+#accordion.coreltixtree .accordion-group {
     padding-left: 15px;
     padding-bottom: 4px;
     position: relative;
 }
 
-#accordion.modltitree .accordion-group span {
+#accordion.coreltixtree .accordion-group span {
     padding: 0 4px 0;
 }
 
-#accordion.modltitree .accordion-group .accordion-heading .accordion-toggle::before {
+#accordion.coreltixtree .accordion-group .accordion-heading .accordion-toggle::before {
     content: url([[pix:t/expanded]]);
     position: absolute;
     left: -5px;
 }
 
-#accordion.modltitree .accordion-group .accordion-heading .accordion-toggle.collapsed::before {
+#accordion.coreltixtree .accordion-group .accordion-heading .accordion-toggle.collapsed::before {
     content: url([[pix:t/collapsed]]);
 }
 

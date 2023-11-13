@@ -24,7 +24,7 @@
  * @since      3.1
  */
 define(['jquery', 'core/ajax', 'core/paged_content_factory', 'core/notification', 'core/templates', 'core_ltix/events',
-        'core_ltix/keys', 'mod_lti/tool_types_and_proxies', 'mod_lti/tool_type', 'mod_lti/tool_proxy', 'core/str', 'core/config'],
+        'core_ltix/keys', 'core_ltix/tool_types_and_proxies', 'core_ltix/tool_type', 'core_ltix/tool_proxy', 'core/str', 'core/config'],
         function($, ajax,
                  pagedContentFactory, notification, templates, ltiEvents, KEYS,
                  toolTypesAndProxies, toolType, toolProxy, str, config) {

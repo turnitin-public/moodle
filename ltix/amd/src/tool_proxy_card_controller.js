@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'mod_lti/tool_proxy', 'core_ltix/events', 'core_ltix/keys',
+define(['jquery', 'core/ajax', 'core/notification', 'core/templates', 'core_ltix/tool_proxy', 'core_ltix/events', 'core_ltix/keys',
         'core/str'],
         function($, ajax, notification, templates, toolProxy, ltiEvents, KEYS, str) {
 

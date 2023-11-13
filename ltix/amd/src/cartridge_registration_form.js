@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/ajax', 'core/notification', 'mod_lti/tool_type', 'core_ltix/events', 'core_ltix/keys', 'core/str'],
+define(['jquery', 'core/ajax', 'core/notification', 'core_ltix/tool_type', 'core_ltix/events', 'core_ltix/keys', 'core/str'],
         function($, ajax, notification, toolType, ltiEvents, KEYS, str) {
 
     var SELECTORS = {

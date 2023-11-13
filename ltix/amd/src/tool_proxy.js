@@ -16,7 +16,7 @@
 /**
  * Provides an interface for a tool proxy in the Moodle server.
  *
- * @module     mod_lti/tool_proxy
+ * @module     core_ltix/tool_proxy
  * @copyright  2015 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
@@ -28,7 +28,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          * search args.
          *
          * See also:
-         * mod/lti/classes/external.php get_tool_types_parameters()
+         * ltix/classes/external.php get_tool_types_parameters()
          *
          * @method query
          * @public
@@ -75,7 +75,7 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
          *
          * The promise will fail if the proxy cannot be created, so you must handle the fail result.
          *
-         * See mod/lti/classes/external.php create_tool_proxy_parameters
+         * See ltix/classes/external.php create_tool_proxy_parameters
          *
          * @method create
          * @public

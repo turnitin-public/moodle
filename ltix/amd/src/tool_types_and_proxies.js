@@ -16,7 +16,7 @@
 /**
  * Provides an interface for external tools in the Moodle server.
  *
- * @module     mod_lti/tool_types_and_proxies
+ * @module     core_ltix/tool_types_and_proxies
  * @class      tool_types_and_proxies
  * @copyright  2020 Andrew Madden <andrewmadden@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,7 +29,7 @@ import ajax from 'core/ajax';
  * search args.
  *
  * See also:
- * mod/lti/classes/external.php get_tool_types_and_proxies()
+ * ltix/classes/external.php get_tool_types_and_proxies()
  *
  * @method query
  * @public
@@ -50,7 +50,7 @@ export const query = (args) => {
  * search args.
  *
  * See also:
- * mod/lti/classes/external.php get_tool_types_and_proxies_count()
+ * ltix/classes/external.php get_tool_types_and_proxies_count()
  *
  * @method count
  * @public
