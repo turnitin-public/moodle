@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/ltix/OAuth.php');
 require_once($CFG->dirroot . '/ltix/TrivialStore.php');
 
+use core_ltix\local\ltiservice\service_helper;
+
 /**
  * A resource implementing the Tool Proxy.
  *
