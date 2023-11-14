@@ -3691,7 +3691,7 @@ privatefiles,moodle|/user/files.php';
             set_config('privatekey', null, 'mod_lti');
         }
 
-        $servicetypes = ['basicoutcomes'];
+        $servicetypes = ['basicoutcomes', 'profile'];
         foreach ($servicetypes as $type) {
             $versionFile = $CFG->dirroot . "mod/lti/service/{$type}/version.php";
         

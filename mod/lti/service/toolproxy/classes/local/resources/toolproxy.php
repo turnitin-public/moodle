@@ -33,6 +33,7 @@ require_once($CFG->dirroot . '/ltix/TrivialStore.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\ltix as lti;
+use core_ltix\local\ltiservice\service_helper;
 
 /**
  * A resource implementing the Tool Proxy.
@@ -123,7 +124,7 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
         $requestsbasicoutcomes = false;
         if ($ok && isset($toolproxyjson->security_contract->tool_service)) {
             $contexts = lti_get_contexts($toolproxyjson);
-            $profileservice = lti_get_service_by_name('profile');
+            $profileservice = service_helper::get_service_by_name('profile');
             $profileservice->set_tool_proxy($toolproxy);
             $context = $profileservice->get_service_path() . $profileservice->get_resources()[0]->get_path() . '#';
             $offeredservices = explode("\n", $toolproxy->serviceoffered);

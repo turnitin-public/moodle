@@ -53,6 +53,7 @@ defined('MOODLE_INTERNAL') || die;
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use mod_lti\helper;
 use moodle\ltix as lti;
+use core_ltix\local\ltiservice\service_helper;
 
 global $CFG;
 require_once($CFG->dirroot.'/ltix/OAuth.php');
@@ -346,7 +347,7 @@ function lti_build_registration_request($toolproxy) {
     $requestparams['reg_url'] = $toolproxy->regurl;
 
     // Add the profile URL.
-    $profileservice = lti_get_service_by_name('profile');
+    $profileservice = service_helper::get_service_by_name('profile');
     $profileservice->set_tool_proxy($toolproxy);
     $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');
 
