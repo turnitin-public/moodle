@@ -35,7 +35,7 @@
 /**
  * This file defines tasks performed by the plugin.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2020 Cengage Learning http://www.cengage.com
  * @author     Claude Vervoort
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -44,7 +44,7 @@
  defined('MOODLE_INTERNAL') || die;
 
 /**
- * xmldb_ltiservice_gradebookservices_upgrade is the function that upgrades
+ * xmldb_ltixservice_gradebookservices_upgrade is the function that upgrades
  * the gradebook lti service subplugin database when is needed.
  *
  * This function is automatically called when version number in
@@ -54,14 +54,14 @@
  *
  * @return boolean
  */
-function xmldb_ltiservice_gradebookservices_upgrade($oldversion) {
+function xmldb_ltixservice_gradebookservices_upgrade($oldversion) {
     global $CFG, $DB, $OUTPUT;
 
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2020042401) {
         // Define field typeid to be added to lti_tool_settings.
-        $table = new xmldb_table('ltiservice_gradebookservices');
+        $table = new xmldb_table('ltixservice_gradebookservices');
         $field = new xmldb_field('resourceid', XMLDB_TYPE_CHAR, "512", null, null, null, null);
 
         // Conditionally launch add field typeid.
@@ -78,14 +78,14 @@ function xmldb_ltiservice_gradebookservices_upgrade($oldversion) {
         // Prior implementation was storing the resourceid under the grade item idnumber, so moving it to lti_gradebookservices.
         // We only care for mod/lti grade items as manual columns would already have a matching gradebookservices record.
 
-        $DB->execute("INSERT INTO {ltiservice_gradebookservices}
+        $DB->execute("INSERT INTO {ltixservice_gradebookservices}
                 (gradeitemid, courseid, typeid, ltilinkid, resourceid, baseurl, toolproxyid)
          SELECT gi.id, courseid, lti.typeid, lti.id, gi.idnumber, t.baseurl, t.toolproxyid
            FROM {grade_items} gi
            JOIN {lti} lti ON lti.id=gi.iteminstance AND gi.itemtype='mod' AND gi.itemmodule='lti'
            JOIN {lti_types} t ON t.id = lti.typeid
           WHERE gi.id NOT IN ( SELECT gradeitemid
-                                 FROM {ltiservice_gradebookservices} )
+                                 FROM {ltixservice_gradebookservices} )
              AND gi.idnumber IS NOT NULL
              AND gi.idnumber <> ''");
 
@@ -95,7 +95,7 @@ function xmldb_ltiservice_gradebookservices_upgrade($oldversion) {
 
     if ($oldversion < 2020042403) {
         // Here updating the resourceid of pre-existing lti_gradebookservices.
-        $DB->execute("UPDATE {ltiservice_gradebookservices}
+        $DB->execute("UPDATE {ltixservice_gradebookservices}
                          SET resourceid = (SELECT idnumber FROM {grade_items} WHERE id=gradeitemid)
                        WHERE gradeitemid in (SELECT id FROM {grade_items}
                                              WHERE ((itemtype='mod' AND itemmodule='lti') OR itemtype='manual')
@@ -114,7 +114,7 @@ function xmldb_ltiservice_gradebookservices_upgrade($oldversion) {
     // Put any upgrade step following this.
 
     if ($oldversion < 2022051900) {
-        $table = new xmldb_table('ltiservice_gradebookservices');
+        $table = new xmldb_table('ltixservice_gradebookservices');
         $field = new xmldb_field('subreviewurl', XMLDB_TYPE_TEXT, null, null, null, null, null);
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);

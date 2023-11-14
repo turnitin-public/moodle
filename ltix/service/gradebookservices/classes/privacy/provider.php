@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for ltiservice_gradebookservices.
+ * Privacy Subsystem implementation for ltixservice_gradebookservices.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2018 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace ltiservice_gradebookservices\privacy;
+namespace ltixservice_gradebookservices\privacy;
 
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
@@ -33,7 +33,7 @@ use \core_privacy\local\request\approved_userlist;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for ltiservice_gradebookservices.
+ * Privacy Subsystem for ltixservice_gradebookservices.
  *
  * @copyright  2018 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

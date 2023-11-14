@@ -17,23 +17,23 @@
 /**
  * This file contains a class definition for the LISResult container resource
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @author     Dirk Singels, Diego del Blanco, Claude Vervoort
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace ltiservice_gradebookservices\local\resources;
+namespace ltixservice_gradebookservices\local\resources;
 
-use ltiservice_gradebookservices\local\service\gradebookservices;
-use mod_lti\local\ltiservice\resource_base;
+use ltixservice_gradebookservices\local\service\gradebookservices;
+use core_ltix\local\ltiservice\resource_base;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing LISResult container.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -42,7 +42,7 @@ class scores extends resource_base {
     /**
      * Class constructor.
      *
-     * @param \ltiservice_gradebookservices\local\service\gradebookservices $service Service instance
+     * @param \ltixservice_gradebookservices\local\service\gradebookservices $service Service instance
      */
     public function __construct($service) {
 
@@ -59,7 +59,7 @@ class scores extends resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param \mod_lti\local\ltiservice\response $response  Response object for this request.
+     * @param \core_ltix\local\ltiservice\response $response  Response object for this request.
      */
     public function execute($response) {
         global $CFG, $DB;
@@ -105,7 +105,7 @@ class scores extends resource_base {
             if ($item === false) {
                 throw new \Exception('Line item does not exist', 404);
             }
-            $gbs = gradebookservices::find_ltiservice_gradebookservice_for_lineitem($itemid);
+            $gbs = gradebookservices::find_ltixservice_gradebookservice_for_lineitem($itemid);
             $ltilinkid = null;
             if (isset($item->iteminstance)) {
                 $ltilinkid = $item->iteminstance;
@@ -161,7 +161,7 @@ class scores extends resource_base {
     /**
      * Generate the JSON for a POST request.
      *
-     * @param \mod_lti\local\ltiservice\response $response Response object for this request.
+     * @param \core_ltix\local\ltiservice\response $response Response object for this request.
      * @param string $body POST body
      * @param object $item Grade item instance
      * @param string $contextid

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'ltiservice_gradebookservices', language 'en'
+ * Strings for component 'ltixservice_gradebookservices', language 'en'
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @author     Dirk Singels, Diego del Blanco, Claude Vervoort
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,7 +30,7 @@ $string['grade_synchronization_help'] = 'Whether to use the IMS LTI Assignment a
 * **Do not use this service** -  Basic Outcomes features and configuration will be used
 * **Use this service for grade sync only** - The service will populate the grades in an already existing gradebook column, but it will not be able to create new columns
 * **Use this service for grade sync and column management** -  The service will be able to create and update gradebook columns and manage the grades.';
-$string['ltiservice_gradebookservices'] = 'IMS LTI Assignment and Grade Services';
+$string['ltixservice_gradebookservices'] = 'IMS LTI Assignment and Grade Services';
 $string['modulename'] = 'LTI Grades';
 $string['nevergs'] = 'Do not use this service';
 $string['partialgs'] = 'Use this service for grade sync only';

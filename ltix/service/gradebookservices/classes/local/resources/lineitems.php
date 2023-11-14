@@ -17,23 +17,23 @@
 /**
  * This file contains a class definition for the LineItem container resource
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @author     Dirk Singels, Diego del Blanco, Claude Vervoort
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace ltiservice_gradebookservices\local\resources;
+namespace ltixservice_gradebookservices\local\resources;
 
-use ltiservice_gradebookservices\local\service\gradebookservices;
-use mod_lti\local\ltiservice\resource_base;
+use ltixservice_gradebookservices\local\service\gradebookservices;
+use core_ltix\local\ltiservice\resource_base;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing LineItem container.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -42,7 +42,7 @@ class lineitems extends resource_base {
     /**
      * Class constructor.
      *
-     * @param \ltiservice_gradebookservices\local\service\gradebookservices $service Service instance
+     * @param \ltixservice_gradebookservices\local\service\gradebookservices $service Service instance
      */
     public function __construct($service) {
 
@@ -60,7 +60,7 @@ class lineitems extends resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param \mod_lti\local\ltiservice\response $response  Response object for this request.
+     * @param \core_ltix\local\ltiservice\response $response  Response object for this request.
      */
     public function execute($response) {
         global $DB;
@@ -138,7 +138,7 @@ class lineitems extends resource_base {
      * @param int $limitnum Maximum number of line items to return, ignored if zero or less
      * @param int $totalcount Number of total lineitems before filtering for paging
      * @param int $typeid Maximum number of line items to return, ignored if zero or less
-     * @param \mod_lti\local\ltiservice\response $response
+     * @param \core_ltix\local\ltiservice\response $response
 
      * @return string
      */

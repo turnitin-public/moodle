@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace ltiservice_gradebookservices;
+namespace ltixservice_gradebookservices;
 
-use ltiservice_gradebookservices\local\service\gradebookservices;
+use ltixservice_gradebookservices\local\service\gradebookservices;
 
 /**
  * Unit tests for lti gradebookservices.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @category   test
  * @copyright  2020 Claude Vervoort <claude.vervoort@cengage.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \mod_lti\service\gradebookservices\local\gradebookservices
+ * @coversDefaultClass \core_ltix\service\gradebookservices\local\gradebookservices
  */
 class gradebookservices_test extends \advanced_testcase {
 
@@ -37,9 +37,6 @@ class gradebookservices_test extends \advanced_testcase {
      * that can be retrieved using the gradebook service API.
      */
     public function test_lti_add_coupled_lineitem() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -56,7 +53,7 @@ class gradebookservices_test extends \advanced_testcase {
 
         $this->assertNotNull($ltiinstance);
 
-        $gbs = gradebookservices::find_ltiservice_gradebookservice_for_lti($ltiinstance->id);
+        $gbs = gradebookservices::find_ltixservice_gradebookservice_for_lti($ltiinstance->id);
 
         $this->assertNotNull($gbs);
         $this->assertEquals($resourceid, $gbs->resourceid);
@@ -75,9 +72,6 @@ class gradebookservices_test extends \advanced_testcase {
      * that can be retrieved using the gradebook service API.
      */
     public function test_lti_add_coupled_lineitem_default_subreview() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -92,7 +86,7 @@ class gradebookservices_test extends \advanced_testcase {
 
         $this->assertNotNull($ltiinstance);
 
-        $gbs = gradebookservices::find_ltiservice_gradebookservice_for_lti($ltiinstance->id);
+        $gbs = gradebookservices::find_ltixservice_gradebookservice_for_lti($ltiinstance->id);
 
         $this->assertNotNull($gbs);
         $this->assertEquals('DEFAULT', $gbs->subreviewurl);
@@ -120,7 +114,7 @@ class gradebookservices_test extends \advanced_testcase {
     }
 
     /**
-     * @covers ::find_ltiservice_gradebookservice_for_lti
+     * @covers ::find_ltixservice_gradebookservice_for_lti
      *
      * Test line item URL is populated for coupled line item only
      * if there is not another line item bound to the lti instance,
@@ -128,9 +122,6 @@ class gradebookservices_test extends \advanced_testcase {
      * the line items should be actually passed.
      */
     public function test_get_launch_parameters_coupled() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -162,9 +153,6 @@ class gradebookservices_test extends \advanced_testcase {
      * launch is submission review.
      */
     public function test_get_launch_parameters_coupled_subreview_override() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -193,9 +181,6 @@ class gradebookservices_test extends \advanced_testcase {
      * launch is submission review.
      */
     public function test_get_launch_parameters_coupled_subreview_override_default() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -224,9 +209,6 @@ class gradebookservices_test extends \advanced_testcase {
      * if there is a single line item attached to that lti instance.
      */
     public function test_get_launch_parameters_decoupled() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
-
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -406,6 +388,8 @@ class gradebookservices_test extends \advanced_testcase {
      * Creates a new LTI Tool Type.
      */
     private function create_type() {
+        global $CFG;
+        require_once($CFG->dirroot . '/ltix/constants.php');
         $type = new \stdClass();
         $type->state = LTI_TOOL_STATE_CONFIGURED;
         $type->name = "Test tool";
@@ -414,7 +398,7 @@ class gradebookservices_test extends \advanced_testcase {
         $type->baseurl = $this->getExternalTestFileUrl('/test.html');
 
         $config = new \stdClass();
-        $config->ltiservice_gradesynchronization = 2;
+        $config->ltixservice_gradesynchronization = 2;
         return \core_ltix\types_helper::add_type($type, $config);
     }
 }

@@ -17,23 +17,23 @@
 /**
  * This file contains a class definition for the LineItem resource
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @author     Dirk Singels, Diego del Blanco, Claude Vervoort
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace ltiservice_gradebookservices\local\resources;
+namespace ltixservice_gradebookservices\local\resources;
 
-use ltiservice_gradebookservices\local\service\gradebookservices;
-use mod_lti\local\ltiservice\resource_base;
+use ltixservice_gradebookservices\local\service\gradebookservices;
+use core_ltix\local\ltiservice\resource_base;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * A resource implementing LineItem.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @copyright  2017 Cengage Learning http://www.cengage.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -60,7 +60,7 @@ class lineitem extends resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param \mod_lti\local\ltiservice\response $response  Response object for this request.
+     * @param \core_ltix\local\ltiservice\response $response  Response object for this request.
      */
     public function execute($response) {
         global $CFG, $DB;
@@ -119,7 +119,7 @@ class lineitem extends resource_base {
     /**
      * Process a GET request.
      *
-     * @param \mod_lti\local\ltiservice\response $response Response object for this request.
+     * @param \core_ltix\local\ltiservice\response $response Response object for this request.
      * @param object $item Grade item instance.
      * @param string $typeid Tool Type Id
      */
@@ -136,7 +136,7 @@ class lineitem extends resource_base {
      * Process a PUT request.
      *
      * @param string $body PUT body
-     * @param \ltiservice_gradebookservices\local\resources\lineitem $olditem Grade item instance
+     * @param \ltixservice_gradebookservices\local\resources\lineitem $olditem Grade item instance
      * @param string $typeid Tool Type Id
      *
      * @return string
@@ -151,7 +151,7 @@ class lineitem extends resource_base {
             throw new \Exception(null, 400);
         }
         $item = \grade_item::fetch(array('id' => $olditem->id, 'courseid' => $olditem->courseid));
-        $gbs = gradebookservices::find_ltiservice_gradebookservice_for_lineitem($olditem->id);
+        $gbs = gradebookservices::find_ltixservice_gradebookservice_for_lineitem($olditem->id);
         $updategradeitem = false;
         $rescalegrades = false;
         $oldgrademax = grade_floatval($item->grademax);
@@ -242,7 +242,7 @@ class lineitem extends resource_base {
             }
         }
         if ($updategradeitem) {
-            if (!$item->update('mod/ltiservice_gradebookservices')) {
+            if (!$item->update('mod/ltixservice_gradebookservices')) {
                 throw new \Exception(null, 500);
             }
             if ($rescalegrades) {
@@ -261,7 +261,7 @@ class lineitem extends resource_base {
                 $toolproxyid = null;
                 $baseurl = \core_ltix\types_helper::get_type_type_config($typeid)->lti_toolurl;
             }
-            $DB->update_record('ltiservice_gradebookservices', (object)array(
+            $DB->update_record('ltixservice_gradebookservices', (object)array(
                     'id' => $gbs->id,
                     'gradeitemid' => $gbs->gradeitemid,
                     'courseid' => $gbs->courseid,
@@ -290,22 +290,22 @@ class lineitem extends resource_base {
     /**
      * Process a DELETE request.
      *
-     * @param \ltiservice_gradebookservices\local\resources\lineitem $item Grade item instance
+     * @param \ltixservice_gradebookservices\local\resources\lineitem $item Grade item instance
      * @throws \Exception
      */
     private function process_delete_request($item) {
         global $DB;
 
         $gradeitem = \grade_item::fetch(array('id' => $item->id));
-        if (($gbs = gradebookservices::find_ltiservice_gradebookservice_for_lineitem($item->id)) == false) {
+        if (($gbs = gradebookservices::find_ltixservice_gradebookservice_for_lineitem($item->id)) == false) {
             throw new \Exception(null, 403);
         }
-        if (!$gradeitem->delete('mod/ltiservice_gradebookservices')) {
+        if (!$gradeitem->delete('mod/ltixservice_gradebookservices')) {
             throw new \Exception(null, 500);
         } else {
             $sqlparams = array();
             $sqlparams['id'] = $gbs->id;
-            if (!$DB->delete_records('ltiservice_gradebookservices', $sqlparams)) {
+            if (!$DB->delete_records('ltixservice_gradebookservices', $sqlparams)) {
                 throw new \Exception(null, 500);
             }
         }

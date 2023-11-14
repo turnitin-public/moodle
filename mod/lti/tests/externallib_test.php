@@ -416,7 +416,7 @@ class externallib_test extends mod_lti_testcase {
         $this->setAdminUser();
         $proxy = mod_lti_external::create_tool_proxy('Test proxy', $this->getExternalTestFileUrl('/test.html'), array(), array());
         $proxy = (object) external_api::clean_returnvalue(mod_lti_external::create_tool_proxy_returns(), $proxy);
-        $this->assertNotEmpty(lti_get_tool_proxy($proxy->id));
+        $this->assertNotEmpty(\core_ltix\tool_helper::get_tool_proxy($proxy->id));
         $this->assertDebuggingCalled();
 
         $proxy = mod_lti_external::delete_tool_proxy($proxy->id);
@@ -425,7 +425,7 @@ class externallib_test extends mod_lti_testcase {
         $this->assertEquals('Test proxy', $proxy->name);
         $this->assertEquals($this->getExternalTestFileUrl('/test.html'), $proxy->regurl);
         $this->assertEquals(LTI_TOOL_PROXY_STATE_PENDING, $proxy->state);
-        $this->assertEmpty(lti_get_tool_proxy($proxy->id));
+        $this->assertEmpty(\core_ltix\tool_helper::get_tool_proxy($proxy->id));
         $this->assertDebuggingCalled();
     }
 

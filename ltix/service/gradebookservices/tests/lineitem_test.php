@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace ltiservice_gradebookservices;
+namespace ltixservice_gradebookservices;
 
-use ltiservice_gradebookservices\local\resources\lineitem;
-use ltiservice_gradebookservices\local\service\gradebookservices;
+use ltixservice_gradebookservices\local\resources\lineitem;
+use ltixservice_gradebookservices\local\service\gradebookservices;
 
 /**
  * Unit tests for lti lineitem.
  *
- * @package    ltiservice_gradebookservices
+ * @package    ltixservice_gradebookservices
  * @category   test
  * @copyright  2022 Cengage Group <claude.vervoort@cengage.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \mod_lti\service\gradebookservices\local\resources\lineitem
+ * @coversDefaultClass \core_ltix\service\gradebookservices\local\resources\lineitem
  */
 class lineitem_test extends \advanced_testcase {
 
@@ -36,8 +36,6 @@ class lineitem_test extends \advanced_testcase {
      * Test updating the line item with submission review.
      */
     public function test_execute_put_nosubreview() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';
@@ -59,7 +57,7 @@ class lineitem_test extends \advanced_testcase {
 
         $this->set_server_for_put($course, $typeid, $lineitem);
 
-        $response = new \mod_lti\local\ltiservice\response();
+        $response = new \core_ltix\local\ltiservice\response();
         $lineitem->resourceId = $resourceid.'modified';
         $lineitem->tag = $tag.'modified';
         $response->set_request_data(json_encode($lineitem));
@@ -80,8 +78,6 @@ class lineitem_test extends \advanced_testcase {
      * Test updating the line item with submission review.
      */
     public function test_execute_put_withsubreview() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';
@@ -105,7 +101,7 @@ class lineitem_test extends \advanced_testcase {
 
         $this->set_server_for_put($course, $typeid, $lineitem);
 
-        $response = new \mod_lti\local\ltiservice\response();
+        $response = new \core_ltix\local\ltiservice\response();
         $lineitem->resourceId = $resourceid.'modified';
         $lineitem->tag = $tag.'modified';
         $lineitem->submissionReview->url = $subreviewurl.'modified';
@@ -131,8 +127,6 @@ class lineitem_test extends \advanced_testcase {
      * Test updating the line item with submission review.
      */
     public function test_execute_put_addsubreview() {
-        global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';
@@ -155,7 +149,7 @@ class lineitem_test extends \advanced_testcase {
 
         $this->set_server_for_put($course, $typeid, $lineitem);
 
-        $response = new \mod_lti\local\ltiservice\response();
+        $response = new \core_ltix\local\ltiservice\response();
         $lineitem->resourceId = $resourceid.'modified';
         $lineitem->tag = $tag.'modified';
         $lineitem->submissionReview = ['url' => $subreviewurl];
@@ -205,6 +199,8 @@ class lineitem_test extends \advanced_testcase {
      * Creates a new LTI Tool Type.
      */
     private function create_type() {
+        global $CFG;
+        require_once($CFG->dirroot . '/ltix/constants.php');
         $type = new \stdClass();
         $type->state = LTI_TOOL_STATE_CONFIGURED;
         $type->name = "Test tool";
@@ -213,7 +209,7 @@ class lineitem_test extends \advanced_testcase {
         $type->baseurl = $this->getExternalTestFileUrl('/test.html');
 
         $config = new \stdClass();
-        $config->ltiservice_gradesynchronization = 2;
+        $config->ltixservice_gradesynchronization = 2;
         return \core_ltix\types_helper::add_type($type, $config);
     }
 
@@ -226,7 +222,7 @@ class lineitem_test extends \advanced_testcase {
      * @param object $lineitem
      */
     private function set_server_for_put(object $course, int $typeid, object $lineitem) {
-        $_SERVER['REQUEST_METHOD'] = \mod_lti\local\ltiservice\resource_base::HTTP_PUT;
+        $_SERVER['REQUEST_METHOD'] = \core_ltix\local\ltiservice\resource_base::HTTP_PUT;
         $_SERVER['PATH_INFO'] = "/$course->id/lineitems$lineitem->id";
 
         $token = \core_ltix\types_helper::new_access_token($typeid, ['https://purl.imsglobal.org/spec/lti-ags/scope/lineitem']);
