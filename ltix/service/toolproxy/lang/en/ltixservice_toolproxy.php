@@ -15,13 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+<<<<<<<< HEAD:ltix/service/toolproxy/lang/en/ltixservice_toolproxy.php
  * Strings for component 'ltixservice_toolproxy', language 'en'
  *
  * @package    ltixservice_toolproxy
+========
+ * Version information for the ltixservice_profile service.
+ *
+ * @package    ltixservice_profile
+>>>>>>>> 43710178215 (MDL-79595 core_ltix: promote ltiservice profile):ltix/service/profile/version.php
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+<<<<<<<< HEAD:ltix/service/toolproxy/lang/en/ltixservice_toolproxy.php
 $string['pluginname'] = 'Tool Proxy Service';
 $string['privacy:metadata'] = 'The Tool Proxy Service plugin does not store any personal data.';
+========
+
+defined('MOODLE_INTERNAL') || die();
+
+
+$plugin->version   = 2023100900;
+$plugin->requires  = 2023100400;
+$plugin->component = 'ltixservice_profile';
+>>>>>>>> 43710178215 (MDL-79595 core_ltix: promote ltiservice profile):ltix/service/profile/version.php
