@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/ltix/constants.php');
 
 use core_ltix\local\ltiopenid\registration_helper;
+use core_ltix\local\ltiservice\service_helper;
 use core_component;
 use core_text;
 use core_useragent;
@@ -2344,7 +2345,7 @@ class helper {
         $requestparams['reg_url'] = $toolproxy->regurl;
 
         // Add the profile URL.
-        $profileservice = self::get_service_by_name('profile');
+        $profileservice = service_helper::get_service_by_name('profile');
         $profileservice->set_tool_proxy($toolproxy);
         $requestparams['tc_profile_url'] = $profileservice->parse_value('$ToolConsumerProfile.url');
 
