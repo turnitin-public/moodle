@@ -28,7 +28,6 @@ namespace core_ltix\local\ltiservice;
 
 use stdClass;
 
-
 /**
  * The core_ltix\local\ltiservice\service_base class.
  *
@@ -93,7 +92,7 @@ abstract class service_base {
      */
     public function get_component_id() {
 
-        return 'ltixservice_' . $this->id;
+        return 'ltiservice_' . $this->id;
 
     }
 
@@ -362,7 +361,7 @@ abstract class service_base {
      */
     public static function get_service_path() {
 
-        $url = new \moodle_url('/ltix/services.php');
+        $url = new \moodle_url('/mod/lti/services.php');
 
         return $url->out(false);
 

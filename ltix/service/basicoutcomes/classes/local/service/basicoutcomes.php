@@ -24,6 +24,8 @@
 
 namespace ltixservice_basicoutcomes\local\service;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * A service implementing Basic Outcomes.
  *

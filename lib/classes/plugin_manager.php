@@ -591,12 +591,19 @@ class core_plugin_manager {
      * @return string
      */
     public function plugintype_name($type) {
+
         if (get_string_manager()->string_exists('type_' . $type, 'core_plugin')) {
             // For most plugin types, their names are defined in core_plugin lang file.
             return get_string('type_' . $type, 'core_plugin');
+
         } else if ($parent = $this->get_parent_of_subplugin($type)) {
             // If this is a subplugin, try to ask the parent plugin for the name.
-            return $this->plugin_name($parent) . ' / ' . get_string('subplugintype_' . $type, $parent);
+            if (get_string_manager()->string_exists('subplugintype_' . $type, $parent)) {
+                return $this->plugin_name($parent) . ' / ' . get_string('subplugintype_' . $type, $parent);
+            } else {
+                return $this->plugin_name($parent) . ' / ' . $type;
+            }
+
         } else {
             return $type;
         }
@@ -613,12 +620,19 @@ class core_plugin_manager {
      * @return string
      */
     public function plugintype_name_plural($type) {
+
         if (get_string_manager()->string_exists('type_' . $type . '_plural', 'core_plugin')) {
             // For most plugin types, their names are defined in core_plugin lang file.
             return get_string('type_' . $type . '_plural', 'core_plugin');
+
         } else if ($parent = $this->get_parent_of_subplugin($type)) {
             // If this is a subplugin, try to ask the parent plugin for the name.
-            return $this->plugin_name($parent) . ' / ' . get_string('subplugintype_' . $type . '_plural', $parent);
+            if (get_string_manager()->string_exists('subplugintype_' . $type . '_plural', $parent)) {
+                return $this->plugin_name($parent) . ' / ' . get_string('subplugintype_' . $type . '_plural', $parent);
+            } else {
+                return $this->plugin_name($parent) . ' / ' . $type;
+            }
+
         } else {
             return $type;
         }
@@ -1536,7 +1550,7 @@ class core_plugin_manager {
 
         $provider = \core\update\checker::instance();
 
-        if (!$provider->enabled() || $component === '' || during_initial_install()) {
+        if (!$provider->enabled() or during_initial_install()) {
             return null;
         }
 
@@ -1706,6 +1720,7 @@ class core_plugin_manager {
         // branch, listed should be no plugins that were removed at 1.9.x - 2.1.x versions as
         // Moodle 2.3 supports upgrades from 2.2.x only.
         $plugins = array(
+            'qformat' => array('blackboard', 'learnwise', 'examview'),
             'assignment' => array('offline', 'online', 'upload', 'uploadsingle'),
             'auth' => array('radius', 'fc', 'nntp', 'pam', 'pop3', 'imap'),
             'block' => array('course_overview', 'messages', 'community', 'participants', 'quiz_results'),
@@ -1713,11 +1728,10 @@ class core_plugin_manager {
             'editor' => array('tinymce'),
             'enrol' => array('authorize'),
             'filter' => array('censor'),
-            'h5plib' => array('v124'),
             'media' => array('swf'),
             'portfolio' => array('picasa', 'boxnet'),
-            'qformat' => array('blackboard', 'learnwise', 'examview', 'webct'),
-            'ltiservice' => array('basicoutcomes', 'memberships', 'profile', 'toolproxy', 'toolsettings'),
+            'qformat' => array('webct'),
+            'ltiservice' => array('basicoutcomes'),
             'message' => array('jabber'),
             'mod' => array('assignment'),
             'quizaccess' => array('safebrowser'),
@@ -1895,7 +1909,7 @@ class core_plugin_manager {
             ),
 
             'h5plib' => array(
-                'v126',
+                'v124'
             ),
 
             'local' => array(
@@ -1906,14 +1920,12 @@ class core_plugin_manager {
             ),
 
             'ltiservice' => array(
-                'gradebookservices'
+                'gradebookservices', 'memberships', 'profile', 'toolproxy', 'toolsettings'
             ),
 
             'ltixservice' => [
-                'basicoutcomes', 'memberships', 'profile', 'toolproxy', 'toolsettings'
+                'basicoutcomes'
             ],
-            
-            'ltixsource' => [],
 
             'mlbackend' => array(
                 'php', 'python'
@@ -2007,8 +2019,7 @@ class core_plugin_manager {
             'report' => array(
                 'backups', 'competency', 'completion', 'configlog', 'courseoverview', 'eventlist',
                 'infectedfiles', 'insights', 'log', 'loglive', 'outline', 'participation', 'progress',
-                'questioninstances', 'security', 'stats', 'status', 'performance', 'usersessions',
-                'themeusage',
+                'questioninstances', 'security', 'stats', 'status', 'performance', 'usersessions'
             ),
 
             'repository' => array(
