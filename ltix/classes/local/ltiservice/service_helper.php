@@ -23,7 +23,6 @@
  */
 namespace core_ltix\local\ltiservice;
 
-
 /**
  * This class exposes functions for LTI 1.3 Service Plugin Management.
  *
@@ -45,5 +44,23 @@ class service_helper {
     
         return $contexts;
     
+    }
+
+    /**
+     * Initializes an instance of the named service
+     *
+     * @param string $servicename Name of service
+     *
+     * @return bool|\core_ltix\local\ltiservice\service_base Service
+     */
+    public static function get_service_by_name($servicename) {
+        $service = false;
+        $classname = "\\ltixservice_{$servicename}\\local\\service\\{$servicename}";
+        if (class_exists($classname)) {
+            $service = new $classname();
+        }
+
+        return $service;
+
     }
 }
