@@ -17,14 +17,14 @@
 /**
  * This file contains a class definition for the Tool Proxy resource
  *
- * @package    ltiservice_toolproxy
+ * @package    ltixservice_toolproxy
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
-namespace ltiservice_toolproxy\local\resources;
+namespace ltixservice_toolproxy\local\resources;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -33,22 +33,21 @@ require_once($CFG->dirroot . '/ltix/TrivialStore.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\ltix as lti;
-use core_ltix\local\ltiservice\service_helper;
 
 /**
  * A resource implementing the Tool Proxy.
  *
- * @package    ltiservice_toolproxy
+ * @package    ltixservice_toolproxy
  * @since      Moodle 2.8
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class toolproxy extends \mod_lti\local\ltiservice\resource_base {
+class toolproxy extends \core_ltix\local\ltiservice\resource_base {
 
     /**
      * Class constructor.
      *
-     * @param ltiservice_toolproxy\local\resources\toolproxy $service Service instance
+     * @param ltixservice_toolproxy\local\resources\toolproxy $service Service instance
      */
     public function __construct($service) {
 
@@ -63,7 +62,7 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
     /**
      * Execute the request for this resource.
      *
-     * @param mod_lti\local\ltiservice\response $response  Response object for this request.
+     * @param core_ltix\ltiservice\response $response  Response object for this request.
      */
     public function execute($response) {
 
@@ -124,7 +123,7 @@ class toolproxy extends \mod_lti\local\ltiservice\resource_base {
         $requestsbasicoutcomes = false;
         if ($ok && isset($toolproxyjson->security_contract->tool_service)) {
             $contexts = lti_get_contexts($toolproxyjson);
-            $profileservice = service_helper::get_service_by_name('profile');
+            $profileservice = lti_get_service_by_name('profile');
             $profileservice->set_tool_proxy($toolproxy);
             $context = $profileservice->get_service_path() . $profileservice->get_resources()[0]->get_path() . '#';
             $offeredservices = explode("\n", $toolproxy->serviceoffered);
