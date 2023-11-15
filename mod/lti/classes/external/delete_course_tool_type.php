@@ -37,7 +37,6 @@ class delete_course_tool_type extends external_api {
     /**
      * Get parameter definition.
      *
-     * @deprecated since Moodle 4.4
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
@@ -49,32 +48,34 @@ class delete_course_tool_type extends external_api {
     /**
      * Delete a course tool type.
      *
-     * @deprecated since Moodle 4.4
      * @param int $tooltypeid the id of the course external tool type.
      * @return bool true
      * @throws \invalid_parameter_exception if the provided id refers to a site level tool which cannot be deleted.
      */
     public static function execute(int $tooltypeid): bool {
-        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external\delete_course_tool_type instead.',
-                  DEBUG_DEVELOPER);
-        return \core_ltix\external\delete_course_tool_type::execute($tooltypeid);
+
+        ['tooltypeid' => $tooltypeid] = self::validate_parameters(self::execute_parameters(), ['tooltypeid' => $tooltypeid]);
+
+        global $DB;
+        $course = (int) $DB->get_field('lti_types', 'course', ['id' => $tooltypeid]);
+        if ($course == get_site()->id) {
+            throw new \invalid_parameter_exception('This is a site-level tool and cannot be deleted via this service');
+        }
+
+        $context = \context_course::instance($course);
+        self::validate_context($context);
+        require_capability('mod/lti:addcoursetool', $context);
+
+        \core_ltix\helper::delete_type($tooltypeid);
+        return true;
     }
 
     /**
      * Get service returns definition.
      *
-     * @deprecated since Moodle 4.4
      * @return external_value
      */
     public static function execute_returns(): external_value {
         return new external_value(PARAM_BOOL, 'Success');
-    }
-
-    /**
-     * Mark the function as deprecated.
-     * @return bool
-     */
-    public static function execute_is_deprecated() {
-        return true;
     }
 }
