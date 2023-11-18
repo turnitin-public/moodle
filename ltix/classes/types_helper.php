@@ -878,4 +878,30 @@ class types_helper {
         }
     }
 
+    /**
+     * Returns the edit url for the given tool type
+     *
+     * @param stdClass $type The tool type
+     *
+     * @return string The url to edit the tool type
+     */
+    public static function get_tool_type_edit_url(stdClass $type) {
+        $url = new \moodle_url('/ltix/typessettings.php',
+            array('action' => 'update', 'id' => $type->id, 'sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
+        return $url->out();
+    }
+
+    /**
+     * Returns the edit url for the given tool proxy.
+     *
+     * @param stdClass $proxy The tool proxy
+     *
+     * @return string The url to edit the tool type
+     */
+    public static function get_tool_proxy_edit_url(stdClass $proxy) {
+        $url = new \moodle_url('/ltix/registersettings.php',
+            array('action' => 'update', 'id' => $proxy->id, 'sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
+        return $url->out();
+    }
+
 }
