@@ -60,12 +60,12 @@ $settings->hidden = true;
 $ADMIN->add('modltifolder', $settings);
 $proxieslink = new admin_externalpage('ltitoolproxies',
         get_string('manage_tool_proxies', 'lti'),
-        new moodle_url('/mod/lti/toolproxies.php'));
+        new moodle_url('/ltix/toolproxies.php'));
 $proxieslink->hidden = true;
 $ADMIN->add('modltifolder', $proxieslink);
 $ADMIN->add('modltifolder', new admin_externalpage('ltitoolconfigure',
         get_string('manage_external_tools', 'lti'),
-        new moodle_url('/mod/lti/toolconfigure.php')));
+        new moodle_url('/ltix/toolconfigure.php')));
 
 foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $plugin) {
     /*
@@ -74,7 +74,7 @@ foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $p
     $plugin->load_settings($ADMIN, 'modltifolder', $hassiteconfig);
 }
 
-$toolproxiesurl = new moodle_url('/mod/lti/toolproxies.php');
+$toolproxiesurl = new moodle_url('/ltix/toolproxies.php');
 $toolproxiesurl = $toolproxiesurl->out();
 
 if ($ADMIN->fulltree) {
@@ -132,7 +132,7 @@ if ($ADMIN->fulltree) {
     $addtype = get_string('addtype', 'lti');
     $config = get_string('manage_tool_proxies', 'lti');
 
-    $addtypeurl = "{$CFG->wwwroot}/mod/lti/typessettings.php?action=add&amp;sesskey={$USER->sesskey}";
+    $addtypeurl = "{$CFG->wwwroot}/ltix/typessettings.php?action=add&amp;sesskey={$USER->sesskey}";
 
     $template = <<< EOD
 <div id="lti_tabs" class="yui-navset">
