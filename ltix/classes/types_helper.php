@@ -904,4 +904,106 @@ class types_helper {
         return $url->out();
     }
 
+    public static function get_tool_table($tools, $id) {
+        global $OUTPUT;
+        $html = '';
+
+        $typename = get_string('typename', 'ltix');
+        $baseurl = get_string('baseurl', 'ltix');
+        $action = get_string('action', 'ltix');
+        $createdon = get_string('createdon', 'ltix');
+
+        if (!empty($tools)) {
+            $html .= "
+        <div id=\"{$id}_tools_container\" style=\"margin-top:.5em;margin-bottom:.5em\">
+            <table id=\"{$id}_tools\">
+                <thead>
+                    <tr>
+                        <th>$typename</th>
+                        <th>$baseurl</th>
+                        <th>$createdon</th>
+                        <th>$action</th>
+                    </tr>
+                </thead>
+        ";
+
+            foreach ($tools as $type) {
+                $date = userdate($type->timecreated, get_string('strftimedatefullshort', 'core_langconfig'));
+                $accept = get_string('accept', 'ltix');
+                $update = get_string('update', 'ltix');
+                $delete = get_string('delete', 'ltix');
+
+                if (empty($type->toolproxyid)) {
+                    $baseurl = new \moodle_url('/ltix/typessettings.php', array(
+                        'action' => 'accept',
+                        'id' => $type->id,
+                        'sesskey' => sesskey(),
+                        'tab' => $id
+                    ));
+                    $ref = $type->baseurl;
+                } else {
+                    $baseurl = new \moodle_url('/ltix/toolssettings.php', array(
+                        'action' => 'accept',
+                        'id' => $type->id,
+                        'sesskey' => sesskey(),
+                        'tab' => $id
+                    ));
+                    $ref = $type->tpname;
+                }
+
+                $accepthtml = $OUTPUT->action_icon($baseurl,
+                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    array('title' => $accept, 'class' => 'editing_accept'));
+
+                $deleteaction = 'delete';
+
+                if ($type->state == LTI_TOOL_STATE_CONFIGURED) {
+                    $accepthtml = '';
+                }
+
+                if ($type->state != LTI_TOOL_STATE_REJECTED) {
+                    $deleteaction = 'reject';
+                    $delete = get_string('reject', 'lti');
+                }
+
+                $updateurl = clone($baseurl);
+                $updateurl->param('action', 'update');
+                $updatehtml = $OUTPUT->action_icon($updateurl,
+                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    array('title' => $update, 'class' => 'editing_update'));
+
+                if (($type->state != LTI_TOOL_STATE_REJECTED) || empty($type->toolproxyid)) {
+                    $deleteurl = clone($baseurl);
+                    $deleteurl->param('action', $deleteaction);
+                    $deletehtml = $OUTPUT->action_icon($deleteurl,
+                        new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                        array('title' => $delete, 'class' => 'editing_delete'));
+                } else {
+                    $deletehtml = '';
+                }
+                $html .= "
+            <tr>
+                <td>
+                    {$type->name}
+                </td>
+                <td>
+                    {$ref}
+                </td>
+                <td>
+                    {$date}
+                </td>
+                <td align=\"center\">
+                    {$accepthtml}{$updatehtml}{$deletehtml}
+                </td>
+            </tr>
+            ";
+            }
+            $html .= '</table></div>';
+        } else {
+            $html .= get_string('no_' . $id, 'ltix');
+        }
+
+        return $html;
+    }
+
 }
