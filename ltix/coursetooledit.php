@@ -17,23 +17,22 @@
 /**
  * Page allowing instructors to configure course-level tools.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use core\output\notification;
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php');
-require_once($CFG->dirroot.'/mod/lti/lib.php');
+require_once('../config.php');
+require_once($CFG->dirroot.'/ltix/edit_form.php');
 
 $courseid = required_param('course', PARAM_INT);
 $typeid = optional_param('typeid', null, PARAM_INT);
 
 // Permissions etc.
 require_login($courseid, false);
-require_capability('mod/lti:addcoursetool', context_course::instance($courseid));
+require_capability('moodle/ltix:addcoursetool', context_course::instance($courseid));
 if (!empty($typeid)) {
     $type = \core_ltix\types_helper::get_type_type_config($typeid);
     if ($type->course != $courseid || $type->course == get_site()->id) {
@@ -44,9 +43,9 @@ if (!empty($typeid)) {
 }
 
 // Page setup.
-$url = new moodle_url('/mod/lti/coursetooledit.php', ['courseid' => $courseid]);
-$pageheading = !empty($typeid) ? get_string('courseexternaltooledit', 'mod_lti', $type->lti_typename) :
-    get_string('courseexternaltooladd', 'mod_lti');
+$url = new moodle_url('/ltix/coursetooledit.php', ['courseid' => $courseid]);
+$pageheading = !empty($typeid) ? get_string('courseexternaltooledit', 'ltix', $type->lti_typename) :
+    get_string('courseexternaltooladd', 'ltix');
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
@@ -67,13 +66,13 @@ if ($form->is_cancelled()) {
         \core_ltix\types_helper::load_type_if_cartridge($data);
         \core_ltix\types_helper::update_type($type, $data);
         $redirecturl = new moodle_url('/ltix/coursetools.php', ['id' => $courseid]);
-        $notice = get_string('courseexternaltooleditsuccess', 'mod_lti');
+        $notice = get_string('courseexternaltooleditsuccess', 'ltix');
     } else {
         $type = (object) ['state' => LTI_TOOL_STATE_CONFIGURED, 'course' => $data->course];
         \core_ltix\types_helper::load_type_if_cartridge($data);
         \core_ltix\types_helper::add_type($type, $data);
-        $redirecturl = new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]);
-        $notice = get_string('courseexternaltooladdsuccess', 'mod_lti', $type->name);
+        $redirecturl = new moodle_url('/ltix/coursetools.php', ['id' => $courseid]);
+        $notice = get_string('courseexternaltooladdsuccess', 'ltix', $type->name);
     }
 
     redirect($redirecturl, $notice, 0, notification::NOTIFY_SUCCESS);
