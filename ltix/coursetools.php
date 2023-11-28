@@ -17,16 +17,14 @@
 /**
  * Shows a tabulated view of all the available LTI tools in a given course.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_lti\output\course_tools_page;
+use core_ltix\output\course_tools_page;
 
-require_once("../../config.php");
-require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once("../config.php");
 
 $id = required_param('id', PARAM_INT); // Course Id.
 
@@ -42,7 +40,7 @@ if (!has_capability('mod/lti:addpreconfiguredinstance', $context)) {
 // Page setup.
 global $PAGE, $OUTPUT;
 $pagetitle = get_string('courseexternaltools', 'mod_lti');
-$pageurl = new moodle_url('/mod/lti/coursetools.php', ['id' => $course->id]);
+$pageurl = new moodle_url('/ltix/coursetools.php', ['id' => $course->id]);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_context($context);
 $PAGE->set_url($pageurl);

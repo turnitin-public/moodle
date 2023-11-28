@@ -57,7 +57,7 @@ $PAGE->add_body_class('limitedwidth');
 $form = new mod_lti_edit_types_form($url, (object)array('id' => $typeid, 'clientid' => $type->lti_clientid, 'iscoursetool' => true));
 if ($form->is_cancelled()) {
 
-    redirect(new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]));
+    redirect(new moodle_url('/ltix/coursetools.php', ['id' => $courseid]));
 } else if ($data = $form->get_data()) {
 
     require_sesskey();
@@ -66,7 +66,7 @@ if ($form->is_cancelled()) {
         $type = (object) ['id' => $data->typeid];
         \core_ltix\types_helper::load_type_if_cartridge($data);
         \core_ltix\types_helper::update_type($type, $data);
-        $redirecturl = new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]);
+        $redirecturl = new moodle_url('/ltix/coursetools.php', ['id' => $courseid]);
         $notice = get_string('courseexternaltooleditsuccess', 'mod_lti');
     } else {
         $type = (object) ['state' => LTI_TOOL_STATE_CONFIGURED, 'course' => $data->course];
