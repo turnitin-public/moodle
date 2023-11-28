@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_lti\reportbuilder\local\systemreports;
+namespace core_ltix\reportbuilder\local\systemreports;
 
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\column;
-use mod_lti\reportbuilder\local\entities\tool_types;
+use mod_lti\reportbuilder\local\entities\tool_types; // This needs to be changed to core_ltix
 use core_reportbuilder\system_report;
 
 /**
  * Course external tools list system report class implementation.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
