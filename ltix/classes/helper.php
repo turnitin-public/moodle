@@ -3486,24 +3486,7 @@ class helper {
         }
     }
 
-    /**
-     * Initializes an instance of the named service
-     *
-     * @param string $servicename Name of service
-     *
-     * @return bool|\mod_lti\local\ltiservice\service_base Service
-     */
-    public static function get_service_by_name($servicename) {
 
-        $service = false;
-        $classname = "\\ltiservice_{$servicename}\\local\\service\\{$servicename}";
-        if (class_exists($classname)) {
-            $service = new $classname();
-        }
-
-        return $service;
-
-    }
 
     /**
      * Finds a service by id
