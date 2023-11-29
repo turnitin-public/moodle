@@ -33,13 +33,11 @@ $course = get_course($id);
 require_course_login($course, false);
 
 $context = context_course::instance($course->id);
-if (!has_capability('mod/lti:addpreconfiguredinstance', $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', get_string('courseexternaltoolsnoviewpermissions', 'mod_lti'));
-}
+//Removed the mod/lti:addpreconfiguredinstance capability check
 
 // Page setup.
 global $PAGE, $OUTPUT;
-$pagetitle = get_string('courseexternaltools', 'mod_lti');
+$pagetitle = get_string('courseexternaltools', 'ltix');
 $pageurl = new moodle_url('/ltix/coursetools.php', ['id' => $course->id]);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_context($context);
@@ -52,9 +50,9 @@ $PAGE->add_body_class('limitedwidth');
 echo $OUTPUT->header();
 echo $OUTPUT->heading($pagetitle);
 
-$renderer = $PAGE->get_renderer('mod_lti');
+$renderer = $PAGE->get_renderer('mod_lti');//This needs to be changed on a different ticket where all the modified renderers are present
 $coursetoolspage = new course_tools_page($course->id);
 echo $renderer->render($coursetoolspage);
-$PAGE->requires->js_call_amd('mod_lti/course_tools_list', 'init');
+$PAGE->requires->js_call_amd('mod_lti/course_tools_list', 'init');//This also needs to be changed on a different ticket.
 
 echo $OUTPUT->footer();
