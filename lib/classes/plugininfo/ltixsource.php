@@ -17,7 +17,7 @@
 /**
  * LTI source plugin info.
  *
- * @package   mod_lti
+ * @package   core_ltix
  * @copyright 2013 Damyon Wiese
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,7 +32,7 @@ class ltixsource extends base {
      * @return null|string node name or null if plugin does not create settings node (default)
      */
     public function get_settings_section_name() {
-        return 'ltisourcesetting'.$this->name;
+        return 'ltixsourcesetting'.$this->name;
     }
 
     /**
