@@ -53,7 +53,7 @@ $PAGE->set_title($pageheading);
 $PAGE->set_secondary_active_tab('coursetools');
 $PAGE->add_body_class('limitedwidth');
 
-$form = new mod_lti_edit_types_form($url, (object)array('id' => $typeid, 'clientid' => $type->lti_clientid, 'iscoursetool' => true));
+$form = new mod_lti_edit_types_form($url, (object)array('id' => $typeid, 'clientid' => $type->lti_clientid, 'iscoursetool' => true));//changed in 79116
 if ($form->is_cancelled()) {
 
     redirect(new moodle_url('/ltix/coursetools.php', ['id' => $courseid]));
