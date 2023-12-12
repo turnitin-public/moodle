@@ -261,9 +261,9 @@ class locallib_test extends mod_lti_testcase {
         $type->toolproxyid = $proxy->id;
         $type->baseurl = $this->getExternalTestFileUrl('/test.html');
 
-        $typeid = \core_ltix\types_helper::add_type($type, $data);
+        $typeid = \core_ltix\helper::add_type($type, $data);
 
-        $typeconfig = \core_ltix\types_helper::get_type_config($typeid);
+        $typeconfig = \core_ltix\helper::get_type_config($typeid);
 
         $course = $this->getDataGenerator()->create_course();
         $returnurl = new \moodle_url('/');
@@ -362,7 +362,7 @@ class locallib_test extends mod_lti_testcase {
         $type->description = "Example description";
         $type->baseurl = $this->getExternalTestFileUrl('/test.html');
 
-        $typeid = \core_ltix\types_helper::add_type($type, $data);
+        $typeid = \core_ltix\helper::add_type($type, $data);
         $course = $this->getDataGenerator()->create_course();
         $returnurl = new \moodle_url('/');
 
@@ -389,7 +389,7 @@ class locallib_test extends mod_lti_testcase {
         $type->description = "Example description";
         $type->baseurl = $this->getExternalTestFileUrl('/test.html');
 
-        $typeid = \core_ltix\types_helper::add_type($type, $data);
+        $typeid = \core_ltix\helper::add_type($type, $data);
         $course = $this->getDataGenerator()->create_course();
         $returnurl = new \moodle_url('/');
 
@@ -469,11 +469,11 @@ class locallib_test extends mod_lti_testcase {
         $typeconfig = new \stdClass();
         $typeconfig->lti_acceptgrades = true;
 
-        $typeid = \core_ltix\types_helper::add_type($type, $typeconfig);
+        $typeid = \core_ltix\helper::add_type($type, $typeconfig);
 
-        $tool = \core_ltix\types_helper::get_type($typeid);
+        $tool = \core_ltix\helper::get_type($typeid);
 
-        $config = \core_ltix\types_helper::get_type_config($typeid);
+        $config = \core_ltix\helper::get_type_config($typeid);
         $permittedscopes = lti_get_permitted_service_scopes($tool, $config);
 
         $expected = [
@@ -500,9 +500,9 @@ class locallib_test extends mod_lti_testcase {
 
         $config = new \stdClass();
 
-        $typeid = \core_ltix\types_helper::add_type($type, $config);
+        $typeid = \core_ltix\helper::add_type($type, $config);
 
-        $type = \core_ltix\types_helper::get_type($typeid);
+        $type = \core_ltix\helper::get_type($typeid);
 
         $typeconfig = get_tool_type_config($type);
 
@@ -749,8 +749,8 @@ class locallib_test extends mod_lti_testcase {
         $configbase->lti_sendname = LTI_SETTING_NEVER;
         $configbase->lti_sendemailaddr = LTI_SETTING_NEVER;
         $mergedconfig = (object) array_merge( (array) $configbase, (array) $config);
-        $typeid = \core_ltix\types_helper::add_type($type, $mergedconfig);
-        return \core_ltix\types_helper::get_type($typeid);
+        $typeid = \core_ltix\helper::add_type($type, $mergedconfig);
+        return \core_ltix\helper::get_type($typeid);
     }
 
     /**

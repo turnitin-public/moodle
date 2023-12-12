@@ -27,7 +27,7 @@
 namespace core_ltix\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die();
-use core_ltix\types_helper;
+use core_ltix\helper;
 
 global $CFG;
 require_once(__DIR__ . '/../../../../config.php');

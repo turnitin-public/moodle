@@ -64,7 +64,7 @@ class core_ltix_register_types_form extends moodleform {
 
         // LTI Capabilities.
 
-        $options = array_keys(\core_ltix\tool_helper::get_capabilities());
+        $options = array_keys(\core_ltix\helper::get_capabilities());
         natcasesort($options);
         $attributes = array( 'multiple' => 1, 'size' => min(count($options), 10) );
         $mform->addElement('select', 'lti_capabilities', get_string('capabilities', 'ltix'),
@@ -75,7 +75,7 @@ class core_ltix_register_types_form extends moodleform {
 
         // LTI Services.
 
-        $services = \core_ltix\tool_helper::get_services();
+        $services = \core_ltix\helper::get_services();
         $options = array();
         foreach ($services as $service) {
             $options[$service->get_id()] = $service->get_name();

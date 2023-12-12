@@ -16,11 +16,11 @@
 
 declare(strict_types=1);
 
-namespace core_ltix;
+namespace core_ltix\local\ltiservice;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once('../../config.php');
+require_once('../../../../config.php');
 require_once($CFG->dirroot . '/ltix/constants.php');
 
 /**
@@ -41,7 +41,7 @@ class service_helper
      */
     public static function lti_get_config($ltiobject) {
         $typeconfig = (array)$ltiobject;
-        $additionalconfig = \core_ltix\types_helper::get_type_config($ltiobject->typeid);
+        $additionalconfig = \core_ltix\helper::get_type_config($ltiobject->typeid);
         $typeconfig = array_merge($typeconfig, $additionalconfig);
         return $typeconfig;
     }

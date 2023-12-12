@@ -54,15 +54,15 @@ $consumerkey = lti\get_oauth_key_from_headers(null, array(basicoutcomes::SCOPE_B
 if ($consumerkey === false) {
     throw new Exception('Missing or invalid consumer key or access token.');
 } else if (is_string($consumerkey)) {
-    $toolproxy = \core_ltix\tool_helper::get_tool_proxy_from_guid($consumerkey);
+    $toolproxy = \core_ltix\helper::get_tool_proxy_from_guid($consumerkey);
     if ($toolproxy !== false) {
         $secrets = array($toolproxy->secret);
     } else if (!empty($tool)) {
         $secrets = array($typeconfig['password']);
     } else {
-        $secrets = \core_ltix\types_helper::get_shared_secrets_by_key($consumerkey);
+        $secrets = \core_ltix\helper::get_shared_secrets_by_key($consumerkey);
     }
-    $sharedsecret = lti_verify_message($consumerkey, \core_ltix\types_helper::get_shared_secrets_by_key($consumerkey), $rawbody);
+    $sharedsecret = lti_verify_message($consumerkey, \core_ltix\helper::get_shared_secrets_by_key($consumerkey), $rawbody);
     if ($sharedsecret === false) {
         throw new Exception('Message signature not valid');
     }

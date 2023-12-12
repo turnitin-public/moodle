@@ -48,9 +48,9 @@ require_once($CFG->dirroot . '/ltix/tests/lti_testcase.php');
  * @package    core_ltix
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \core_ltix\types_helper
+ * @coversDefaultClass \core_ltix\helper
  */
-class types_helper_test extends lti_testcase {
+class helper_test extends lti_testcase {
 
     /**
      * Test fetching tool types for a given course and user.
@@ -108,7 +108,7 @@ class types_helper_test extends lti_testcase {
 
         // Request using the default 'coursevisible' param will include all tools except the one configured as "Do not show" and
         // the tool restricted to category 2.
-        $coursetooltypes = types_helper::get_lti_types_by_course($course->id);
+        $coursetooltypes = helper::get_lti_types_by_course($course->id);
         $this->assertCount(3, $coursetooltypes);
         $expected = [
             'http://example.com/tool/2',
@@ -121,7 +121,7 @@ class types_helper_test extends lti_testcase {
         $this->assertEquals($expected, $actual);
 
         // Request for only those tools configured to show in the activity chooser.
-        $coursetooltypes = types_helper::get_lti_types_by_course($course->id, [LTI_COURSEVISIBLE_ACTIVITYCHOOSER]);
+        $coursetooltypes = helper::get_lti_types_by_course($course->id, [LTI_COURSEVISIBLE_ACTIVITYCHOOSER]);
         $this->assertCount(2, $coursetooltypes);
         $expected = [
             'http://example.com/tool/3',
@@ -133,7 +133,7 @@ class types_helper_test extends lti_testcase {
         $this->assertEquals($expected, $actual);
 
         // Request for only those tools configured to show as a preconfigured tool.
-        $coursetooltypes = types_helper::get_lti_types_by_course($course->id, [LTI_COURSEVISIBLE_PRECONFIGURED]);
+        $coursetooltypes = helper::get_lti_types_by_course($course->id, [LTI_COURSEVISIBLE_PRECONFIGURED]);
         $this->assertCount(1, $coursetooltypes);
         $expected = [
             'http://example.com/tool/2',
@@ -142,7 +142,7 @@ class types_helper_test extends lti_testcase {
         $this->assertEquals($expected, $actual);
 
         // Request for course2 (course category 2).
-        $coursetooltypes = types_helper::get_lti_types_by_course($course2->id);
+        $coursetooltypes = helper::get_lti_types_by_course($course2->id);
         $this->assertCount(3, $coursetooltypes);
         $expected = [
             'http://example.com/tool/2',
@@ -220,20 +220,20 @@ class types_helper_test extends lti_testcase {
         ]);
 
         // LTI_COURSEVISIBLE_NO can't be updated.
-        $result = types_helper::override_type_showinactivitychooser($tool1id, $course->id, $context, true);
+        $result = helper::override_type_showinactivitychooser($tool1id, $course->id, $context, true);
         $this->assertFalse($result);
 
         // Tool not exist.
-        $result = types_helper::override_type_showinactivitychooser($tool5id + 1, $course->id, $context, false);
+        $result = helper::override_type_showinactivitychooser($tool5id + 1, $course->id, $context, false);
         $this->assertFalse($result);
 
-        $result = types_helper::override_type_showinactivitychooser($tool2id, $course->id, $context, true);
+        $result = helper::override_type_showinactivitychooser($tool2id, $course->id, $context, true);
         $this->assertTrue($result);
         $coursevisibleoverriden = $DB->get_field('lti_coursevisible', 'coursevisible',
             ['typeid' => $tool2id, 'courseid' => $course->id]);
         $this->assertEquals(LTI_COURSEVISIBLE_ACTIVITYCHOOSER, $coursevisibleoverriden);
 
-        $result = types_helper::override_type_showinactivitychooser($tool3id, $course->id, $context, false);
+        $result = helper::override_type_showinactivitychooser($tool3id, $course->id, $context, false);
         $this->assertTrue($result);
         $coursevisible = $DB->get_field('lti_types', 'coursevisible', ['id' => $tool3id]);
         $this->assertEquals(LTI_COURSEVISIBLE_PRECONFIGURED, $coursevisible);
@@ -241,10 +241,10 @@ class types_helper_test extends lti_testcase {
         // Restricted category no allowed.
         $this->expectException('moodle_exception');
         $this->expectExceptionMessage('You are not allowed to change this setting for this tool.');
-        types_helper::override_type_showinactivitychooser($tool4id, $course->id, $context, false);
+        helper::override_type_showinactivitychooser($tool4id, $course->id, $context, false);
 
         // Restricted category allowed.
-        $result = types_helper::override_type_showinactivitychooser($tool5id, $course->id, $context, false);
+        $result = helper::override_type_showinactivitychooser($tool5id, $course->id, $context, false);
         $this->assertTrue($result);
         $coursevisibleoverriden = $DB->get_field('lti_coursevisible', 'coursevisible',
             ['typeid' => $tool5id, 'courseid' => $course->id]);
@@ -252,7 +252,7 @@ class types_helper_test extends lti_testcase {
 
         $this->setUser($teacher2);
         $this->expectException(\required_capability_exception::class);
-        types_helper::override_type_showinactivitychooser($tool5id, $course->id, $context, false);
+        helper::override_type_showinactivitychooser($tool5id, $course->id, $context, false);
     }
 
     /**
@@ -263,21 +263,21 @@ class types_helper_test extends lti_testcase {
         $config = new \stdClass();
 
         // Try when the forcessl config property is not set.
-        types_helper::prepare_type_for_save($type, $config);
+        helper::prepare_type_for_save($type, $config);
         $this->assertObjectHasAttribute('lti_forcessl', $config);
         $this->assertEquals(0, $config->lti_forcessl);
         $this->assertEquals(0, $type->forcessl);
 
         // Try when forcessl config property is set.
         $config->lti_forcessl = 1;
-        types_helper::prepare_type_for_save($type, $config);
+        helper::prepare_type_for_save($type, $config);
         $this->assertObjectHasAttribute('lti_forcessl', $config);
         $this->assertEquals(1, $config->lti_forcessl);
         $this->assertEquals(1, $type->forcessl);
 
         // Try when forcessl config property is set to 0.
         $config->lti_forcessl = 0;
-        types_helper::prepare_type_for_save($type, $config);
+        helper::prepare_type_for_save($type, $config);
         $this->assertObjectHasAttribute('lti_forcessl', $config);
         $this->assertEquals(0, $config->lti_forcessl);
         $this->assertEquals(0, $type->forcessl);
@@ -290,7 +290,7 @@ class types_helper_test extends lti_testcase {
         $type = new \stdClass();
         $type->lti_toolurl = $this->getExternalTestFileUrl('/ims_cartridge_basic_lti_link.xml');
 
-        types_helper::load_type_if_cartridge($type);
+        helper::load_type_if_cartridge($type);
 
         $this->assertEquals('Example tool', $type->lti_typename);
         $this->assertEquals('Example tool description', $type->lti_description);
@@ -306,7 +306,7 @@ class types_helper_test extends lti_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->generate_tool_types_and_proxies(10);
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies();
+        list($proxies, $types) = helper::get_lti_types_and_proxies();
 
         $this->assertCount(10, $proxies);
         $this->assertCount(10, $types);
@@ -321,19 +321,19 @@ class types_helper_test extends lti_testcase {
         $this->generate_tool_types_and_proxies(10);
 
         // Get the middle 10 data sets (of 20 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(10, 5);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(10, 5);
 
         $this->assertCount(5, $proxies);
         $this->assertCount(5, $types);
 
         // Get the last 5 data sets with large limit (of 20 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(50, 15);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(50, 15);
 
         $this->assertCount(0, $proxies);
         $this->assertCount(5, $types);
 
         // Get the last 13 data sets with large limit (of 20 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(50, 7);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(50, 7);
 
         $this->assertCount(3, $proxies);
         $this->assertCount(10, $types);
@@ -348,19 +348,19 @@ class types_helper_test extends lti_testcase {
         $this->generate_tool_types_and_proxies(10, 5);
 
         // Get the first 10 data sets (of 15 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(10, 0, true);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(10, 0, true);
 
         $this->assertCount(5, $proxies);
         $this->assertCount(5, $types);
 
         // Get the middle 10 data sets with large limit (of 15 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(10, 2, true);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(10, 2, true);
 
         $this->assertCount(3, $proxies);
         $this->assertCount(7, $types);
 
         // Get the last 5 data sets with large limit (of 15 total).
-        list($proxies, $types) = types_helper::get_lti_types_and_proxies(50, 10, true);
+        list($proxies, $types) = helper::get_lti_types_and_proxies(50, 10, true);
 
         $this->assertCount(0, $proxies);
         $this->assertCount(5, $types);
@@ -374,7 +374,7 @@ class types_helper_test extends lti_testcase {
         $this->setAdminUser();
         $this->generate_tool_types_and_proxies(10, 5);
 
-        $totalcount = types_helper::get_lti_types_and_proxies_count();
+        $totalcount = helper::get_lti_types_and_proxies_count();
         $this->assertEquals(25, $totalcount); // 10 types, 15 proxies.
     }
 
@@ -386,7 +386,7 @@ class types_helper_test extends lti_testcase {
         $this->setAdminUser();
         $this->generate_tool_types_and_proxies(10, 5);
 
-        $orphanedcount = types_helper::get_lti_types_and_proxies_count(true);
+        $orphanedcount = helper::get_lti_types_and_proxies_count(true);
         $this->assertEquals(15, $orphanedcount); // 10 types, 5 proxies.
     }
 
@@ -398,7 +398,7 @@ class types_helper_test extends lti_testcase {
         $this->setAdminUser();
         ['proxies' => $proxies, 'types' => $types] = $this->generate_tool_types_and_proxies(10, 5);
 
-        $countwithproxyid = types_helper::get_lti_types_and_proxies_count(false, $proxies[0]->id);
+        $countwithproxyid = helper::get_lti_types_and_proxies_count(false, $proxies[0]->id);
         $this->assertEquals(16, $countwithproxyid); // 1 type, 15 proxies.
     }
 

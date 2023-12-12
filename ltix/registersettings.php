@@ -64,7 +64,7 @@ if (!empty($returnurl)) {
 require_sesskey();
 
 if ($action == 'delete') {
-    \core_ltix\tool_helper::delete_tool_proxy($id);
+    \core_ltix\helper::delete_tool_proxy($id);
     redirect($redirect);
 }
 
@@ -81,7 +81,7 @@ $form = new core_ltix_register_types_form($pageurl, (object)$data); //need to mo
 if ($form->is_cancelled()) {
     redirect($redirect);
 } else if ($data = $form->get_data()) {
-    $id = \core_ltix\tool_helper::add_tool_proxy($data);
+    $id = \core_ltix\helper::add_tool_proxy($data);
     redirect($redirect);
 } else {
     $PAGE->set_title(get_string('toolregistration', 'ltix'));
@@ -91,7 +91,7 @@ if ($form->is_cancelled()) {
     echo $OUTPUT->heading(get_string('toolregistration', 'ltix'));
     echo $OUTPUT->box_start('generalbox');
     if ($action == 'update') {
-        $toolproxy = \core_ltix\tool_helper::get_tool_proxy_config($id);
+        $toolproxy = \core_ltix\helper::get_tool_proxy_config($id);
         $form->set_data($toolproxy);
         if ($toolproxy->state == LTI_TOOL_PROXY_STATE_ACCEPTED) {
             $form->disable_fields();

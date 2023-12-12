@@ -46,9 +46,9 @@ require_once($CFG->dirroot . '/ltix/constants.php');
  * @author     Alex Morris <alex.morris@catalyst.net.nz>
  * @copyright  2023 onwards Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \core_ltix\tool_helper
+ * @coversDefaultClass \core_ltix\helper
  */
-class tool_helper_test extends \advanced_testcase {
+class helper_test extends \advanced_testcase {
 
     /**
      * @covers ::lti_split_parameters()
@@ -56,11 +56,11 @@ class tool_helper_test extends \advanced_testcase {
      * Test the split parameters function
      */
     public function test_split_parameters() {
-        $this->assertEquals(tool_helper::split_parameters(''), array());
-        $this->assertEquals(tool_helper::split_parameters('a=1'), array('a' => '1'));
-        $this->assertEquals(tool_helper::split_parameters("a=1\nb=2"), array('a' => '1', 'b' => '2'));
-        $this->assertEquals(tool_helper::split_parameters("a=1\n\rb=2"), array('a' => '1', 'b' => '2'));
-        $this->assertEquals(tool_helper::split_parameters("a=1\r\nb=2"), array('a' => '1', 'b' => '2'));
+        $this->assertEquals(helper::split_parameters(''), array());
+        $this->assertEquals(helper::split_parameters('a=1'), array('a' => '1'));
+        $this->assertEquals(helper::split_parameters("a=1\nb=2"), array('a' => '1', 'b' => '2'));
+        $this->assertEquals(helper::split_parameters("a=1\n\rb=2"), array('a' => '1', 'b' => '2'));
+        $this->assertEquals(helper::split_parameters("a=1\r\nb=2"), array('a' => '1', 'b' => '2'));
     }
 
     public function test_split_custom_parameters() {
@@ -70,21 +70,21 @@ class tool_helper_test extends \advanced_testcase {
         $tool->enabledcapability = '';
         $tool->parameter = '';
         $tool->ltiversion = 'LTI-1p0';
-        $this->assertEquals(tool_helper::split_custom_parameters(null, $tool, array(), "x=1\ny=2", false),
+        $this->assertEquals(helper::split_custom_parameters(null, $tool, array(), "x=1\ny=2", false),
             array('custom_x' => '1', 'custom_y' => '2'));
 
         // Check params with caps.
-        $this->assertEquals(tool_helper::split_custom_parameters(null, $tool, array(), "X=1", true),
+        $this->assertEquals(helper::split_custom_parameters(null, $tool, array(), "X=1", true),
             array('custom_x' => '1', 'custom_X' => '1'));
 
         // Removed repeat of previous test with a semicolon separator.
 
-        $this->assertEquals(tool_helper::split_custom_parameters(null, $tool, array(), 'Review:Chapter=1.2.56', true),
+        $this->assertEquals(helper::split_custom_parameters(null, $tool, array(), 'Review:Chapter=1.2.56', true),
             array(
                 'custom_review_chapter' => '1.2.56',
                 'custom_Review:Chapter' => '1.2.56'));
 
-        $this->assertEquals(tool_helper::split_custom_parameters(null, $tool, array(),
+        $this->assertEquals(helper::split_custom_parameters(null, $tool, array(),
             'Complex!@#$^*(){}[]KEY=Complex!@#$^*;(){}[]½Value', true),
             array(
                 'custom_complex____________key' => 'Complex!@#$^*;(){}[]½Value',
@@ -94,7 +94,7 @@ class tool_helper_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user(array('middlename' => 'SOMETHING'));
         $this->setUser($user);
         $this->assertEquals(array('custom_x' => '1', 'custom_y' => 'SOMETHING'),
-            tool_helper::split_custom_parameters(null, $tool, array(), "x=1\ny=\$Person.name.middle", false));
+            helper::split_custom_parameters(null, $tool, array(), "x=1\ny=\$Person.name.middle", false));
     }
 
     /**
@@ -133,7 +133,7 @@ class tool_helper_test extends \advanced_testcase {
 
         $contentitems = json_encode($contentitems);
 
-        $json = tool_helper::convert_content_items($contentitems);
+        $json = helper::convert_content_items($contentitems);
 
         $jsondecode = json_decode($json);
 
@@ -194,7 +194,7 @@ class tool_helper_test extends \advanced_testcase {
         $type->baseurl = "http://example.com";
         $config = new \stdClass();
         $config->lti_acceptgrades = LTI_SETTING_DELEGATE;
-        $typeid = types_helper::add_type($type, $config);
+        $typeid = helper::add_type($type, $config);
 
         $contentitems = [];
         $contentitems[] = [
@@ -209,9 +209,9 @@ class tool_helper_test extends \advanced_testcase {
             'frame' => []
         ];
         $contentitemsjson13 = json_encode($contentitems);
-        $json11 = tool_helper::convert_content_items($contentitemsjson13);
+        $json11 = helper::convert_content_items($contentitemsjson13);
 
-        $config = tool_helper::tool_configuration_from_content_item($typeid,
+        $config = helper::tool_configuration_from_content_item($typeid,
             'ContentItemSelection',
             $type->ltiversion,
             'ConsumerKey',
@@ -240,7 +240,7 @@ class tool_helper_test extends \advanced_testcase {
         $type->baseurl = "http://example.com";
         $config = new \stdClass();
         $config->lti_acceptgrades = LTI_SETTING_DELEGATE;
-        $typeid = types_helper::add_type($type, $config);
+        $typeid = helper::add_type($type, $config);
 
         $contentitems = [];
         $contentitems[] = [
@@ -258,9 +258,9 @@ class tool_helper_test extends \advanced_testcase {
             'frame' => []
         ];
         $contentitemsjson13 = json_encode($contentitems);
-        $json11 = tool_helper::convert_content_items($contentitemsjson13);
+        $json11 = helper::convert_content_items($contentitemsjson13);
 
-        $config = tool_helper::tool_configuration_from_content_item($typeid,
+        $config = helper::tool_configuration_from_content_item($typeid,
             'ContentItemSelection',
             $type->ltiversion,
             'ConsumerKey',
@@ -284,7 +284,7 @@ class tool_helper_test extends \advanced_testcase {
         $type->baseurl = "http://example.com";
         $config = new \stdClass();
         $config->lti_acceptgrades = LTI_SETTING_DELEGATE;
-        $typeid = types_helper::add_type($type, $config);
+        $typeid = helper::add_type($type, $config);
 
         $contentitems = [];
         $contentitems[] = [
@@ -300,9 +300,9 @@ class tool_helper_test extends \advanced_testcase {
             'frame' => []
         ];
         $contentitemsjson13 = json_encode($contentitems);
-        $json11 = tool_helper::convert_content_items($contentitemsjson13);
+        $json11 = helper::convert_content_items($contentitemsjson13);
 
-        $config = tool_helper::tool_configuration_from_content_item($typeid,
+        $config = helper::tool_configuration_from_content_item($typeid,
             'ContentItemSelection',
             $type->ltiversion,
             'ConsumerKey',
@@ -330,7 +330,7 @@ class tool_helper_test extends \advanced_testcase {
         $type->baseurl = "http://example.com";
         $config = new \stdClass();
         $config->lti_acceptgrades = LTI_SETTING_DELEGATE;
-        $typeid = types_helper::add_type($type, $config);
+        $typeid = helper::add_type($type, $config);
 
         $contentitems = [];
         $contentitems[] = [
@@ -360,9 +360,9 @@ class tool_helper_test extends \advanced_testcase {
             'frame' => []
         ];
         $contentitemsjson13 = json_encode($contentitems);
-        $json11 = tool_helper::convert_content_items($contentitemsjson13);
+        $json11 = helper::convert_content_items($contentitemsjson13);
 
-        $config = tool_helper::tool_configuration_from_content_item($typeid,
+        $config = helper::tool_configuration_from_content_item($typeid,
             'ContentItemSelection',
             $type->ltiversion,
             'ConsumerKey',
@@ -392,7 +392,7 @@ class tool_helper_test extends \advanced_testcase {
         $type->name = "Test tool";
         $type->baseurl = "http://example.com";
         $config = new \stdClass();
-        $typeid = types_helper::add_type($type, $config);
+        $typeid = helper::add_type($type, $config);
 
         $contentitems = [];
         $contentitems[] = [
@@ -407,9 +407,9 @@ class tool_helper_test extends \advanced_testcase {
             'frame' => []
         ];
         $contentitemsjson13 = json_encode($contentitems);
-        $json11 = tool_helper::convert_content_items($contentitemsjson13);
+        $json11 = helper::convert_content_items($contentitemsjson13);
 
-        $config = tool_helper::tool_configuration_from_content_item($typeid,
+        $config = helper::tool_configuration_from_content_item($typeid,
             'ContentItemSelection',
             $type->ltiversion,
             'ConsumerKey',
@@ -423,9 +423,9 @@ class tool_helper_test extends \advanced_testcase {
     }
 
     public function test_ensure_url_is_https() {
-        $this->assertEquals('https://moodle.org', tool_helper::ensure_url_is_https('http://moodle.org'));
-        $this->assertEquals('https://moodle.org', tool_helper::ensure_url_is_https('moodle.org'));
-        $this->assertEquals('https://moodle.org', tool_helper::ensure_url_is_https('https://moodle.org'));
+        $this->assertEquals('https://moodle.org', helper::ensure_url_is_https('http://moodle.org'));
+        $this->assertEquals('https://moodle.org', helper::ensure_url_is_https('moodle.org'));
+        $this->assertEquals('https://moodle.org', helper::ensure_url_is_https('https://moodle.org'));
     }
 
     /**
@@ -433,15 +433,15 @@ class tool_helper_test extends \advanced_testcase {
      */
     public function test_get_url_thumbprint() {
         // Note: trailing and double slash are expected right now.  Must evaluate if it must be removed at some point.
-        $this->assertEquals('moodle.org/', tool_helper::get_url_thumbprint('http://MOODLE.ORG'));
-        $this->assertEquals('moodle.org/', tool_helper::get_url_thumbprint('http://www.moodle.org'));
-        $this->assertEquals('moodle.org/', tool_helper::get_url_thumbprint('https://www.moodle.org'));
-        $this->assertEquals('moodle.org/', tool_helper::get_url_thumbprint('moodle.org'));
-        $this->assertEquals('moodle.org//this/is/moodle', tool_helper::get_url_thumbprint('http://moodle.org/this/is/moodle'));
-        $this->assertEquals('moodle.org//this/is/moodle', tool_helper::get_url_thumbprint('https://moodle.org/this/is/moodle'));
-        $this->assertEquals('moodle.org//this/is/moodle', tool_helper::get_url_thumbprint('moodle.org/this/is/moodle'));
-        $this->assertEquals('moodle.org//this/is/moodle', tool_helper::get_url_thumbprint('moodle.org/this/is/moodle?'));
-        $this->assertEquals('moodle.org//this/is/moodle?foo=bar', tool_helper::get_url_thumbprint('moodle.org/this/is/moodle?foo=bar'));
+        $this->assertEquals('moodle.org/', helper::get_url_thumbprint('http://MOODLE.ORG'));
+        $this->assertEquals('moodle.org/', helper::get_url_thumbprint('http://www.moodle.org'));
+        $this->assertEquals('moodle.org/', helper::get_url_thumbprint('https://www.moodle.org'));
+        $this->assertEquals('moodle.org/', helper::get_url_thumbprint('moodle.org'));
+        $this->assertEquals('moodle.org//this/is/moodle', helper::get_url_thumbprint('http://moodle.org/this/is/moodle'));
+        $this->assertEquals('moodle.org//this/is/moodle', helper::get_url_thumbprint('https://moodle.org/this/is/moodle'));
+        $this->assertEquals('moodle.org//this/is/moodle', helper::get_url_thumbprint('moodle.org/this/is/moodle'));
+        $this->assertEquals('moodle.org//this/is/moodle', helper::get_url_thumbprint('moodle.org/this/is/moodle?'));
+        $this->assertEquals('moodle.org//this/is/moodle?foo=bar', helper::get_url_thumbprint('moodle.org/this/is/moodle?foo=bar'));
     }
 
     /**
@@ -551,7 +551,7 @@ class tool_helper_test extends \advanced_testcase {
      * @param array $tools The pool of tools to match the URL with.
      */
     public function test_get_best_tool_by_url($url, $expected, $tools) {
-        $actual = tool_helper::get_best_tool_by_url($url, $tools, null);
+        $actual = helper::get_best_tool_by_url($url, $tools, null);
         $this->assertSame($expected, $actual);
     }
 
@@ -584,7 +584,7 @@ class tool_helper_test extends \advanced_testcase {
             'state' => LTI_TOOL_STATE_CONFIGURED
         ]);
 
-        $records = tool_helper::get_tools_by_domain('example.com', LTI_TOOL_STATE_CONFIGURED);
+        $records = helper::get_tools_by_domain('example.com', LTI_TOOL_STATE_CONFIGURED);
         $this->assertCount(1, $records);
         $this->assertEmpty(array_diff(
             ['https://example.com/i/am/?where=here'],
@@ -640,7 +640,7 @@ class tool_helper_test extends \advanced_testcase {
         ]);
 
         // Get tool types for domain 'exampleone' in course 1 and verify only the one result under course category 1 is included.
-        $records = tool_helper::get_tools_by_domain('exampleone.com', LTI_TOOL_STATE_CONFIGURED, $course1->id);
+        $records = helper::get_tools_by_domain('exampleone.com', LTI_TOOL_STATE_CONFIGURED, $course1->id);
         $this->assertCount(1, $records);
         $this->assertEmpty(array_diff(
             ['https://exampleone.com/tool/1'],
@@ -648,7 +648,7 @@ class tool_helper_test extends \advanced_testcase {
         ));
 
         // Get tool types for domain 'exampleone' in course 2 and verify only the one result under course category 2 is included.
-        $records = tool_helper::get_tools_by_domain('exampleone.com', LTI_TOOL_STATE_CONFIGURED, $course2->id);
+        $records = helper::get_tools_by_domain('exampleone.com', LTI_TOOL_STATE_CONFIGURED, $course2->id);
         $this->assertCount(1, $records);
         $this->assertEmpty(array_diff(
             ['https://exampleone.com/tool/2'],
@@ -656,7 +656,7 @@ class tool_helper_test extends \advanced_testcase {
         ));
 
         // Get tool types for domain 'exampletwo' in course 1 and verify that no results are found.
-        $records = tool_helper::get_tools_by_domain('exampletwo.com', LTI_TOOL_STATE_CONFIGURED, $course1->id);
+        $records = helper::get_tools_by_domain('exampletwo.com', LTI_TOOL_STATE_CONFIGURED, $course1->id);
         $this->assertCount(0, $records);
     }
 
@@ -671,12 +671,12 @@ class tool_helper_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $course->originalcourseid = $parentcourse->id;
         $DB->update_record('course', $course);
-        $this->assertEquals(tool_helper::get_course_history($parentparentcourse), []);
-        $this->assertEquals(tool_helper::get_course_history($parentcourse), [$parentparentcourse->id]);
-        $this->assertEquals(tool_helper::get_course_history($course), [$parentcourse->id, $parentparentcourse->id]);
+        $this->assertEquals(helper::get_course_history($parentparentcourse), []);
+        $this->assertEquals(helper::get_course_history($parentcourse), [$parentparentcourse->id]);
+        $this->assertEquals(helper::get_course_history($course), [$parentcourse->id, $parentparentcourse->id]);
         $course->originalcourseid = 38903;
         $DB->update_record('course', $course);
-        $this->assertEquals(tool_helper::get_course_history($course), [38903]);
+        $this->assertEquals(helper::get_course_history($course), [38903]);
     }
 
     /**
@@ -690,7 +690,7 @@ class tool_helper_test extends \advanced_testcase {
         \curl::mock_response('');
 
         $this->expectException(\moodle_exception::class);
-        tool_helper::load_cartridge('http://example.com/mocked/empty/response', []);
+        helper::load_cartridge('http://example.com/mocked/empty/response', []);
     }
 
 }

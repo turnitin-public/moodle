@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core_ltix\endpoints_helper;
+use core_ltix\helper;
 require_once(__DIR__ . '/../config.php');
-//implementation moved to ltix/classes/endpoints_helper.php
+//implementation moved to ltix/classes/helper.php
 
-endpoints_helper::get_auth_endpoint();
+helper::get_auth_endpoint();

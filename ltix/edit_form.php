@@ -372,7 +372,7 @@ class core_ltix_edit_types_form extends moodleform {
      */
     public function get_lti_advantage_services(&$mform) {
         // For each service add the label and get the array of configuration.
-        $services = \core_ltix\tool_helper::get_services();
+        $services = \core_ltix\helper::get_services();
         $mform->addElement('header', 'services', get_string('services', 'ltix'));
         foreach ($services as $service) {
             /** @var \mod_lti\local\ltiservice\service_base $service */ // Need to change this when ltiservice is moved to core.
