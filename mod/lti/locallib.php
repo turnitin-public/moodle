@@ -1457,11 +1457,11 @@ function lti_filter_tool_types(array $tools, $state) {
  * @return stdClass[] All the lti types visible in the given course
  */
 function lti_get_lti_types_by_course($courseid, $coursevisible = null) {
-    debugging(__FUNCTION__ . '() is deprecated. Please use \mod_lti\local\helper::get_lti_types_by_course() instead.',
+    debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\helper::get_lti_types_by_course() instead.',
         DEBUG_DEVELOPER);
 
     global $USER;
-    return \mod_lti\local\helper::get_lti_types_by_course($courseid, $USER->id, $coursevisible ?? []);
+    return \core_ltix\helper::get_lti_types_by_course($courseid, $USER->id, $coursevisible ?? []);
 }
 
 /**
@@ -1475,7 +1475,7 @@ function lti_get_types_for_add_instance() {
     // Always return the 'manual' type option, despite manual config being deprecated, so that we have it for legacy instances.
     $types = [(object) ['name' => get_string('automatic', 'lti'), 'course' => 0, 'toolproxyid' => null]];
 
-    $preconfiguredtypes = \mod_lti\local\helper::get_lti_types_by_course($COURSE->id, $USER->id);
+    $preconfiguredtypes = \core_ltix\helper::get_lti_types_by_course($COURSE->id, $USER->id);
     foreach ($preconfiguredtypes as $type) {
         $types[$type->id] = $type;
     }
@@ -1493,7 +1493,7 @@ function lti_get_types_for_add_instance() {
 function lti_get_configured_types($courseid, $sectionreturn = 0) {
     global $OUTPUT, $USER;
     $types = [];
-    $preconfiguredtypes = \mod_lti\local\helper::get_lti_types_by_course($courseid, $USER->id,
+    $preconfiguredtypes = \core_ltix\helper::get_lti_types_by_course($courseid, $USER->id,
         [LTI_COURSEVISIBLE_ACTIVITYCHOOSER]);
 
     foreach ($preconfiguredtypes as $ltitype) {
