@@ -39,7 +39,7 @@ use core_privacy\local\request\writer;
 use dml_exception;
 use stdClass;
 use tool_dataprivacy\api;
-use tool_dataprivacy\local\helper as helper;
+use tool_dataprivacy\local\helper as tool_helper;
 
 /**
  * Privacy class for requesting user data.
@@ -49,17 +49,17 @@ use tool_dataprivacy\local\helper as helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
-        // This tool stores user data.
-        \core_privacy\local\metadata\provider,
+    // This tool stores user data.
+    \core_privacy\local\metadata\provider,
 
-        // This plugin is capable of determining which users have data within it.
-        \core_privacy\local\request\core_userlist_provider,
+    // This plugin is capable of determining which users have data within it.
+    \core_privacy\local\request\core_userlist_provider,
 
-        // This tool may provide access to and deletion of user data.
-        \core_privacy\local\request\plugin\provider,
+    // This tool may provide access to and deletion of user data.
+    \core_privacy\local\request\plugin\provider,
 
-        // This plugin has some sitewide user preferences to export.
-        \core_privacy\local\request\user_preference_provider {
+    // This plugin has some sitewide user preferences to export.
+    \core_privacy\local\request\user_preference_provider {
     /**
      * Returns meta data about this system.
      *
@@ -89,9 +89,9 @@ class provider implements
             'privacy:metadata:purpose'
         );
 
-        $collection->add_user_preference(helper::PREF_REQUEST_FILTERS,
+        $collection->add_user_preference(tool_helper::PREF_REQUEST_FILTERS,
             'privacy:metadata:preference:tool_dataprivacy_request-filters');
-        $collection->add_user_preference(helper::PREF_REQUEST_PERPAGE,
+        $collection->add_user_preference(tool_helper::PREF_REQUEST_PERPAGE,
             'privacy:metadata:preference:tool_dataprivacy_request-perpage');
 
         return $collection;
@@ -174,11 +174,11 @@ class provider implements
             }
 
             // Request type.
-            $data->type = helper::get_shortened_request_type_string($record->type);
+            $data->type = tool_helper::get_shortened_request_type_string($record->type);
             // Status.
-            $data->status = helper::get_request_status_string($record->status);
+            $data->status = tool_helper::get_request_status_string($record->status);
             // Creation method.
-            $data->creationmethod = helper::get_request_creation_method_string($record->creationmethod);
+            $data->creationmethod = tool_helper::get_request_creation_method_string($record->creationmethod);
             // Comments.
             $data->comments = $record->comments;
             // The DPO's comment about this request.
@@ -230,7 +230,7 @@ class provider implements
      * @param   int $userid The userid of the user whose data is to be exported.
      */
     public static function export_user_preferences(int $userid) {
-        $preffilter = get_user_preferences(helper::PREF_REQUEST_FILTERS, null, $userid);
+        $preffilter = get_user_preferences(tool_helper::PREF_REQUEST_FILTERS, null, $userid);
         if ($preffilter !== null) {
             $filters = json_decode($preffilter);
             $descriptions = [];
@@ -238,17 +238,17 @@ class provider implements
                 list($category, $value) = explode(':', $filter);
                 $option = new stdClass();
                 switch($category) {
-                    case helper::FILTER_TYPE:
+                    case tool_helper::FILTER_TYPE:
                         $option->category = get_string('requesttype', 'tool_dataprivacy');
-                        $option->name = helper::get_shortened_request_type_string($value);
+                        $option->name = tool_helper::get_shortened_request_type_string($value);
                         break;
-                    case helper::FILTER_STATUS:
+                    case tool_helper::FILTER_STATUS:
                         $option->category = get_string('requeststatus', 'tool_dataprivacy');
-                        $option->name = helper::get_request_status_string($value);
+                        $option->name = tool_helper::get_request_status_string($value);
                         break;
-                    case helper::FILTER_CREATION:
+                    case tool_helper::FILTER_CREATION:
                         $option->category = get_string('requestcreation', 'tool_dataprivacy');
-                        $option->name = helper::get_request_creation_method_string($value);
+                        $option->name = tool_helper::get_request_creation_method_string($value);
                         break;
                 }
                 $descriptions[] = get_string('filteroption', 'tool_dataprivacy', $option);
@@ -256,12 +256,12 @@ class provider implements
             // Export the filter preference as comma-separated values and text descriptions.
             $values = implode(', ', $filters);
             $descriptionstext = implode(', ', $descriptions);
-            writer::export_user_preference('tool_dataprivacy', helper::PREF_REQUEST_FILTERS, $values, $descriptionstext);
+            writer::export_user_preference('tool_dataprivacy', tool_helper::PREF_REQUEST_FILTERS, $values, $descriptionstext);
         }
 
-        $prefperpage = get_user_preferences(helper::PREF_REQUEST_PERPAGE, null, $userid);
+        $prefperpage = get_user_preferences(tool_helper::PREF_REQUEST_PERPAGE, null, $userid);
         if ($prefperpage !== null) {
-            writer::export_user_preference('tool_dataprivacy', helper::PREF_REQUEST_PERPAGE, $prefperpage,
+            writer::export_user_preference('tool_dataprivacy', tool_helper::PREF_REQUEST_PERPAGE, $prefperpage,
                 get_string('privacy:metadata:preference:tool_dataprivacy_request-perpage', 'tool_dataprivacy'));
         }
     }
