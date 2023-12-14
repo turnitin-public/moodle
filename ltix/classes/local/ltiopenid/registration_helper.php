@@ -26,7 +26,6 @@ namespace core_ltix\ltiopenid;
 defined('MOODLE_INTERNAL') || die;
 
 use core_ltix\helper;
-use core_ltix\helper;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
