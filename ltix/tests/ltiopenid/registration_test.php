@@ -208,7 +208,7 @@ EOD;
      */
     public function test_validation_initlogin() {
         $registration = json_decode($this->registrationfulljson, true);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         unset($registration['initiate_login_uri']);
         registration_helper::get()->registration_to_config($registration, 'TheClientId');
@@ -219,7 +219,7 @@ EOD;
      */
     public function test_validation_redirecturis() {
         $registration = json_decode($this->registrationfulljson, true);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         unset($registration['redirect_uris']);
         registration_helper::get()->registration_to_config($registration, 'TheClientId');
@@ -230,7 +230,7 @@ EOD;
      */
     public function test_validation_jwks() {
         $registration = json_decode($this->registrationfulljson, true);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         $registration['jwks_uri'] = '';
         registration_helper::get()->registration_to_config($registration, 'TheClientId');
@@ -241,7 +241,7 @@ EOD;
      */
     public function test_validation_missing_domain_targetlinkuri() {
         $registration = json_decode($this->registrationminimaljson, true);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         unset($registration['https://purl.imsglobal.org/spec/lti-tool-configuration']['domain']);
         unset($registration['https://purl.imsglobal.org/spec/lti-tool-configuration']['target_link_uri']);
@@ -253,7 +253,7 @@ EOD;
      */
     public function test_validation_domain_targetlinkuri_match() {
         $registration = json_decode($this->registrationminimaljson, true);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         $registration['https://purl.imsglobal.org/spec/lti-tool-configuration']['domain'] = 'not.the.right.domain';
         registration_helper::get()->registration_to_config($registration, 'TheClientId');
@@ -265,7 +265,7 @@ EOD;
     public function test_validation_domain_targetlinkuri_onlylink() {
         $registration = json_decode($this->registrationminimaljson, true);
         unset($registration['https://purl.imsglobal.org/spec/lti-tool-configuration']['domain']);
-        $this->expectException(\core_ltix\ltiopenid\registration_exception::class);
+        $this->expectException(\core_ltix\local\ltiopenid\registration_exception::class);
         $this->expectExceptionCode(400);
         $config = registration_helper::get()->registration_to_config($registration, 'TheClientId');
     }
