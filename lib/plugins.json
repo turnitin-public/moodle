@@ -275,6 +275,7 @@
         ],
         "ltiservice": [],
         "ltixservice": [
+            "assetprocessor",
             "basicoutcomes",
             "gradebookservices",
             "memberships",
