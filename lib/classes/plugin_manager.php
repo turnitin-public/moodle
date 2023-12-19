@@ -1924,7 +1924,7 @@ class core_plugin_manager {
             ),
 
             'ltixservice' => [
-                'basicoutcomes', 'memberships', 'profile', 'toolproxy', 'toolsettings'
+                'assetprocessor', 'basicoutcomes', 'memberships', 'profile', 'toolproxy', 'toolsettings'
             ],
 
             'mlbackend' => array(
