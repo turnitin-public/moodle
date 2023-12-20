@@ -681,9 +681,9 @@ class oauth_helper {
             $ok = !is_null($claims) && !empty($claims['iss']);
         }
         if ($ok) {
-            lti_verify_jwt_signature($typeid, $claims['iss'], $jwtparam);
+            self::verify_jwt_signature($typeid, $claims['iss'], $jwtparam);
             $params['oauth_consumer_key'] = $claims['iss'];
-            foreach (lti_get_jwt_claim_mapping() as $key => $mapping) {
+            foreach (self::get_jwt_claim_mapping() as $key => $mapping) {
                 $claim = LTI_JWT_CLAIM_PREFIX;
                 if (!empty($mapping['suffix'])) {
                     $claim .= "-{$mapping['suffix']}";
@@ -740,13 +740,45 @@ class oauth_helper {
             }
         }
         if (isset($params['content_items'])) {
-            $params['content_items'] = lti_convert_content_items($params['content_items']);
+            $params['content_items'] = tool_helper::convert_content_items($params['content_items']);
         }
-        $messagetypemapping = lti_get_jwt_message_type_mapping();
+        $messagetypemapping = self::get_jwt_message_type_mapping();
         if (isset($params['lti_message_type']) && array_key_exists($params['lti_message_type'], $messagetypemapping)) {
             $params['lti_message_type'] = $messagetypemapping[$params['lti_message_type']];
         }
         return $params;
+    }
+
+    /**
+     * Verify key exists, creates them.
+     *
+     * @return \lang_string|string|void
+     */
+    public static function verify_private_key() {
+        $key = get_config('core_ltix', 'privatekey');
+
+        // If we already generated a valid key, no need to check.
+        if (empty($key)) {
+
+            // Create the private key.
+            $kid = bin2hex(openssl_random_pseudo_bytes(10));
+            set_config('kid', $kid, 'core_ltix');
+            $config = array(
+                "digest_alg" => "sha256",
+                "private_key_bits" => 2048,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            );
+            $res = openssl_pkey_new($config);
+            openssl_pkey_export($res, $privatekey);
+
+            if (!empty($privatekey)) {
+                set_config('privatekey', $privatekey, 'core_ltix');
+            } else {
+                return get_string('opensslconfiginvalid', 'core_ltix');
+            }
+        }
+
+        return '';
     }
 
 }
