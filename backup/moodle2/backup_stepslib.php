@@ -3098,3 +3098,136 @@ class backup_xapistate_structure_step extends backup_structure_step {
         return $states;
     }
 }
+
+
+/**
+ * Structure step in charge of constructing the lti.xml file for all the contents found in a given context
+ */
+class backup_lti_structure_step extends backup_structure_step {
+
+    /**
+     * Define structure for content bank step
+     */
+    protected function define_structure() {
+
+        // To know if we are including userinfo.
+        $userinfo = $this->get_setting_value('userinfo');
+
+        $lti = new backup_nested_element('lti');
+        $ltitypes = new backup_nested_element('ltitypes');
+        $ltitype = new backup_nested_element('ltitype', array('id'), array(
+            'name',
+            'baseurl',
+            'tooldomain',
+            'state',
+            'course',
+            'coursevisible',
+            'ltiversion',
+            'clientid',
+            'toolproxyid',
+            'enabledcapability',
+            'parameter',
+            'icon',
+            'secureicon',
+            'createdby',
+            'timecreated',
+            'timemodified',
+            'description'
+            )
+        );
+
+        $ltitypesconfigs = new backup_nested_element('ltitypesconfigs');
+        $ltitypesconfig  = new backup_nested_element('ltitypesconfig', array('id'), array(
+                'name',
+                'value',
+            )
+        );
+        $ltitypesconfigencrypted  = new backup_nested_element('ltitypesconfigencrypted', array('id'), array(
+                'name',
+                new encrypted_final_element('value'),
+            )
+        );
+
+        $ltitoolproxy = new backup_nested_element('ltitoolproxy', array('id'));
+
+        $ltitoolsettings = new backup_nested_element('ltitoolsettings');
+        $ltitoolsetting  = new backup_nested_element('ltitoolsetting', array('id'), array(
+                'settings',
+                'timecreated',
+                'timemodified',
+            )
+        );
+
+        $ltisubmissions = new backup_nested_element('ltisubmissions');
+        $ltisubmission = new backup_nested_element('ltisubmission', array('id'), array(
+            'userid',
+            'datesubmitted',
+            'dateupdated',
+            'gradepercent',
+            'originalgrade',
+            'launchid',
+            'state'
+        ));
+
+        $lticoursevisible = new backup_nested_element('lticoursevisible', ['id'], [
+            'typeid',
+            'courseid',
+            'coursevisible',
+        ]);
+
+        // Build the tree.
+        $lti->add_child($ltitypes);
+        $ltitypes->add_child($ltitype);
+        $ltitype->add_child($ltitypesconfigs);
+        $ltitypesconfigs->add_child($ltitypesconfig);
+        $ltitypesconfigs->add_child($ltitypesconfigencrypted);
+        $ltitype->add_child($ltitoolproxy);
+        $ltitoolproxy->add_child($ltitoolsettings);
+        $ltitoolsettings->add_child($ltitoolsetting);
+        $lti->add_child($ltisubmissions);
+        $ltisubmissions->add_child($ltisubmission);
+        $lti->add_child($lticoursevisible);
+
+        // Define sources.
+        $ltitype->set_source_table('lti_types', ['course' => backup::VAR_COURSEID]);
+
+        // Add type config values. Encrypt password and resourcekey.
+        $params = [backup::VAR_COURSEID,
+                   backup_helper::is_sqlparam('password'),
+                   backup_helper::is_sqlparam('resourcekey')];
+        $ltitypesconfig->set_source_sql("SELECT c.id, c.name, c.value
+                                           FROM {lti_types_config} c
+                                           JOIN {lti_types} t ON t.id = c.typeid AND t.course = ?
+                                          WHERE c.name <> ? AND c.name <> ?", $params);
+        $ltitypesconfigencrypted->set_source_sql("SELECT c.id, c.name, c.value
+                                                        FROM {lti_types_config} c
+                                                        JOIN {lti_types} t ON t.id = c.typeid AND t.course = ?
+                                                       WHERE c.name = ? OR c.name = ?", $params);
+
+        $params = [backup::VAR_COURSEID];
+        $ltitoolproxy->set_source_sql("SELECT p.*
+                                         FROM {lti_tool_proxies} p
+                                         JOIN {lti_types} t ON t.toolproxyid = p.id AND t.course = ?", $params);
+
+        $ltitoolsetting->set_source_sql("SELECT s.*
+                                           FROM {lti_tool_settings} s
+                                           JOIN {lti_tool_proxies} p ON p.id = s.toolproxyid
+                                          WHERE s.course = ?",
+            [backup_helper::is_sqlparam(backup::VAR_COURSEID)]);
+
+        // TODO: Check lti_Submission - should this be in mod/lti instead?
+        if ($userinfo) {
+            $ltisubmission->set_source_table('lti_submission', array('ltiid' => backup::VAR_ACTIVITYID));
+        }
+
+        $lticoursevisible->set_source_table('lti_coursevisible', ['courseid' => backup::VAR_COURSEID]);
+
+        // Define id annotations
+        $ltitype->annotate_ids('user', 'createdby');
+        $ltitype->annotate_ids('course', 'course');
+        $ltisubmission->annotate_ids('user', 'userid');
+
+        return $lti;
+    }
+
+}
