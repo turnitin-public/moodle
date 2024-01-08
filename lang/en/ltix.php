@@ -38,8 +38,16 @@ $string['ltiunknownserviceapicall'] = 'LTI unknown service API call.';
 $string['ltix'] = 'LTIx';
 $string['opensslconfiginvalid'] = 'LTI 1.3 requires a valid openssl.cnf to be configured and available to your web server. Please contact the site administrator to configure and enable openssl for this site.';
 $string['pending'] = 'Pending';
-$string['privacy:metadata'] = 'The LTIx subsystem does not store any personal data.';
+$string['privacy'] = 'Privacy';
+$string['privacy:metadata:lti_tool_proxies'] = 'LTI proxies';
+$string['privacy:metadata:lti_tool_proxies:name'] = 'LTI proxy name';
+$string['privacy:metadata:createdby'] = 'The user who created the record';
+$string['privacy:metadata:lti_types'] = 'LTI types';
+$string['privacy:metadata:lti_types:name'] = 'LTI type name';
+$string['privacy:metadata:timecreated'] = 'The time when the record was created';
+$string['privacy:metadata:timemodified'] = 'The time when the record was modified';
 $string['rejected'] = 'Rejected';
 $string['unknownstate'] = 'Unknown state';
 $string['useraccountinformation'] = 'User account information';
 $string['userpersonalinformation'] = 'User personal information';
+

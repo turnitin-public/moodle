@@ -83,28 +83,6 @@ class provider implements
             'privacy:metadata:lti_submission'
         );
 
-        $items->add_database_table(
-            'lti_tool_proxies',
-            [
-                'name' => 'privacy:metadata:lti_tool_proxies:name',
-                'createdby' => 'privacy:metadata:createdby',
-                'timecreated' => 'privacy:metadata:timecreated',
-                'timemodified' => 'privacy:metadata:timemodified'
-            ],
-            'privacy:metadata:lti_tool_proxies'
-        );
-
-        $items->add_database_table(
-            'lti_types',
-            [
-                'name' => 'privacy:metadata:lti_types:name',
-                'createdby' => 'privacy:metadata:createdby',
-                'timecreated' => 'privacy:metadata:timecreated',
-                'timemodified' => 'privacy:metadata:timemodified'
-            ],
-            'privacy:metadata:lti_types'
-        );
-
         return $items;
     }
 
@@ -194,22 +172,6 @@ class provider implements
         ];
 
         $userlist->add_from_sql('userid', $sql, $params);
-
-        // Fetch all LTI types.
-        $sql = "SELECT ltit.createdby AS userid
-                 FROM {context} c
-                 JOIN {course} course
-                   ON c.contextlevel = :contextlevel
-                  AND c.instanceid = course.id
-                 JOIN {lti_types} ltit
-                   ON ltit.course = course.id
-                WHERE c.id = :contextid";
-
-        $params = [
-            'contextlevel' => CONTEXT_COURSE,
-            'contextid' => $context->id,
-        ];
-        $userlist->add_from_sql('userid', $sql, $params);
     }
 
     /**
@@ -220,9 +182,6 @@ class provider implements
     public static function export_user_data(approved_contextlist $contextlist) {
         self::export_user_data_lti_submissions($contextlist);
 
-        self::export_user_data_lti_types($contextlist);
-
-        self::export_user_data_lti_tool_proxies($contextlist);
     }
 
     /**
@@ -331,84 +290,6 @@ class provider implements
         });
     }
 
-    /**
-     * Export personal data for the given approved_contextlist related to LTI types.
-     *
-     * @param approved_contextlist $contextlist a list of contexts approved for export.
-     */
-    protected static function export_user_data_lti_types(approved_contextlist $contextlist) {
-        global $DB;
-
-        // Filter out any contexts that are not related to courses.
-        $courseids = array_reduce($contextlist->get_contexts(), function($carry, $context) {
-            if ($context->contextlevel == CONTEXT_COURSE) {
-                $carry[] = $context->instanceid;
-            }
-            return $carry;
-        }, []);
-
-        if (empty($courseids)) {
-            return;
-        }
-
-        $user = $contextlist->get_user();
-
-        list($insql, $inparams) = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED);
-        $params = array_merge($inparams, ['userid' => $user->id]);
-        $ltitypes = $DB->get_recordset_select('lti_types', "course $insql AND createdby = :userid", $params, 'timecreated ASC');
-        self::recordset_loop_and_export($ltitypes, 'course', [], function($carry, $record) {
-            $context = \context_course::instance($record->course);
-            $options = ['context' => $context];
-            $carry[] = [
-                'name' => format_string($record->name, true, $options),
-                'createdby' => transform::user($record->createdby),
-                'timecreated' => transform::datetime($record->timecreated),
-                'timemodified' => transform::datetime($record->timemodified)
-            ];
-            return $carry;
-        }, function($courseid, $data) {
-            $context = \context_course::instance($courseid);
-            $finaldata = (object) ['lti_types' => $data];
-            writer::with_context($context)->export_data([], $finaldata);
-        });
-    }
-
-    /**
-     * Export personal data for the given approved_contextlist related to LTI tool proxies.
-     *
-     * @param approved_contextlist $contextlist a list of contexts approved for export.
-     */
-    protected static function export_user_data_lti_tool_proxies(approved_contextlist $contextlist) {
-        global $DB;
-
-        // Filter out any contexts that are not related to system context.
-        $systemcontexts = array_filter($contextlist->get_contexts(), function($context) {
-            return $context->contextlevel == CONTEXT_SYSTEM;
-        });
-
-        if (empty($systemcontexts)) {
-            return;
-        }
-
-        $user = $contextlist->get_user();
-
-        $systemcontext = \context_system::instance();
-
-        $data = [];
-        $ltiproxies = $DB->get_recordset('lti_tool_proxies', ['createdby' => $user->id], 'timecreated ASC');
-        foreach ($ltiproxies as $ltiproxy) {
-            $data[] = [
-                'name' => format_string($ltiproxy->name, true, ['context' => $systemcontext]),
-                'createdby' => transform::user($ltiproxy->createdby),
-                'timecreated' => transform::datetime($ltiproxy->timecreated),
-                'timemodified' => transform::datetime($ltiproxy->timemodified)
-            ];
-        }
-        $ltiproxies->close();
-
-        $finaldata = (object) ['lti_tool_proxies' => $data];
-        writer::with_context($systemcontext)->export_data([], $finaldata);
-    }
 
     /**
      * Return a dict of LTI IDs mapped to their course module ID.
