@@ -21,11 +21,13 @@
  * @copyright 2013 Damyon Wiese
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace core\plugininfo;
+namespace mod_lti\plugininfo;
+
+use core\plugininfo\base;
 
 defined('MOODLE_INTERNAL') || die();
 
-class ltixsource extends base {
+class ltisource extends base {
     /**
      * Returns the node name used in admin settings menu for this plugin settings (if applicable)
      *
