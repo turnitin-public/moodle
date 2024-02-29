@@ -17,23 +17,24 @@
 /**
  * This file contains all necessary code to launch a Tool Proxy registration
  *
- * @package mod_lti
+ * @package core_ltix
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
 require_once($CFG->dirroot.'/ltix/constants.php');
+use core_ltix\local\ltiservice\service_helper;
 
 $id = required_param('id', PARAM_INT);
 $tab = optional_param('tab', '', PARAM_ALPHAEXT);
 
 require_login(0, false);
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
+$redirect = new moodle_url('/ltix/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
 
 require_sesskey();
@@ -50,39 +51,39 @@ foreach ($toolproxies as $key => $toolproxy) {
     }
 }
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php');
+$redirect = new moodle_url('/ltix/toolproxies.php');
 if ($duplicate) {
     redirect($redirect,  get_string('duplicateregurl', 'lti'));
 }
 
 
-$profileservice = lti_get_service_by_name('profile');
+$profileservice = service_helper::get_service_by_name('profile');
 if (empty($profileservice)) {
-    redirect($redirect,  get_string('noprofileservice', 'lti'));
+    redirect($redirect,  get_string('noprofileservice', 'core_ltix'));
 }
 
-$url = new moodle_url('/mod/lti/register.php', array('id' => $id));
+$url = new moodle_url('/ltix/register.php', array('id' => $id));
 $PAGE->set_url($url);
 
 admin_externalpage_setup('ltitoolproxies');
 
 
-$PAGE->set_heading(get_string('toolproxyregistration', 'lti'));
-$PAGE->set_title(get_string('toolproxyregistration', 'lti'));
+$PAGE->set_heading(get_string('toolproxyregistration', 'core_ltix'));
+$PAGE->set_title(get_string('toolproxyregistration', 'core_ltix'));
 
 // Print the page header.
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(get_string('toolproxyregistration', 'lti'));
+echo $OUTPUT->heading(get_string('toolproxyregistration', 'core_ltix'));
 
 echo $OUTPUT->box_start('generalbox');
 
 // Request the registration request content with an object tag.
-$registration = new moodle_url('/mod/lti/registration.php',
+$registration = new moodle_url('/ltix/registration.php',
     array('id' => $id, 'sesskey' => sesskey()));
 
 echo "<p id=\"id_warning\" style=\"display: none; color: red; font-weight: bold; margin-top: 1em; padding-top: 1em;\">\n";
-echo get_string('register_warning', 'lti');
+echo get_string('register_warning', 'core_ltix');
 echo "\n</p>\n";
 
 echo '<iframe id="contentframe" height="600px" width="100%" src="' . $registration->out() . '" onload="doOnload()"></iframe>';

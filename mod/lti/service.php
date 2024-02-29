@@ -23,5 +23,7 @@
  * @author     Chris Scribner
  */
 
+define('NO_DEBUG_DISPLAY', true);
+define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . "/../../config.php");
 \core_ltix\helper::get_service_endpoint();

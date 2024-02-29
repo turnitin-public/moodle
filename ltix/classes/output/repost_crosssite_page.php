@@ -22,14 +22,10 @@
  * cross-site cookies.
  *
  * @copyright  2021 Cengage
- * @package    mod_lti
+ * @package    core_ltix
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_lti\output;
-
-defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+namespace core_ltix\output;
 
 use renderable;
 use templatable;
@@ -80,3 +76,4 @@ class repost_crosssite_page implements renderable, templatable {
         return $renderdata;
     }
 }
+

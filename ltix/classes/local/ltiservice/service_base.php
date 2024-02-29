@@ -26,13 +26,6 @@
 
 namespace core_ltix\local\ltiservice;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once(__DIR__ . '/../../../../config.php');
-
-// TODO: Switch to core oauthlib once implemented - MDL-30149.
-use moodle\ltix as lti;
 use stdClass;
 
 

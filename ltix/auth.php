@@ -24,6 +24,5 @@
 
 use core_ltix\helper;
 require_once(__DIR__ . '/../config.php');
-//implementation moved to ltix/classes/helper.php
 
 helper::get_auth_endpoint();

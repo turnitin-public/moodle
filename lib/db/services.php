@@ -825,54 +825,6 @@ $functions = array(
         'ajax' => true,
         'readonlysession' => false, // Fetching removes from stack.
     ),
-    'core_ltix_get_tool_proxy_registration_request' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'get_tool_proxy_registration_request',
-        'description'   => 'Get a registration request for a tool proxy',
-        'type'          => 'read',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
-    'core_ltix_get_tool_types' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'get_tool_types',
-        'description'   => 'Get a list of the tool types',
-        'type'          => 'read',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
-    'core_ltix_create_tool_type' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'create_tool_type',
-        'description'   => 'Create a tool type',
-        'type'          => 'write',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
-    'core_ltix_update_tool_type' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'update_tool_type',
-        'description'   => 'Update a tool type',
-        'type'          => 'write',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
-    'core_ltix_delete_tool_type' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'delete_tool_type',
-        'description'   => 'Delete a tool type',
-        'type'          => 'write',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
-    'core_ltix_is_cartridge' => array(
-        'classname'     => 'core_ltix_external',
-        'methodname'    => 'is_cartridge',
-        'description'   => 'Determine if the given url is for a cartridge',
-        'type'          => 'read',
-        'capabilities'  => 'moodle/site:config',
-        'ajax'          => true
-    ),
     'core_session_touch' => array(
         'classname' => 'core\session\external',
         'methodname' => 'touch_session',

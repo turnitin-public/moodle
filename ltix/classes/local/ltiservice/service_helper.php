@@ -36,10 +36,8 @@ use core_ltix\oauth_helper;
  * @copyright  2023 Ismael Texidor-Rodriguez (Turnitin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class service_helper
-{
-    public static function get_contexts($json)
-    {
+class service_helper {
+    public static function get_contexts($json) {
 
         $contexts = array();
         if (isset($json->{'@context'})) {
@@ -54,8 +52,7 @@ class service_helper
 
     }
 
-    public static function get_response_xml($codemajor, $description, $messageref, $messagetype)
-    {
+    public static function get_response_xml($codemajor, $description, $messageref, $messagetype) {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><imsx_POXEnvelopeResponse />');
         $xml->addAttribute('xmlns', 'http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0');
 
@@ -77,8 +74,7 @@ class service_helper
         return $xml;
     }
 
-    public static function parse_message_id($xml)
-    {
+    public static function parse_message_id($xml) {
         if (empty($xml->imsx_POXHeader)) {
             return '';
         }
@@ -89,8 +85,7 @@ class service_helper
         return $messageid;
     }
 
-    public static function parse_grade_replace_message($xml)
-    {
+    public static function parse_grade_replace_message($xml) {
         $node = $xml->imsx_POXBody->replaceResultRequest->resultRecord->sourcedGUID->sourcedId;
         $resultjson = json_decode((string)$node);
         if (is_null($resultjson)) {
@@ -121,8 +116,7 @@ class service_helper
         return $parsed;
     }
 
-    public static function parse_grade_read_message($xml)
-    {
+    public static function parse_grade_read_message($xml) {
         $node = $xml->imsx_POXBody->readResultRequest->resultRecord->sourcedGUID->sourcedId;
         $resultjson = json_decode((string)$node);
         if (is_null($resultjson)) {
@@ -141,8 +135,7 @@ class service_helper
         return $parsed;
     }
 
-    public static function parse_grade_delete_message($xml)
-    {
+    public static function parse_grade_delete_message($xml) {
         $node = $xml->imsx_POXBody->deleteResultRequest->resultRecord->sourcedGUID->sourcedId;
         $resultjson = json_decode((string)$node);
         if (is_null($resultjson)) {
@@ -161,8 +154,7 @@ class service_helper
         return $parsed;
     }
 
-    public static function accepts_grades($ltiinstance)
-    {
+    public static function accepts_grades($ltiinstance) {
         global $DB;
 
         $acceptsgrades = true;
@@ -190,8 +182,7 @@ class service_helper
      *
      * @param int $userid
      */
-    public static function set_session_user($userid)
-    {
+    public static function set_session_user($userid) {
         global $DB;
 
         if ($user = $DB->get_record('user', array('id' => $userid))) {
@@ -199,8 +190,7 @@ class service_helper
         }
     }
 
-    public static function update_grade($ltiinstance, $userid, $launchid, $gradeval)
-    {
+    public static function update_grade($ltiinstance, $userid, $launchid, $gradeval) {
         global $CFG, $DB;
         require_once($CFG->libdir . '/gradelib.php');
 
@@ -246,8 +236,7 @@ class service_helper
         return $status == GRADE_UPDATE_OK;
     }
 
-    public static function read_grade($ltiinstance, $userid)
-    {
+    public static function read_grade($ltiinstance, $userid) {
         global $CFG;
         require_once($CFG->libdir . '/gradelib.php');
 
@@ -265,8 +254,7 @@ class service_helper
         }
     }
 
-    public static function delete_grade($ltiinstance, $userid)
-    {
+    public static function delete_grade($ltiinstance, $userid) {
         global $CFG;
         require_once($CFG->libdir . '/gradelib.php');
 
@@ -279,8 +267,7 @@ class service_helper
         return $status == GRADE_UPDATE_OK;
     }
 
-    public static function verify_message($key, $sharedsecrets, $body, $headers = null)
-    {
+    public static function verify_message($key, $sharedsecrets, $body, $headers = null) {
         foreach ($sharedsecrets as $secret) {
             $signaturefailed = false;
 
@@ -307,8 +294,7 @@ class service_helper
      * @param object $parsed
      * @throws Exception
      */
-    public static function verify_sourcedid($ltiinstance, $parsed)
-    {
+    public static function verify_sourcedid($ltiinstance, $parsed) {
         $sourceid = \core_ltix\helper::build_sourcedid($parsed->instanceid, $parsed->userid,
             $ltiinstance->servicesalt, $parsed->typeid, $parsed->launchid);
 
@@ -324,8 +310,7 @@ class service_helper
      * @return bool
      * @throws coding_exception
      */
-    public static function extend_lti_services($data)
-    {
+    public static function extend_lti_services($data) {
         $plugins = get_plugin_list_with_function('ltisource', $data->messagetype);
         if (!empty($plugins)) {
             // There can only be one.
@@ -348,8 +333,7 @@ class service_helper
      *
      * @return bool|\core_ltix\local\ltiservice\service_base Service
      */
-    public static function get_service_by_name($servicename)
-    {
+    public static function get_service_by_name($servicename) {
         $service = false;
         $classname = "\\ltixservice_{$servicename}\\local\\service\\{$servicename}";
         if (class_exists($classname)) {
@@ -357,55 +341,6 @@ class service_helper
         }
 
         return $service;
-    }
-
-    /**
-     * Transforms a basic LTI object to an array
-     *
-     * @param object $ltiobject Basic LTI object
-     *
-     * @return array Basic LTI configuration details
-     */
-    public static function lti_get_config($ltiobject)
-    {
-        $typeconfig = (array)$ltiobject;
-        $additionalconfig = \core_ltix\helper::get_type_config($ltiobject->typeid);
-        $typeconfig = array_merge($typeconfig, $additionalconfig);
-        return $typeconfig;
-    }
-
-    /**
-     * Build source ID
-     *
-     * @param int $instanceid
-     * @param int $userid
-     * @param string $servicesalt
-     * @param null|int $typeid
-     * @param null|int $launchid
-     * @return stdClass
-     */
-    public static function lti_build_sourcedid($instanceid, $userid, $servicesalt, $typeid = null, $launchid = null)
-    {
-        $data = new \stdClass();
-
-        $data->instanceid = $instanceid;
-        $data->userid = $userid;
-        $data->typeid = $typeid;
-        if (!empty($launchid)) {
-            $data->launchid = $launchid;
-        } else {
-            $data->launchid = mt_rand();
-        }
-
-        $json = json_encode($data);
-
-        $hash = hash('sha256', $json . $servicesalt, false);
-
-        $container = new \stdClass();
-        $container->data = $data;
-        $container->hash = $hash;
-
-        return $container;
     }
 }
 

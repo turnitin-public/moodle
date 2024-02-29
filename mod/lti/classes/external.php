@@ -419,7 +419,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function create_tool_proxy($name, $registrationurl, $capabilityoffered, $serviceoffered) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::create_tool_proxy instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::create_tool_proxy instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::create_tool_proxy($name, $registrationurl, $capabilityoffered, $serviceoffered);
     }
@@ -464,7 +464,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function delete_tool_proxy($id) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::delete_tool_proxy instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::delete_tool_proxy instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::delete_tool_proxy($id);
     }
@@ -509,7 +509,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function get_tool_proxy_registration_request($id) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use 
+        debugging(__FUNCTION__ . '() is deprecated. Please use 
                        \core_ltix\external::get_tool_proxy_registration_request instead.', DEBUG_DEVELOPER);
         return \core_ltix\external::get_tool_proxy_registration_request($id);
     }
@@ -553,7 +553,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function get_tool_types($toolproxyid) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::get_tool_types instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::get_tool_types instead.',
             DEBUG_DEVELOPER);
 
         return \core_ltix\external::get_tool_types($toolproxyid);
@@ -603,7 +603,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception If the tool type could not be created
      */
     public static function create_tool_type($cartridgeurl, $key, $secret) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::create_tool_type instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::create_tool_type instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::create_tool_type($cartridgeurl, $key, $secret);
     }
@@ -651,7 +651,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function update_tool_type($id, $name, $description, $state) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::update_tool_type instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::update_tool_type instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::update_tool_type($id, $name, $description, $state);
     }
@@ -696,7 +696,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function delete_tool_type($id) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::delete_tool_type instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::delete_tool_type instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::delete_tool_type($id);
     }
@@ -741,7 +741,7 @@ class mod_lti_external extends external_api {
      * @throws moodle_exception
      */
     public static function is_cartridge($url) {
-        error_log(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::is_cartridge instead.',
+        debugging(__FUNCTION__ . '() is deprecated. Please use \core_ltix\external::is_cartridge instead.',
             DEBUG_DEVELOPER);
         return \core_ltix\external::is_cartridge($url);
     }

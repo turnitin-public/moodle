@@ -48,9 +48,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/ltix/edit_form.php');
 require_once($CFG->dirroot.'/ltix/constants.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
@@ -127,7 +127,7 @@ if (\core_ltix\helper::request_is_using_ssl() && !empty($type->lti_secureicon)) 
     $type->oldicon = $type->lti_icon;
 }
 
-$form = new core_ltix_edit_types_form(
+$form = new \core_ltix\form\edit_types(
     $pageurl,
     (object) [
         'isadmin' => true,
@@ -158,15 +158,15 @@ if ($data = $form->get_data()) {
     redirect($redirect);
 }
 
-$PAGE->set_title(get_string('toolsetup', 'ltix'));
+$PAGE->set_title(get_string('toolsetup', 'core_ltix'));
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('ltitoolconfigure');
-$PAGE->navbar->add(get_string('manage_external_tools', 'ltix'), new moodle_url('/ltix/toolconfigure.php'));
-$PAGE->navbar->add(get_string('toolsetup', 'ltix'), $PAGE->url);
+$PAGE->navbar->add(get_string('manage_external_tools', 'core_ltix'), new moodle_url('/ltix/toolconfigure.php'));
+$PAGE->navbar->add(get_string('toolsetup', 'core_ltix'), $PAGE->url);
 $PAGE->requires->js_call_amd('core_ltix/coursecategory', 'init', [$type->lti_coursecategories]);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('toolsetup', 'ltix'));
+echo $OUTPUT->heading(get_string('toolsetup', 'core_ltix'));
 echo $OUTPUT->box_start('generalbox');
 
 if ($action == 'update') {
