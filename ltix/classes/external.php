@@ -110,7 +110,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function get_tool_proxies_parameters() {
         return new external_function_parameters(
@@ -125,7 +124,6 @@ class external extends external_api {
      *
      * @param bool $orphanedonly Retrieve only tool proxies that do not have a corresponding tool type
      * @return array of tool types
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function get_tool_proxies($orphanedonly) {
@@ -147,7 +145,6 @@ class external extends external_api {
      * Returns description of method result value.
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function get_tool_proxies_returns() {
         return new external_multiple_structure(
@@ -159,7 +156,6 @@ class external extends external_api {
      * Returns description of method parameters.
      *
      * @return external_function_parameters
-     * @since Moodle 3.0
      */
     public static function get_tool_launch_data_parameters() {
         return new external_function_parameters(
@@ -174,11 +170,11 @@ class external extends external_api {
      *
      * @param int $toolid the external tool instance id
      * @return array of warnings and launch data
-     * @since Moodle 3.0
      * @throws moodle_exception
      */
     public static function get_tool_launch_data($toolid) {
         global $DB, $CFG;
+        require_once($CFG->dirroot . '/mod/lti/lib.php');
 
         $params = self::validate_parameters(self::get_tool_launch_data_parameters(),
                                             array(
@@ -217,7 +213,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.0
      */
     public static function get_tool_launch_data_returns() {
         return new external_single_structure(
@@ -240,7 +235,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function create_tool_proxy_parameters() {
         return new external_function_parameters(
@@ -267,7 +261,6 @@ class external extends external_api {
      * @param string[] $capabilityoffered List of capabilities this tool proxy should be offered
      * @param string[] $serviceoffered List of services this tool proxy should be offered
      * @return object The new tool proxy
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function create_tool_proxy($name, $registrationurl, $capabilityoffered, $serviceoffered) {
@@ -323,7 +316,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function create_tool_proxy_returns() {
         return self::tool_proxy_return_structure();
@@ -333,7 +325,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function delete_tool_proxy_parameters() {
         return new external_function_parameters(
@@ -348,7 +339,6 @@ class external extends external_api {
      *
      * @param int $id the lti instance id
      * @return object The tool proxy
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function delete_tool_proxy($id) {
@@ -373,7 +363,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function delete_tool_proxy_returns() {
         return self::tool_proxy_return_structure();
@@ -383,7 +372,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.0
      */
     public static function get_tool_proxy_registration_request_parameters() {
         return new external_function_parameters(
@@ -398,7 +386,6 @@ class external extends external_api {
      *
      * @param int $id the lti instance id
      * @return array of registration parameters
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function get_tool_proxy_registration_request($id) {
@@ -420,7 +407,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function get_tool_proxy_registration_request_returns() {
         return new external_function_parameters(
@@ -440,7 +426,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function get_tool_types_parameters() {
         return new external_function_parameters(
@@ -455,7 +440,6 @@ class external extends external_api {
      *
      * @param int $toolproxyid The tool proxy id
      * @return array of tool types
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function get_tool_types($toolproxyid) {
@@ -485,7 +469,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function get_tool_types_returns() {
         return new external_multiple_structure(
@@ -516,7 +499,6 @@ class external extends external_api {
      * @param string $key The consumer key to identify this consumer
      * @param string $secret The secret
      * @return array created tool type
-     * @since Moodle 3.1
      * @throws moodle_exception If the tool type could not be created
      */
     public static function create_tool_type($cartridgeurl, $key, $secret) {
@@ -574,7 +556,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function create_tool_type_returns() {
         return self::tool_type_return_structure();
@@ -584,7 +565,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function update_tool_type_parameters() {
         return new external_function_parameters(
@@ -605,7 +585,6 @@ class external extends external_api {
      * @param string $description The name of the tool type
      * @param int $state The state of the tool type
      * @return array updated tool type
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function update_tool_type($id, $name, $description, $state) {
@@ -657,7 +636,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function update_tool_type_returns() {
         return self::tool_type_return_structure();
@@ -667,7 +645,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function delete_tool_type_parameters() {
         return new external_function_parameters(
@@ -682,7 +659,6 @@ class external extends external_api {
      *
      * @param int $id The id of the tool type to be deleted
      * @return array deleted tool type
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function delete_tool_type($id) {
@@ -716,7 +692,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function delete_tool_type_returns() {
         return new external_function_parameters(
@@ -730,7 +705,6 @@ class external extends external_api {
      * Returns description of method parameters
      *
      * @return external_function_parameters
-     * @since Moodle 3.1
      */
     public static function is_cartridge_parameters() {
         return new external_function_parameters(
@@ -745,7 +719,6 @@ class external extends external_api {
      *
      * @param string $url Url that may or may not be an xml cartridge
      * @return bool True if the url is for a cartridge.
-     * @since Moodle 3.1
      * @throws moodle_exception
      */
     public static function is_cartridge($url) {
@@ -768,7 +741,6 @@ class external extends external_api {
      * Returns description of method result value
      *
      * @return \core_external\external_description
-     * @since Moodle 3.1
      */
     public static function is_cartridge_returns() {
         return new external_function_parameters(

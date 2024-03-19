@@ -118,13 +118,15 @@ function xmldb_lti_upgrade($oldversion) {
 
     // Automatically generated Moodle v4.3.0 release upgrade line.
     // Put any upgrade step following this.
-    if ($oldversion < 2023112000) {
+    if ($oldversion < 2023112001) {
         // Capabilities have been renamed - modify any existing roles with custom changes.
 
         // The following capabilities have already been assigned to all relevant roles at site context (during core upgrade)
         // Now, ensure any custom role overrides are updated such that they reflect the new capability, at which point any users
         // who had the old capability now have the replacement capability in any relevant contexts.
-        $capmapping = ['mod/lti:manage' => 'moodle/ltix:manage', 'mod/lti:addcoursetool' => 'moodle/ltix:addcoursetool'];
+        $capmapping = ['mod/lti:manage' => 'moodle/ltix:manage',
+            'mod/lti:addcoursetool' => 'moodle/ltix:addcoursetool',
+            'mod/lti:addpreconfiguredinstance' => 'moodle/ltix:canviewcoursetools'];
         foreach ($capmapping as $oldcap => $newcap) {
 
             $sql = "UPDATE {role_capabilities}

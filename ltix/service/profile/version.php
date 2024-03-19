@@ -15,18 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-<<<<<<<< HEAD:ltix/service/profile/version.php
  * Version information for the ltixservice_profile service.
  *
  * @package    ltixservice_profile
  * @copyright  2014 Vital Source Technologies http://vitalsource.com
  * @author     Stephen Vickers
-========
- * Version information for the ltixservice_basicoutcomes service.
- *
- * @package    ltixservice_basicoutcomes
- * @copyright  2019 Stephen Vickers
->>>>>>>> 6276a090667 (MDL-79114 core_ltix: promote ltiservice basicoutcomes to core):ltix/service/basicoutcomes/version.php
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,8 +29,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2023100900;
 $plugin->requires  = 2023100400;
-<<<<<<<< HEAD:ltix/service/profile/version.php
 $plugin->component = 'ltixservice_profile';
-========
-$plugin->component = 'ltixservice_basicoutcomes';
->>>>>>>> 6276a090667 (MDL-79114 core_ltix: promote ltiservice basicoutcomes to core):ltix/service/basicoutcomes/version.php

@@ -34,8 +34,6 @@
 
 namespace core_ltix;
 
-use lti_testcase;
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -48,7 +46,7 @@ require_once($CFG->dirroot . '/ltix/tests/lti_testcase.php');
  * @package    core_ltix
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \core_ltix\types_helper
+ * @coversDefaultClass \core_ltix\helper
  */
 class types_helper_test extends lti_testcase {
 

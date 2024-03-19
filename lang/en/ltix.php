@@ -61,6 +61,7 @@ $string['courseexternaltooleditsuccess'] = 'Changes saved.';
 $string['courseexternaltooliconalt'] = 'Icon for {$a}';
 $string['courseexternaltools'] = 'LTI External tools';
 $string['courseexternaltoolsinfo'] = 'LTI External tools are add-on apps you can integrate into your course, such as interactive content or assessments. Your students can access and use them without leaving your course.';
+$string['courseexternaltoolsnoeditpermissions'] = 'You don\'t have permission to edit this tool';
 $string['courseinformation'] = 'Course information';
 $string['courselink'] = 'Go to course';
 $string['createdon'] = 'Created on';
@@ -84,6 +85,7 @@ $string['delegate'] = 'Delegate to teacher';
 $string['delegate_tool'] = 'As specified in Deep Linking definition or Delegate to teacher';
 $string['delete'] = 'Delete';
 $string['delete_confirmation'] = 'Are you sure you want to delete this preconfigured tool?';
+$string['dontshowinactivitychooser'] = 'Don\'t show in activity chooser';
 $string['duplicateregurl'] = 'This registration URL is already in use';
 $string['dynreg_update_btn_new'] = 'Register as a new external tool';
 $string['dynreg_update_btn_update'] = 'Update';
@@ -168,6 +170,7 @@ along with the consumer key from the tool provider.
 Tools which do not require secure communication from Moodle and do not provide additional services (such as grade reporting)
 may not require a shared secret.';
 $string['pending'] = 'Pending';
+$string['pluginname'] = 'External tool';
 $string['privacy'] = 'Privacy';
 $string['privacy:metadata'] = 'The LTIx subsystem does not store any personal data.';
 $string['publickey'] = 'Public key';
@@ -222,6 +225,7 @@ $string['share_name_help'] = 'Specify whether the full name of the user launchin
 The tool provider may need launchers\' names to show meaningful information within the tool.
 
 Note that this setting may be overridden in the tool configuration.';
+$string['showinactivitychooser'] = 'Show in activity chooser';
 $string['show_in_course_activity_chooser'] = 'Show in activity chooser and as a preconfigured tool';
 $string['show_in_course_lti1'] = 'Tool configuration usage';
 $string['show_in_course_lti1_help'] = 'This tool may be shown in the activity chooser for a teacher to select to add to a course. Alternatively, it may be shown in the preconfigured tool drop-down menu when adding an external tool to a course. A further option is for the tool configuration to only be used if the exact tool URL is entered when adding an external tool to a course.';
@@ -288,6 +292,7 @@ $string['typename'] = 'Tool name';
 $string['typename_help'] = 'The tool name is used to identify the tool provider within Moodle. The name entered will be visible to teachers when adding external tools within courses.';
 $string['unknownstate'] = 'Unknown state';
 $string['update'] = 'Update';
+$string['usage'] = 'Usage count';
 $string['useraccountinformation'] = 'User account information';
 $string['userpersonalinformation'] = 'User personal information';
 
