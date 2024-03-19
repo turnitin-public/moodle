@@ -4699,6 +4699,12 @@ class settings_navigation extends navigation_node {
         // add enrol nodes
         enrol_add_course_navigation($coursenode, $course);
 
+        //navigation extension code
+        if(has_capability('moodle/ltix:canviewcoursetools', $coursecontext)) {
+            $this->load_course_settings();
+        }
+
+
         // Manage filters
         if ($adminoptions->filters) {
             $url = new moodle_url('/filter/manage.php', array('contextid'=>$coursecontext->id));

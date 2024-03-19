@@ -16,10 +16,15 @@
 
 namespace core_ltix\reportbuilder\local\systemreports;
 
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot.'/ltix/constants.php');
+
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\column;
 use core_ltix\reportbuilder\local\entities\tool_types;
 use core_reportbuilder\system_report;
+
 
 /**
  * Course external tools list system report class implementation.
@@ -42,7 +47,7 @@ class course_external_tools_list extends system_report {
     protected function initialise(): void {
         global $DB, $CFG;
 
-        $this->course = get_course($this->get_context()->instanceid);// Need to find the current location of this function.
+        $this->course = get_course($this->get_context()->instanceid);
 
         // Our main entity, it contains all the column definitions that we need.
         $entitymain = new tool_types();
@@ -90,7 +95,7 @@ class course_external_tools_list extends system_report {
         );
         $this->add_base_condition_sql($wheresql, $params);
 
-        $this->set_downloadable(false, get_string('pluginname', 'mod_lti'));
+        $this->set_downloadable(false, get_string('pluginname', 'core_ltix'));
         $this->set_default_per_page(10);
         $this->set_default_no_results_notice(null);
     }
@@ -101,9 +106,7 @@ class course_external_tools_list extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        // since the addpreconfiguredinstance capability isn't going to be moved to lib/db/access.php, dropping it and returning true here. Not sure it's the best approach.
-        //return has_capability('mod/lti:addpreconfiguredinstance', $this->get_context());
-        return true;
+        return has_capability('moodle/ltix:canviewcoursetools', $this->get_context());
     }
 
     public function row_callback(\stdClass $row): void {
@@ -132,7 +135,7 @@ class course_external_tools_list extends system_report {
         // TODO: This should be replaced with proper column aggregation once that's added to system_report instances in MDL-76392.
         $this->add_column(new column(
             'usage',
-            new \lang_string('usage', 'ltix'),
+            new \lang_string('usage', 'core_ltix'),
             $tooltypesentity->get_entity_name()
         ))
             ->set_type(column::TYPE_INTEGER)
@@ -143,7 +146,7 @@ class course_external_tools_list extends system_report {
         // Enable toggle column.
         $this->add_column((new column(
             'showinactivitychooser',
-            new \lang_string('showinactivitychooser', 'ltix'),
+            new \lang_string('showinactivitychooser', 'core_ltix'),
             $tooltypesentity->get_entity_name()
         ))
             // Site tools can be overridden on course level.
@@ -172,8 +175,8 @@ class course_external_tools_list extends system_report {
                     ['name' => 'action', 'value' => 'showinactivitychooser-toggle'],
                     ['name' => 'state', 'value' => $coursevisible],
                 ];
-                $label = $coursevisible ? get_string('dontshowinactivitychooser', 'ltix')
-                    : get_string('showinactivitychooser', 'ltix');
+                $label = $coursevisible ? get_string('dontshowinactivitychooser', 'core_ltix')
+                    : get_string('showinactivitychooser', 'core_ltix');
 
                 $disabled = !has_capability('moodle/ltix:addcoursetool', \context_course::instance($courseid));
 
@@ -203,7 +206,7 @@ class course_external_tools_list extends system_report {
                 if (get_site()->id == $row->course) {
                     return \html_writer::div(
                         \html_writer::div(
-                            $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'ltix')
+                            $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'core_ltix')
                         ), 'tool-action-icon-container'), 'd-flex justify-content-end'
                     );
                 }
@@ -212,7 +215,7 @@ class course_external_tools_list extends system_report {
                 if (!has_capability('moodle/ltix:addcoursetool', \context_course::instance($row->course))) {
                     return \html_writer::div(
                         \html_writer::div(
-                            $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'ltix')
+                            $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'core_ltix')
                         ), 'tool-action-icon-container'), 'd-flex justify-content-end'
                     );
                 }

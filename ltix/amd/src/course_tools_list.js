@@ -30,7 +30,7 @@ import {add as addToast} from 'core/toast';
 import {getString, getStrings} from 'core/str';
 import {refreshTableContent} from 'core_table/dynamic';
 import * as Selectors from 'core_table/local/dynamic/selectors';
-import {toggleShowInActivityChooser} from "./repository";
+import {toggleShowInActivityChooser} from "../../../mod/lti/amd/src/repository";
 
 /**
  * Initialise module.
