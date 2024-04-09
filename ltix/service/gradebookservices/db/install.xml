@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="ltiservice_gradebookservices" COMMENT="This file records the grade items created by the LTI Gradebook Services service">
+    <TABLE NAME="ltixservice_gradebookservices" COMMENT="This file records the grade items created by the LTI Gradebook Services service">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="gradeitemid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the gradeItem related."/>
