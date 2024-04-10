@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['accept'] = 'Accept';
 $string['accepted'] = 'Accepted';
 $string['accept_grades_admin'] = 'Accept grades from the tool';
 $string['accept_grades_admin_help'] = 'Specify whether the tool provider can add, update, read, and delete grades associated with instances of this tool.
@@ -150,7 +151,6 @@ $string['no_tp_cancelled'] = 'There are no cancelled external tool registrations
 $string['no_tp_configured'] = 'There are no unregistered external tool registrations configured.';
 $string['no_tp_pending'] = 'There are no pending external tool registrations.';
 $string['no_tp_rejected'] = 'There are no rejected external tool registrations.';
-$string['no_lti_tools'] = 'There are no external tools configured.';
 $string['nocourseexternaltoolsnotice'] = 'There are no LTI External tools yet.';
 $string['noprofileservice'] = 'Profile service not found';
 $string['oauthsecurity'] = 'LTI 1.0/1.1';
@@ -190,6 +190,7 @@ $string['registrationname'] = 'Tool provider name';
 $string['registrationname_help'] = 'Enter the name of the tool provider being registered.';
 $string['registrationurl'] = 'Registration URL';
 $string['registrationurl_help'] = 'The registration URL should be available from the tool provider as the location to which registration requests should be sent.';
+$string['reject'] = 'Reject';
 $string['rejected'] = 'Rejected';
 $string['resourcekey_admin'] = 'Consumer key';
 $string['resourcekey_admin_help'] = 'The consumer key can be thought of as a username used to authenticate access to the tool.
