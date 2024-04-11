@@ -268,3 +268,7 @@ $string['versiondisk'] = 'New version';
 // Deprecated since Moodle 4.2.
 $string['type_contentbank'] = 'Content bank';
 $string['type_contentbank_plural'] = 'Content bank plugins';
+
+// Deprecated since Moodle 4.4.
+$string['type_ltiservice'] = 'LTI service (old)';
+$string['type_ltiservice_plural'] = 'LTI service plugins (old)';

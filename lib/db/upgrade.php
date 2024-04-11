@@ -1195,6 +1195,11 @@ function xmldb_main_upgrade($oldversion) {
             if (!file_exists($versionfile)) {
                 uninstall_plugin('ltiservice', $type);
             }
+
+            // Move all the service-specific type config for ltiservice_xx plugins to ltixservice_xx.
+            $oldsettingname = 'ltiservice_'.$type;
+            $newsettingname = 'ltixservice'.$type;
+            $DB->set_field('lti_types_config', 'name', $newsettingname, ['name' => $oldsettingname]);
         }
 
         // Main savepoint reached.
