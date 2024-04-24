@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // LTIX overview.
-$ADMIN->add('lti', new admin_externalpage('lti', get_string('manage_external_tools', 'core_ltix'),
+$ADMIN->add('ltiexternaltools', new admin_externalpage('lti', get_string('manage_external_tools', 'core_ltix'),
     new moodle_url('/ltix/toolconfigure.php'), ['moodle/ltix:manage']));
 
 
