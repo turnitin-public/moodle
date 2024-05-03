@@ -35,6 +35,7 @@ $string['active'] = 'Active';
 $string['add_ltiadv'] = 'Add LTI Advantage';
 $string['add_ltilegacy'] = 'Add Legacy LTI';
 $string['addtool'] = 'Add tool';
+$string['addtype'] = 'Add preconfigured tool';
 $string['always'] = 'Always';
 $string['autoaddtype'] = 'Add tool';
 $string['baseurl'] = 'Base URL/tool registration name';
@@ -102,6 +103,7 @@ $string['errorinvaliddata'] = 'Invalid data: {$a}';
 $string['errorinvalidresponseformat'] = 'Invalid Content-Item response format.';
 $string['errortooltypenotfound'] = 'LTI tool type not found.';
 $string['existing_window'] = 'Existing window';
+$string['external_tool_types'] = 'Preconfigured tools';
 $string['failedtocreatetooltype'] = 'Failed to create new tool. Please check the URL and try again.';
 $string['failedtodeletetoolproxy'] = 'Failed to delete tool registration. You may need to visit "Manage external tool registrations" and delete it manually.';
 $string['force_ssl'] = 'Force SSL';
@@ -125,6 +127,14 @@ $string['ltiversion'] = 'LTI version';
 $string['ltiversion_help'] = 'The version of LTI being used for signing messages and service requests: LTI 1.0/1.1 and LTI 2.0 use the OAuth 1.0A security profile; LTI 1.3.0 uses JWTs.';
 $string['ltiunknownserviceapicall'] = 'LTI unknown service API call.';
 $string['ltix'] = 'LTIx';
+$string['main_admin'] = 'General help';
+$string['main_admin_help'] = 'External tools allow Moodle users to interact with learning resources hosted remotely. Through a special launch protocol, the remote tool has access to general information about the launching user. For example, the institution name, course ID, user ID, and other information such as the user\'s name or email address.
+
+Tools listed on this page are separated into three categories:
+
+* **Active** - These tool providers have been approved and configured by an administrator. They can be used from within any course on this site. If a consumer key and shared secret are entered, a trust relationship is established between this site and the remote tool, providing a secure communication channel.
+* **Pending** - These tool providers came in through a package import, but have not been configured by an administrator. Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.
+* **Rejected** - These tools providers are flagged as ones which an administrator has no intention of making available on the site. Teachers may still use tools from these providers if they have a consumer key and shared secret, or if none is required.';
 $string['manage_external_tools'] = 'Manage tools';
 $string['manage_tools'] = 'Manage preconfigured tools';
 $string['manage_tool_proxies'] = 'Manage external tool registrations';

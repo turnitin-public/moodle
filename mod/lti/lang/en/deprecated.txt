@@ -15,3 +15,6 @@ tooltypedeleted,mod_lti
 tooltypenotdeleted,mod_lti
 tooltypeupdated,mod_lti
 forced_help,mod_lti
+addtype,mod_lti
+external_tool_types,mod_lti
+main_admin,mod_lti
