@@ -27,10 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 /*
  * @var admin_settingpage $settings
  */
-global $PAGE;
-$settings->visiblename = new lang_string('manage_tools', 'core_ltix');
-$settings->hidden = true;
-$ADMIN->add('ltix', $settings);
 $proxieslink = new admin_externalpage('ltix',
     get_string('manage_tool_proxies', 'core_ltix'),
     new moodle_url('/ltix/toolproxies.php'));
@@ -46,11 +42,15 @@ foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $p
      */
     $plugin->load_settings($ADMIN, 'ltix', $hassiteconfig);
 }
-
+// Now, add the old 'manage preconfigured tools' settings page but mark it hidden.
+// It'll be linked to directly from ltix/toolconfigure.php.
+$settings = new admin_settingpage('ltisettings', new lang_string('manage_tools', 'core_ltix'), ['moodle/site:config'], true);
+$ADMIN->add('ltix', $settings);
 $toolproxiesurl = new moodle_url('/ltix/toolproxies.php');
 $toolproxiesurl = $toolproxiesurl->out();
 
 if ($ADMIN->fulltree) {
+    global $PAGE, $CFG, $USER;
     require_once($CFG->dirroot.'/ltix/constants.php');
 
     $configuredtoolshtml = '';
