@@ -4330,4 +4330,23 @@ class helper {
 
     }
 
+    /**
+     * Returns tool types for lti add instance and edit page
+     *
+     * @return array Array of lti types
+     */
+    public static function get_types_for_add_instance() {
+        global $COURSE, $USER;
+
+        // Always return the 'manual' type option, despite manual config being deprecated, so that we have it for legacy instances.
+        $types = [(object) ['name' => get_string('automatic', 'core_ltix'), 'course' => 0, 'toolproxyid' => null]];
+
+        $preconfiguredtypes = self::get_lti_types_by_course($COURSE->id, $USER->id);
+        foreach ($preconfiguredtypes as $type) {
+            $types[$type->id] = $type;
+        }
+
+        return $types;
+    }
+
 }

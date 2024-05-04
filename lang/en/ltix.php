@@ -37,6 +37,7 @@ $string['add_ltilegacy'] = 'Add Legacy LTI';
 $string['addtool'] = 'Add tool';
 $string['always'] = 'Always';
 $string['autoaddtype'] = 'Add tool';
+$string['automatic'] = 'Automatic, based on tool URL';
 $string['baseurl'] = 'Base URL/tool registration name';
 $string['cancel'] = 'Cancel';
 $string['capabilities'] = 'Capabilities';
