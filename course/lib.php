@@ -3710,6 +3710,7 @@ function course_get_user_navigation_options($context, $course = null) {
         'search' => false,
         'tags' => false,
         'communication' => false,
+        'ltix' => false,
     ];
 
     $options->blogs = !empty($CFG->enableblogs) &&
@@ -3788,6 +3789,10 @@ function course_get_user_navigation_options($context, $course = null) {
     if (\core_competency\api::is_enabled()) {
         $capabilities = array('moodle/competency:coursecompetencyview', 'moodle/competency:coursecompetencymanage');
         $options->competencies = has_any_capability($capabilities, $context);
+    }
+
+    if(has_capability('moodle/ltix:viewcoursetools', $context)) {
+        $options->ltix = true;
     }
     return $options;
 }
