@@ -17,23 +17,23 @@
 /**
  * Privacy provider tests.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2018 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_lti\privacy;
+namespace core_ltix\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
-use mod_lti\privacy\provider;
+use core_ltix\privacy\provider;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Privacy provider tests class.
  *
- * @package    mod_lti
+ * @package    core_ltix
  * @copyright  2018 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,24 +41,17 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
     /**
      * Test for provider::get_metadata().
+     * @covers ::get_metadata
+     * @return null
      */
     public function test_get_metadata() {
-        $collection = new collection('mod_lti');
+        $collection = new collection('core_ltix');
         $newcollection = provider::get_metadata($collection);
         $itemcollection = $newcollection->get_collection();
-        $this->assertCount(4, $itemcollection);
-
-        $ltiproviderexternal = array_shift($itemcollection);
-        $this->assertEquals('lti_provider', $ltiproviderexternal->get_name());
+        $this->assertCount(3, $itemcollection);
 
         $ltisubmissiontable = array_shift($itemcollection);
         $this->assertEquals('lti_submission', $ltisubmissiontable->get_name());
-
-        $ltitoolproxies = array_shift($itemcollection);
-        $this->assertEquals('lti_tool_proxies', $ltitoolproxies->get_name());
-
-        $ltitypestable = array_shift($itemcollection);
-        $this->assertEquals('lti_types', $ltitypestable->get_name());
 
         $privacyfields = $ltisubmissiontable->get_privacy_fields();
         $this->assertArrayHasKey('userid', $privacyfields);
@@ -67,6 +60,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertArrayHasKey('gradepercent', $privacyfields);
         $this->assertArrayHasKey('originalgrade', $privacyfields);
         $this->assertEquals('privacy:metadata:lti_submission', $ltisubmissiontable->get_summary());
+
+        $ltitoolproxies = array_shift($itemcollection);
+        $this->assertEquals('lti_tool_proxies', $ltitoolproxies->get_name());
+
+        $ltitypestable = array_shift($itemcollection);
+        $this->assertEquals('lti_types', $ltitypestable->get_name());
 
         $privacyfields = $ltitoolproxies->get_privacy_fields();
         $this->assertArrayHasKey('name', $privacyfields);
@@ -83,7 +82,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals('privacy:metadata:lti_types', $ltitypestable->get_summary());
     }
 
-    /**
+      /**
      * Test for provider::get_contexts_for_userid().
      */
     public function test_get_contexts_for_userid() {
@@ -122,7 +121,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $component = 'mod_lti';
+        $component = 'ltix';
 
         // The LTI activity the user will have submitted something for.
         $lti1 = $this->getDataGenerator()->create_module('lti', array('course' => $course->id));
@@ -141,7 +140,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
-        $this->assertCount(2, $userlist);
+        $this->assertCount(0, $userlist);
         $expected = [$user1->id, $user2->id];
         $actual = $userlist->get_userids();
         sort($expected);
@@ -176,7 +175,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Export all of the data for the context for user 1.
         $cmcontext = \context_module::instance($lti->cmid);
-        $this->export_context_data_for_user($user1->id, $cmcontext, 'mod_lti');
+        $this->export_context_data_for_user($user1->id, $cmcontext, 'core_ltix');
         $writer = \core_privacy\local\request\writer::with_context($cmcontext);
 
         $this->assertTrue($writer->has_any_data());
@@ -218,7 +217,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Export all of the data for the context.
         $coursecontext = \context_course::instance($course1->id);
-        $this->export_context_data_for_user($user->id, $coursecontext, 'mod_lti');
+        $this->export_context_data_for_user($user->id, $coursecontext, 'core_ltix');
         $writer = \core_privacy\local\request\writer::with_context($coursecontext);
 
         $this->assertTrue($writer->has_any_data());
@@ -227,7 +226,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $data->lti_types);
 
         $coursecontext = \context_course::instance($course2->id);
-        $this->export_context_data_for_user($user->id, $coursecontext, 'mod_lti');
+        $this->export_context_data_for_user($user->id, $coursecontext, 'core_ltix');
         $writer = \core_privacy\local\request\writer::with_context($coursecontext);
 
         $this->assertTrue($writer->has_any_data());
@@ -252,7 +251,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Export all of the data for the context.
         $systemcontext = \context_system::instance();
-        $this->export_context_data_for_user($user->id, $systemcontext, 'mod_lti');
+        $this->export_context_data_for_user($user->id, $systemcontext, 'core_ltix');
         $writer = \core_privacy\local\request\writer::with_context($systemcontext);
 
         $this->assertTrue($writer->has_any_data());
@@ -337,7 +336,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_delete_data_for_users() {
         global $DB;
-        $component = 'mod_lti';
+        $component = 'core_ltix';
 
         $this->resetAfterTest();
 
