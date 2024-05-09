@@ -17,14 +17,16 @@
 /**
  * Shows a tabulated view of all the available LTI tools in a given course.
  *
- * @package    core_ltix
+ * @package    mod_lti
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core_ltix\output\course_tools_page;
+use mod_lti\output\course_tools_page;
 
-require_once("../config.php");
+require_once("../../config.php");
+require_once($CFG->dirroot . '/mod/lti/lib.php');
+require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 $id = required_param('id', PARAM_INT); // Course Id.
 
@@ -33,14 +35,14 @@ $course = get_course($id);
 require_course_login($course, false);
 
 $context = context_course::instance($course->id);
-if (!has_capability('moodle/ltix:viewcoursetools', $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', get_string('courseexternaltoolsnoviewpermissions', 'core_ltix'));
+if (!has_capability('mod/lti:addpreconfiguredinstance', $context)) {
+    throw new \moodle_exception('nopermissions', 'error', '', get_string('courseexternaltoolsnoviewpermissions', 'mod_lti'));
 }
 
 // Page setup.
 global $PAGE, $OUTPUT;
-$pagetitle = get_string('courseexternaltools', 'core_ltix');
-$pageurl = new moodle_url('/ltix/coursetools.php', ['id' => $course->id]);
+$pagetitle = get_string('courseexternaltools', 'mod_lti');
+$pageurl = new moodle_url('/mod/lti/coursetools.php', ['id' => $course->id]);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_context($context);
 $PAGE->set_url($pageurl);
@@ -52,9 +54,9 @@ $PAGE->add_body_class('limitedwidth');
 echo $OUTPUT->header();
 echo $OUTPUT->heading($pagetitle);
 
-$renderer = $PAGE->get_renderer('core_ltix');
+$renderer = $PAGE->get_renderer('mod_lti');
 $coursetoolspage = new course_tools_page($course->id);
 echo $renderer->render($coursetoolspage);
-$PAGE->requires->js_call_amd('core_ltix/course_tools_list', 'init');
+$PAGE->requires->js_call_amd('mod_lti/course_tools_list', 'init');
 
 echo $OUTPUT->footer();
