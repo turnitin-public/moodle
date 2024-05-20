@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['accept'] = 'Accept';
 $string['accepted'] = 'Accepted';
 $string['accept_grades_admin'] = 'Accept grades from the tool';
 $string['accept_grades_admin_help'] = 'Specify whether the tool provider can add, update, read, and delete grades associated with instances of this tool.
@@ -40,6 +41,7 @@ $string['autoaddtype'] = 'Add tool';
 $string['baseurl'] = 'Base URL/tool registration name';
 $string['cancel'] = 'Cancel';
 $string['capabilities'] = 'Capabilities';
+$string['capabilities_help'] = 'Select those capabilities which you wish to offer to the tool provider.  More than one capability can be selected.';
 $string['capabilitiesrequired'] = 'This tool requires access to the following data in order to activate:';
 $string['cleanaccesstokens'] = 'External tool removal of expired access tokens';
 $string['clientidadmin'] = 'Client ID';
@@ -157,7 +159,6 @@ $string['no_tp_cancelled'] = 'There are no cancelled external tool registrations
 $string['no_tp_configured'] = 'There are no unregistered external tool registrations configured.';
 $string['no_tp_pending'] = 'There are no pending external tool registrations.';
 $string['no_tp_rejected'] = 'There are no rejected external tool registrations.';
-$string['no_lti_tools'] = 'There are no external tools configured.';
 $string['nocourseexternaltoolsnotice'] = 'There are no LTI External tools yet.';
 $string['noprofileservice'] = 'Profile service not found';
 $string['oauthsecurity'] = 'LTI 1.0/1.1';
