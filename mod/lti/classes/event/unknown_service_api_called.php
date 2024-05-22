@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * Event for when something happens with an unknown lti service API call.
  *
+ * @deprecated since Moodle 4.5 use \core_ltix\event\unknown_service_api_called instead.
  * @package    mod_lti
  * @since      Moodle 2.6
  * @copyright  2013 Adrian Greeve <adrian@moodle.com>
@@ -44,8 +45,11 @@ class unknown_service_api_called extends \core\event\base {
      * Sets custom data used by event observers.
      *
      * @param \stdClass $data
+     * @deprecated since Moodle 4.5
      */
     public function set_message_data(\stdClass $data) {
+        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
+            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         $this->eventdata = $data;
     }
 
@@ -53,8 +57,11 @@ class unknown_service_api_called extends \core\event\base {
      * Returns custom data for event observers.
      *
      * @return \stdClass
+     * @deprecated since Moodle 4.5
      */
     public function get_message_data() {
+        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
+            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         if ($this->is_restored()) {
             throw new \coding_exception('Function get_message_data() can not be used on restored events.');
         }
@@ -74,8 +81,11 @@ class unknown_service_api_called extends \core\event\base {
      * Returns localised description of what happened.
      *
      * @return string
+     * @deprecated since Moodle 4.5
      */
     public function get_description() {
+        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
+            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         return 'An unknown call to a service api was made.';
     }
 
@@ -83,8 +93,11 @@ class unknown_service_api_called extends \core\event\base {
      * Returns localised general event name.
      *
      * @return string
+     * @deprecated since Moodle 4.5
      */
     public static function get_name() {
+        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
+            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         return get_string('ltiunknownserviceapicall', 'mod_lti');
     }
 
@@ -94,8 +107,11 @@ class unknown_service_api_called extends \core\event\base {
      * Events cannot be deprecated in the normal fashion as they must remain to support historical data.
      *
      * @return boolean
+     * @deprecated since Moodle 4.5
      */
     public static function is_deprecated() {
+        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
+            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         return true;
     }
 }
