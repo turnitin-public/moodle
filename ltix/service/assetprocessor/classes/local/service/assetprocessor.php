@@ -37,6 +37,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assetprocessor extends \core_ltix\local\ltiservice\service_base {
+
+    /** Scope for reading data */
+    const SCOPE_ASSET_READ = 'https://purl.imsglobal.org/spec/lti-ap/scope/asset.readonly';
+
     /**
      * Class constructor.
      */
@@ -56,7 +60,8 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
     public function get_resources() {
 
         if (empty($this->resources)) {
-            $this->resources = array();
+            $this->resources = [];
+            $this->resources[] = new \ltixservice_assetprocessor\local\resources\assetservice($this);
         }
 
         return $this->resources;
