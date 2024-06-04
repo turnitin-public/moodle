@@ -1188,9 +1188,9 @@ function xmldb_main_upgrade($oldversion) {
         // Launch rename table for ltiservice_gradebookservices.
         $dbman->rename_table($table, 'tmp_ltiservice_gradebookservices');
 
-        $servicetypes = ['basicoutcomes', 'gradebookservices', 'memberships','profile', 'toolproxy', 'toolsettings'];
+        $servicetypes = ['assetprocessor', 'basicoutcomes', 'gradebookservices', 'memberships','profile', 'toolproxy', 'toolsettings'];
         foreach ($servicetypes as $type) {
-            $versionfile = $CFG->dirroot . "mod/lti/service/{$type}/version.php";
+            $versionfile = $CFG->dirroot . "ltix/service/{$type}/version.php";
 
             if (!file_exists($versionfile)) {
                 uninstall_plugin('ltiservice', $type);
