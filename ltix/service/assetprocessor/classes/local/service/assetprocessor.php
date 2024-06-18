@@ -25,6 +25,8 @@
 
 namespace ltixservice_assetprocessor\local\service;
 
+use ltixservice_assetprocessor\local\resources\assetreports;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -39,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
 class assetprocessor extends \core_ltix\local\ltiservice\service_base {
 
     /** Scope for access to Score service */
-    const SCOPE_ASSETPROCESSOR_ASSETREPORTS = 'https://purl.imsglobal.org/spec/lti-ap/scope/report';
+    const SCOPE_ASSETPROCESSOR_ASSETREPORT = 'https://purl.imsglobal.org/spec/lti-ap/scope/report';
     /**
      * Class constructor.
      */
@@ -60,7 +62,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
 
         if (empty($this->resources)) {
             $this->resources = array();
-            $this->resources = new \ltixservice_assetprocessor\local\resources\assetreports($this);
+            $this->resources[] = new assetreports($this);
         }
 
         return $this->resources;
@@ -97,7 +99,11 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
      */
     public function get_jwt_claim_mappings(): array {
         return [
-            
+
         ];
+    }
+
+    public function get_name() {
+        return $this->name;
     }
 }
