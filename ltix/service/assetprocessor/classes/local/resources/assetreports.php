@@ -71,15 +71,34 @@ class assetreports extends resource_base
         $scope = assetprocessor::SCOPE_ASSETPROCESSOR_ASSETREPORT;
 
         try {
+            if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
+                throw new \Exception(null, 401);
+            }
+            $typeid = $this->get_service()->get_type()->id;
+            if (empty($contextid) || !($container ^ ($response->get_request_method() === self::HTTP_POST)) ||
+                (!empty($contenttype) && !in_array($contenttype, $this->formats))) {
+                throw new \Exception('No context or unsupported content type', 400);
+            }
+            if (!($course = $DB->get_record('course', array('id' => $contextid), 'id', IGNORE_MISSING))) {
+                throw new \Exception("Not Found: Course {$contextid} doesn't exist", 404);
+            }
+            if (!$this->get_service()->is_allowed_in_context($typeid, $course->id)) {
+                throw new \Exception('Not allowed in context', 403);
+            }
+            if (!$DB->record_exists('lti', array('id' => $resourceid))) {
+                throw new \Exception("Not Found: LTI Resource {$resourceid} doesn't exist", 404);
+            }
 
+            // Create a result object to store the text to be returned by response body
             $result = new \stdClass();
             try {
                 $request_data = json_decode($response->get_request_data());
                 if($this->params_exist($request_data)) {
-                    if(!empty($this->check_type_exists($resourceid, $request_data->type, $request_data->assetId, $request_data->userId))) {
+                    $record = $this->record_exists($resourceid, $request_data->type, $request_data->userId, $request_data->assetId);
+                    if(!empty($record)) {
                         // Asset already exists for the type, then override the existing record if scores are valid
                         if($this->is_valid_score_values($request_data)){
-                            $this->update_asset_report($request_data, $resourceid);
+                            $this->update_asset_report($request_data, $record, $resourceid);
                             $response->set_code(201);
                             $result->text = "Successfully Updated Asset";
                         } else {
@@ -88,28 +107,30 @@ class assetreports extends resource_base
                             $result->text = "Invalid Request Data";
                         }
 
-                    }
-                    if($this->is_single_asset($request_data)) {
-                        if($this->is_valid_score_values($request_data)){
-                            $this->add_asset_report($request_data, $resourceid);
-                            $response->set_code(201);
-                            $result->text = "Successfully Added Single Asset";
-                        } else {
-                            $response->set_code(400);
-                            $response->set_reason("Invalid Request Data. Check the score values");
-                            $result->text = "Invalid Request Data";
-                        }
                     } else {
-                        if($this->is_failed_status($request_data)) {
-                            $this->add_asset_report($request_data, $resourceid);
-                            $response->set_code(201);
-                            $result->text = "Added Asset with Failed Status";
+                        if($this->is_single_asset($request_data)) {
+                            if($this->is_valid_score_values($request_data)){
+                                $this->add_asset_report($request_data, $resourceid);
+                                $response->set_code(201);
+                                $result->text = "Successfully Added Single Asset";
+                            } else {
+                                $response->set_code(400);
+                                $response->set_reason("Invalid Request Data. Check the score values");
+                                $result->text = "Invalid Request Data";
+                            }
                         } else {
-                            $response->set_code(400);
-                            $response->set_reason("Invalid Request Data");
-                            $result->text = "Invalid Request Data";
+                            if($this->is_failed_status($request_data)) {
+                                $this->add_asset_report($request_data, $resourceid);
+                                $response->set_code(201);
+                                $result->text = "Added Asset with Failed Status";
+                            } else {
+                                $response->set_code(400);
+                                $response->set_reason("Invalid Request Data");
+                                $result->text = "Invalid Request Data";
+                            }
                         }
                     }
+
                     $response->set_content_type($this->formats[1]);
                 } else {
                     throw new \Exception('Invalid request data', 400);
@@ -167,13 +188,13 @@ class assetreports extends resource_base
     /**
      * Check if type already exists for user and asset
      */
-    private function check_type_exists($resourceid, $type, $userid, $assetid) {
+    private function record_exists($resourceid, $type, $userid, $assetid) {
         //TODO: remove multiline comment when DB is available
-        /*global $DB;
-        $sql = "SELECT * FROM {ltixservice_assetprocessor_assetreport} WHERE resource_id = ? AND type = ? AND user_id = ? AND asset_id = ?";
-        $params = array($resourceid, $type, $userid, $assetid);
-        return $DB->get_record_sql($sql, $params);*/
-        return false;
+        global $DB;
+        $binary_user_id = $this->convert_uuid_to_binary($userid);
+        $binary_asset_id = $this->convert_uuid_to_binary($assetid);
+        return $DB->get_record('ltixservice_assetprocessor_assetreport', array('resource_id' => $resourceid, 'type' => $type, 'user_id' => $binary_user_id, 'asset_id' => $binary_asset_id));
+        //return false;
     }
 
     /**
@@ -196,12 +217,12 @@ class assetreports extends resource_base
      */
     private function add_asset_report($request_data, $resourceid) {
         //TODO: remove multiline comment when DB is available
-        /*global $DB;
+        global $DB;
         $record = new \stdClass();
         $record->resource_id = $resourceid;
         $record->type = $request_data->type;
-        $record->user_id = $request_data->userId;
-        $record->asset_id = $request_data->assetId;
+        $record->user_id = $this->convert_uuid_to_binary($request_data->userId);
+        $record->asset_id = $this->convert_uuid_to_binary($request_data->assetId);
         $record->timestamp = $request_data->timestamp;
         $record->title = $request_data->title;
         $record->processing_progress = $request_data->processingProgress;
@@ -211,8 +232,8 @@ class assetreports extends resource_base
         $record->indication_alt = $request_data->indicationAlt;
         $record->priority = $request_data->priority;
         $record->comment = $request_data->comment;
-        $DB->insert_record('ltixservice_assetprocessor_assetreport', $record);*/
-        return true;
+        $DB->insert_record('ltixservice_assetprocessor_assetreport', $record);
+        //return true;
     }
 
     /**
@@ -221,11 +242,11 @@ class assetreports extends resource_base
     private function update_asset_report($request_data, $record, $resourceid)
     {
         //TODO: remove multiline comment when DB is available
-        /*global $DB;
-        $record->resource_id = $resourceid;
+        global $DB;
+        $record->resource_id = intval($resourceid);
         $record->type = $request_data->type;
-        $record->user_id = $request_data->userId;
-        $record->asset_id = $request_data->assetId;
+        $record->user_id = $this->convert_uuid_to_binary($request_data->userId);
+        $record->asset_id = $this->convert_uuid_to_binary($request_data->assetId);
         $record->timestamp = $request_data->timestamp;
         $record->title = $request_data->title;
         $record->processing_progress = $request_data->processingProgress;
@@ -235,7 +256,14 @@ class assetreports extends resource_base
         $record->indication_alt = $request_data->indicationAlt;
         $record->priority = $request_data->priority;
         $record->comment = $request_data->comment;
-        $DB->update_record('ltixservice_assetprocessor_assetreport', $record);*/
-        return true;
+        $DB->update_record('ltixservice_assetprocessor_assetreport', $record);
+        //return true;
+    }
+
+    /**
+     * Replace '-' and Convert UUID to BINARY for DB
+     */
+    private function convert_uuid_to_binary($uuid){
+        return hex2bin(str_replace('-', '', $uuid));
     }
 }
