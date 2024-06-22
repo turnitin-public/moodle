@@ -26,6 +26,7 @@
 namespace ltixservice_assetprocessor\local\service;
 
 use ltixservice_assetprocessor\local\resources\assetreports;
+use ltixservice_assetprocessor\local\resources\eula;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -42,6 +43,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
 
     /** Scope for access to Score service */
     const SCOPE_ASSETPROCESSOR_ASSETREPORT = 'https://purl.imsglobal.org/spec/lti-ap/scope/report';
+    const SCOPE_ASSETPROCESSOR_EULA = 'https://purl.imsglobal.org/spec/lti/scope/eula';
     /**
      * Class constructor.
      */
@@ -63,6 +65,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
         if (empty($this->resources)) {
             $this->resources = array();
             $this->resources[] = new assetreports($this);
+            $this->resources[] = new eula($this);
         }
 
         return $this->resources;
@@ -78,6 +81,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
 
         $scopes = array();
         $scopes[] = self::SCOPE_ASSETPROCESSOR_ASSETREPORTS;
+        $scopes[] = self::SCOPE_ASSETPROCESSOR_EULA;
         return $scopes;
 
     }
@@ -88,7 +92,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
      * @return array
      */
     public function get_scopes() {
-        return [self::SCOPE_ASSETPROCESSOR_ASSETREPORTS];
+        return [self::SCOPE_ASSETPROCESSOR_ASSETREPORTS, self::SCOPE_ASSETPROCESSOR_EULA];
     }
 
     /**
