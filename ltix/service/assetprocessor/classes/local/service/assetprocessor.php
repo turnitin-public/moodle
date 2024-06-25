@@ -27,6 +27,7 @@ namespace ltixservice_assetprocessor\local\service;
 
 use ltixservice_assetprocessor\local\resources\assetreports;
 use ltixservice_assetprocessor\local\resources\eula;
+use ltixservice_assetprocessor\local\resources\euladeployment;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -66,6 +67,7 @@ class assetprocessor extends \core_ltix\local\ltiservice\service_base {
             $this->resources = array();
             $this->resources[] = new assetreports($this);
             $this->resources[] = new eula($this);
+            $this->resources[] = new euladeployment($this);
         }
 
         return $this->resources;
