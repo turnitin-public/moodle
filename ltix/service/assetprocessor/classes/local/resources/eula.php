@@ -40,8 +40,8 @@ class eula extends resource_base {
 
         parent::__construct($service);
         $this->id = 'EULA';
-        $this->template = '/{context_id}/api/lti/eula';
-        $this->variables[] = 'EULA.url';
+        $this->template = '/{deployment_id}/api/lti/eula';
+        $this->variables[] = 'eula.url';
         $this->formats[] = 'application/vnd.ims.lis.v2.eula+json';
         $this->formats[] = 'application/json';
         $this->formats[] = 'text/plain';
@@ -58,7 +58,7 @@ class eula extends resource_base {
     public function execute($response) {
         global $DB;
         $params = $this->parse_template();
-        $contextid = $params['context_id'];
+        $contextid = $params['deployment_id'];
 
         $contenttype = $response->get_content_type();
 
@@ -70,6 +70,25 @@ class eula extends resource_base {
         $scope = assetprocessor::SCOPE_ASSETPROCESSOR_EULA;
 
         try {
+            //contextid will be modified to fit requirements subsequently
+            if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
+                throw new \Exception(null, 401);
+            }
+            $typeid = $this->get_service()->get_type()->id;
+            if (empty($contextid) || !($container ^ ($response->get_request_method() === self::HTTP_POST || self::HTTP_DELETE)) ||
+                (!empty($contenttype) && !in_array($contenttype, $this->formats))) {
+                throw new \Exception('No context or unsupported content type', 400);
+            }
+            if (!($course = $DB->get_record('course', array('id' => $contextid), 'id', IGNORE_MISSING))) {
+                throw new \Exception("Not Found: Course {$contextid} doesn't exist", 404);
+            }
+            if (!$this->get_service()->is_allowed_in_context($typeid, $course->id)) {
+                throw new \Exception('Not allowed in context', 403);
+            }
+            if (!$DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid))) {
+                throw new \Exception("Not Found: EULA Deployment doesn't exist", 404);
+            }
+
             $json = new \stdClass();
             $request_data = json_decode($response->get_request_data());
             switch ($response->get_request_method()) {
@@ -162,6 +181,12 @@ class eula extends resource_base {
         $eula->userid = $this->convert_uuid_to_binary($data->userId);
         $eula->accepted = $data->accepted;
         $eula->timestamp = $data->timestamp;
+        if(empty($this->eula_deployment_exists($contextid))) {
+            $eula_deployment = new \stdClass();
+            $eula_deployment->contextid = $contextid;
+            $eula_deployment->eularequired = false;
+            $DB->insert_record('ltixservice_assetprocessor_eula_deployment', $eula_deployment);
+        }
         return $DB->insert_record('ltixservice_assetprocessor_eula', $eula);
     }
 
@@ -223,5 +248,16 @@ class eula extends resource_base {
      */
     private function convert_uuid_to_binary($uuid) {
         return hex2bin(str_replace('-', '', $uuid));
+    }
+
+    /**
+     * Check if eula deployment exists for context.
+     * @param $contextid
+     *
+     * return boolean
+     */
+    private function eula_deployment_exists($contextid){
+        global $DB;
+        return $DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid));
     }
 }
