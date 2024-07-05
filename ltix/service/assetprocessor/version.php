@@ -27,6 +27,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version   = 2024050301;
+$plugin->version   = 2024050311;
 $plugin->requires  = 2023100400;
 $plugin->component = 'ltixservice_assetprocessor';

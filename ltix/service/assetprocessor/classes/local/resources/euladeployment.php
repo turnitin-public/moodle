@@ -41,7 +41,7 @@ class euladeployment extends resource_base{
 
         parent::__construct($service);
         $this->id = 'EULA DEPLOYMENT';
-        $this->template = '/{deployment_id}/api/lti/eula/deployment';
+        $this->template = '/{context_id}/api/lti/{instance_id}/eula/deployment';
         $this->variables[] = 'euladeployment.url';
         $this->formats[] = 'application/vnd.ims.lis.v2.euladeployment+json';
         $this->formats[] = 'application/json';
@@ -58,7 +58,8 @@ class euladeployment extends resource_base{
     public function execute($response) {
         global $DB;
         $params = $this->parse_template();
-        $contextid = $params['deployment_id'];
+        $contextid = $params['context_id'];
+        $instanceid = $params['instance_id'];
 
         $contenttype = $response->get_content_type();
 
@@ -70,8 +71,7 @@ class euladeployment extends resource_base{
         $scope = assetprocessor::SCOPE_ASSETPROCESSOR_EULA;
 
         try {
-            //contextid will be modified to fit requirements subsequently
-            if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
+            /*if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
                 throw new \Exception(null, 401);
             }
             $typeid = $this->get_service()->get_type()->id;
@@ -84,8 +84,8 @@ class euladeployment extends resource_base{
             }
             if (!$this->get_service()->is_allowed_in_context($typeid, $course->id)) {
                 throw new \Exception('Not allowed in context', 403);
-            }
-            if (!$DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid))) {
+            }*/
+            if (!$DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('instanceid' => $instanceid))) {
                 throw new \Exception("Not Found: EULA Deployment doesn't exist", 404);
             }
 
@@ -99,7 +99,7 @@ class euladeployment extends resource_base{
                     $response->set_content_type($this->formats[1]);
                     throw new \Exception("Invalid request data.", 400);
                 }
-                $eula_deployment = $this->get_eula_deployment($contextid);
+                $eula_deployment = $this->get_eula_deployment($instanceid);
                 if(!empty($eula_deployment)) {
                     if(!$this->update_eula_deployment($eula_deployment, $request_data->eulaRequired)){
                         $json->reason = "Failed to update EULA DEPLOYMENT.";
@@ -152,13 +152,13 @@ class euladeployment extends resource_base{
     }
 
     /**
-     * Get the eula deployment for contextid.
-     * @param $contextid
+     * Get the eula deployment for instanceid.
+     * @param $instanceid
      *
      * return object
      */
-    private function get_eula_deployment($contextid){
+    private function get_eula_deployment($instanceid){
         global $DB;
-        return $DB->get_record('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid));
+        return $DB->get_record('ltixservice_assetprocessor_eula_deployment', array('instanceid' => $instanceid));
     }
 }
