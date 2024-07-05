@@ -40,7 +40,7 @@ class eula extends resource_base {
 
         parent::__construct($service);
         $this->id = 'EULA';
-        $this->template = '/{deployment_id}/api/lti/eula';
+        $this->template = '/{context_id}/api/lti/{instance_id}/eula';
         $this->variables[] = 'eula.url';
         $this->formats[] = 'application/vnd.ims.lis.v2.eula+json';
         $this->formats[] = 'application/json';
@@ -58,7 +58,8 @@ class eula extends resource_base {
     public function execute($response) {
         global $DB;
         $params = $this->parse_template();
-        $contextid = $params['deployment_id'];
+        $contextid = $params['context_id'];
+        $instanceid = $params['instance_id'];
 
         $contenttype = $response->get_content_type();
 
@@ -70,7 +71,7 @@ class eula extends resource_base {
         $scope = assetprocessor::SCOPE_ASSETPROCESSOR_EULA;
 
         try {
-            //contextid will be modified to fit requirements subsequently
+            /*
             if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
                 throw new \Exception(null, 401);
             }
@@ -85,9 +86,9 @@ class eula extends resource_base {
             if (!$this->get_service()->is_allowed_in_context($typeid, $course->id)) {
                 throw new \Exception('Not allowed in context', 403);
             }
-            if (!$DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid))) {
+            if (!$DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('instanceid' => $instanceid))) {
                 throw new \Exception("Not Found: EULA Deployment doesn't exist", 404);
-            }
+            }*/
 
             $json = new \stdClass();
             $request_data = json_decode($response->get_request_data());
@@ -100,9 +101,9 @@ class eula extends resource_base {
                             $response->set_content_type($this->formats[1]);
                             throw new \Exception("Invalid request data.", 400);
                         }
-                        $eula = $this->get_eula($contextid, $request_data->userId);
+                        $eula = $this->get_eula($instanceid, $request_data->userId);
                         if(!empty($eula)) {
-                            if(!$this->update_eula($request_data, $eula, $contextid)){
+                            if(!$this->update_eula($request_data, $eula, $instanceid)){
                                 $json->reason = "Failed to update EULA.";
                                 $json->text = "Failed to update EULA.";
                                 $response->set_content_type($this->formats[1]);
@@ -113,7 +114,7 @@ class eula extends resource_base {
                             $response->set_content_type($this->formats[1]);
                             $response->set_code(201);
                         } else {
-                            if(!$this->insert_eula($request_data, $contextid)){
+                            if(!$this->insert_eula($request_data, $instanceid)){
                                 $json->reason = "Failed to insert EULA.";
                                 $json->text = "Failed to insert EULA.";
                                 $response->set_content_type($this->formats[1]);
@@ -131,7 +132,7 @@ class eula extends resource_base {
                     break;
                 case 'DELETE':
                     try {
-                        foreach($this->get_eula_for_delete_request($contextid) as $eula) {
+                        foreach($this->get_eula_for_delete_request($instanceid) as $eula) {
                             $eula->accepted = false;
                             $this->delete_eula($eula);
                         }
@@ -170,20 +171,20 @@ class eula extends resource_base {
     /**
      * Insert into the eula table.
      * @param $data
-     * @param $contextid
+     * @param $instanceid
      * return bool
      */
-    private function insert_eula($data, $contextid)
-    {
+    private function insert_eula($data, $instanceid) {
         global $DB;
         $eula = new \stdClass();
-        $eula->contextid = $contextid;
+        $eula->instanceid = $instanceid;
         $eula->userid = $this->convert_uuid_to_binary($data->userId);
         $eula->accepted = $data->accepted;
         $eula->timestamp = $data->timestamp;
-        if(empty($this->eula_deployment_exists($contextid))) {
+        if(empty($this->eula_deployment_exists($instanceid))) {
+            // Insert a record in the eula_deployment table. This is a temporary fix for testing purposes.
             $eula_deployment = new \stdClass();
-            $eula_deployment->contextid = $contextid;
+            $eula_deployment->instanceid = $instanceid;
             $eula_deployment->eularequired = false;
             $DB->insert_record('ltixservice_assetprocessor_eula_deployment', $eula_deployment);
         }
@@ -194,13 +195,13 @@ class eula extends resource_base {
      * Update the eula table.
      * @param $request_data
      * @param $record
-     * @param $contextid
+     * @param $instanceid
      * return bool
      */
-    private function update_eula($request_data, $record, $contextid) {
+    private function update_eula($request_data, $record, $instanceid) {
         global $DB;
 
-        $record->contextid = $contextid;
+        $record->instanceid = $instanceid;
         $record->userid = $this->convert_uuid_to_binary($request_data->userId);
         $record->accepted = $request_data->accepted;
         $record->timestamp = $request_data->timestamp;
@@ -220,27 +221,27 @@ class eula extends resource_base {
 
     /**
      * Get the eula record.
-     * @param $contextid
+     * @param $instanceid
      * @param $userid
      *
      * return object
      */
-    private function get_eula($contextid, $userid) {
+    private function get_eula($instanceid, $userid) {
         global $DB;
         $binary_userid = $this->convert_uuid_to_binary($userid);
-        return $DB->get_record('ltixservice_assetprocessor_eula', array('contextid' => $contextid, 'userid' => $binary_userid));
+        return $DB->get_record('ltixservice_assetprocessor_eula', array('instanceid' => $instanceid, 'userid' => $binary_userid));
     }
 
     /**
      * Get the eula record for delete request.
-     * @param $contextid
+     * @param $instanceid
      * @param $userid
      *
      * return object[]
      */
-    private function get_eula_for_delete_request($contextid){
+    private function get_eula_for_delete_request($instanceid){
         global $DB;
-        return $DB->get_records('ltixservice_assetprocessor_eula', array('contextid' => $contextid));
+        return $DB->get_records('ltixservice_assetprocessor_eula', array('instanceid' => $instanceid));
     }
 
     /**
@@ -252,12 +253,12 @@ class eula extends resource_base {
 
     /**
      * Check if eula deployment exists for context.
-     * @param $contextid
+     * @param $instanceid
      *
      * return boolean
      */
-    private function eula_deployment_exists($contextid){
+    private function eula_deployment_exists($instanceid){
         global $DB;
-        return $DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('contextid' => $contextid));
+        return $DB->record_exists('ltixservice_assetprocessor_eula_deployment', array('instanceid' => $instanceid));
     }
 }

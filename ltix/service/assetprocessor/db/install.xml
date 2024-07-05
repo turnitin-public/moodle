@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="ltix/service/assetprocessor/db" VERSION="20240705" COMMENT="XMLDB file for Moodle core_ltix/service/assetprocessor"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="ltixservice_assetprocessor_eula" COMMENT="Table to store eula for assetprocessor">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="User ID"/>
+        <FIELD NAME="accepted" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="accepted"/>
+        <FIELD NAME="timestamp" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="instanceid" UNIQUE="false" FIELDS="instanceid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="ltixservice_assetprocessor_eula_deployment" COMMENT="EULA service deployment table">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Instance Id"/>
+        <FIELD NAME="eularequired" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="Eula required?"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="instanceid" UNIQUE="true" FIELDS="instanceid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
