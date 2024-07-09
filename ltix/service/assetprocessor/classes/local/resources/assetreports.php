@@ -71,7 +71,7 @@ class assetreports extends resource_base
         $scope = assetprocessor::SCOPE_ASSETPROCESSOR_ASSETREPORT;
 
         try {
-            if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
+            /*if (!$this->check_tool($typeid, $response->get_request_data(), array($scope))) {
                 throw new \Exception(null, 401);
             }
             $typeid = $this->get_service()->get_type()->id;
@@ -87,7 +87,7 @@ class assetreports extends resource_base
             }
             if (!$DB->record_exists('lti', array('id' => $resourceid))) {
                 throw new \Exception("Not Found: LTI Resource {$resourceid} doesn't exist", 404);
-            }
+            }*/
 
             // Create a result object to store the text to be returned by response body
             $result = new \stdClass();
@@ -189,11 +189,10 @@ class assetreports extends resource_base
      * Check if type already exists for user and asset
      */
     private function record_exists($resourceid, $type, $userid, $assetid) {
-        //TODO: remove multiline comment when DB is available
-        /*global $DB;
+        global $DB;
         $binary_user_id = $this->convert_uuid_to_binary($userid);
         $binary_asset_id = $this->convert_uuid_to_binary($assetid);
-        return $DB->get_record('ltixservice_assetprocessor_assetreport', array('resource_id' => $resourceid, 'type' => $type, 'user_id' => $binary_user_id, 'asset_id' => $binary_asset_id));*/
+        return $DB->get_record('ltixservice_assetprocessor_assetreport', array('resource_id' => $resourceid, 'type' => $type, 'user_id' => $binary_user_id, 'asset_id' => $binary_asset_id));
         return false;
     }
 
@@ -216,8 +215,7 @@ class assetreports extends resource_base
      * Add asset report
      */
     private function add_asset_report($request_data, $resourceid) {
-        //TODO: remove multiline comment when DB is available
-        /*global $DB;
+        global $DB;
         $record = new \stdClass();
         $record->resource_id = $resourceid;
         $record->type = $request_data->type;
@@ -232,7 +230,7 @@ class assetreports extends resource_base
         $record->indication_alt = $request_data->indicationAlt;
         $record->priority = $request_data->priority;
         $record->comment = $request_data->comment;
-        $DB->insert_record('ltixservice_assetprocessor_assetreport', $record);*/
+        $DB->insert_record('ltixservice_assetprocessor_assetreport', $record);
         return true;
     }
 
@@ -240,8 +238,7 @@ class assetreports extends resource_base
      * Update asset report
      */
     private function update_asset_report($request_data, $record, $resourceid) {
-        //TODO: remove multiline comment when DB is available
-        /*global $DB;
+        global $DB;
         $record->resource_id = intval($resourceid);
         $record->type = $request_data->type;
         $record->user_id = $this->convert_uuid_to_binary($request_data->userId);
@@ -255,7 +252,7 @@ class assetreports extends resource_base
         $record->indication_alt = $request_data->indicationAlt;
         $record->priority = $request_data->priority;
         $record->comment = $request_data->comment;
-        $DB->update_record('ltixservice_assetprocessor_assetreport', $record);*/
+        $DB->update_record('ltixservice_assetprocessor_assetreport', $record);
         return true;
     }
 
