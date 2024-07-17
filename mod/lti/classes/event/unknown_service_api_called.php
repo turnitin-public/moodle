@@ -107,11 +107,8 @@ class unknown_service_api_called extends \core\event\base {
      * Events cannot be deprecated in the normal fashion as they must remain to support historical data.
      *
      * @return boolean
-     * @deprecated since Moodle 4.5
      */
     public static function is_deprecated() {
-        debugging('Class \mod_lti\event\unknown_service_api_called is deprecated, please use '.
-            '\core_ltix\event\unknown_service_api_called instead.', DEBUG_DEVELOPER);
         return true;
     }
 }
